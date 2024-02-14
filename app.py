@@ -1,6 +1,5 @@
 import os
 from flask import Flask, request, jsonify
-import strava
 
 app = Flask(__name__)
 
