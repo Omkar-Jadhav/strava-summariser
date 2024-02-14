@@ -41,6 +41,15 @@
         "documentation": {}
     },
     {
+        "label": "strava",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "strava",
+        "description": "strava",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
         "label": "app",
         "importPath": "wsgi",
         "description": "wsgi",
@@ -115,6 +124,15 @@
         "importPath": "app",
         "description": "app",
         "peekOfCode": "def verify_webhook():\n    mode = request.args.get('hub.mode')\n    token = request.args.get('hub.verify_token')\n    challenge = request.args.get('hub.challenge')\n    if mode and token:\n        if mode == 'subscribe' and token == VERIFY_TOKEN:\n            print(\"Webhook verified\")\n            return jsonify({\"hub.challenge\": challenge})\n        else:\n            return \"Invalid verification token\", 403",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "handle_webhook",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def handle_webhook():\n    # data = request.get_json()\n    latest_activity_id = request.args.get('object_id')\n    print(\"Webhook event received with activity:\", latest_activity_id)\n    strava.get_latest_activities()\n    # subprocess.run([\"python\", python_script], check=True, capture_output=True)\n    # stdout = subprocess.check_output([\"python\", python_script])  # Capture output for logging\n    # print(\"Python script output:\", stdout.decode())\n    return jsonify({\"message\": \"EVENT_RECEIVED\"}), 200",
         "detail": "app",
         "documentation": {}
     },
