@@ -61,16 +61,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def start():\n    return {\"message\": \"Hello, world!\"}\n@app.route(\"/index\")\ndef index():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():\n    return {\"status\": \"healthy\"}\n# VERIFY_TOKEN = \"STRAVA\"\n# python_script = \"strava.py\"",
-        "detail": "app",
-        "documentation": {}
-    },
-    {
-        "label": "index",
-        "kind": 2,
-        "importPath": "app",
-        "description": "app",
-        "peekOfCode": "def index():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():\n    return {\"status\": \"healthy\"}\n# VERIFY_TOKEN = \"STRAVA\"\n# python_script = \"strava.py\"\n# @app.route('/webhook', methods=['GET'])\n# def verify_webhook():\n#     mode = request.args.get('hub.mode')",
+        "peekOfCode": "def start():\n    return {\"message\": \"Hello, world!\"}\n@app.route(\"/health\")\ndef health_check():\n    return {\"status\": \"healthy\"}\nVERIFY_TOKEN = \"STRAVA\"\npython_script = \"strava.py\"\n@app.route('/webhook', methods=['GET'])\ndef verify_webhook():\n    mode = request.args.get('hub.mode')",
         "detail": "app",
         "documentation": {}
     },
@@ -79,7 +70,16 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def health_check():\n    return {\"status\": \"healthy\"}\n# VERIFY_TOKEN = \"STRAVA\"\n# python_script = \"strava.py\"\n# @app.route('/webhook', methods=['GET'])\n# def verify_webhook():\n#     mode = request.args.get('hub.mode')\n#     token = request.args.get('hub.verify_token')\n#     challenge = request.args.get('hub.challenge')\n#     if mode and token:",
+        "peekOfCode": "def health_check():\n    return {\"status\": \"healthy\"}\nVERIFY_TOKEN = \"STRAVA\"\npython_script = \"strava.py\"\n@app.route('/webhook', methods=['GET'])\ndef verify_webhook():\n    mode = request.args.get('hub.mode')\n    token = request.args.get('hub.verify_token')\n    challenge = request.args.get('hub.challenge')\n    if mode and token:",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "verify_webhook",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def verify_webhook():\n    mode = request.args.get('hub.mode')\n    token = request.args.get('hub.verify_token')\n    challenge = request.args.get('hub.challenge')\n    if mode and token:\n        if mode == 'subscribe' and token == VERIFY_TOKEN:\n            print(\"Webhook verified\")\n            return jsonify({\"hub.challenge\": challenge})\n        else:\n            return \"Invalid verification token\", 403",
         "detail": "app",
         "documentation": {}
     },
@@ -88,7 +88,25 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\n@app.route(\"/\")\ndef start():\n    return {\"message\": \"Hello, world!\"}\n@app.route(\"/index\")\ndef index():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():\n    return {\"status\": \"healthy\"}",
+        "peekOfCode": "app = Flask(__name__)\n@app.route(\"/\")\ndef start():\n    return {\"message\": \"Hello, world!\"}\n@app.route(\"/health\")\ndef health_check():\n    return {\"status\": \"healthy\"}\nVERIFY_TOKEN = \"STRAVA\"\npython_script = \"strava.py\"\n@app.route('/webhook', methods=['GET'])",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "VERIFY_TOKEN",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "VERIFY_TOKEN = \"STRAVA\"\npython_script = \"strava.py\"\n@app.route('/webhook', methods=['GET'])\ndef verify_webhook():\n    mode = request.args.get('hub.mode')\n    token = request.args.get('hub.verify_token')\n    challenge = request.args.get('hub.challenge')\n    if mode and token:\n        if mode == 'subscribe' and token == VERIFY_TOKEN:\n            print(\"Webhook verified\")",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "python_script",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "python_script = \"strava.py\"\n@app.route('/webhook', methods=['GET'])\ndef verify_webhook():\n    mode = request.args.get('hub.mode')\n    token = request.args.get('hub.verify_token')\n    challenge = request.args.get('hub.challenge')\n    if mode and token:\n        if mode == 'subscribe' and token == VERIFY_TOKEN:\n            print(\"Webhook verified\")\n            return jsonify({\"hub.challenge\": challenge})",
         "detail": "app",
         "documentation": {}
     }
