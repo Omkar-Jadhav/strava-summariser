@@ -8,12 +8,38 @@
         "documentation": {}
     },
     {
-        "label": "hello",
-        "kind": 2,
-        "importPath": "app",
-        "description": "app",
-        "peekOfCode": "def hello():\n    return \"Hello\"\n@app.get(\"/health\")\nasync def health_check():\n    return {\"status\": \"healthy\"}\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(app, port=8000)\n    print(\"Webhook is listening\")  # Log listening message",
-        "detail": "app",
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "time,",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time.",
+        "description": "time.",
+        "detail": "time.",
+        "documentation": {}
+    },
+    {
+        "label": "tabulate",
+        "importPath": "tabulate",
+        "description": "tabulate",
+        "isExtraImport": true,
+        "detail": "tabulate",
+        "documentation": {}
+    },
+    {
+        "label": "logging",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "logging",
+        "description": "logging",
+        "detail": "logging",
         "documentation": {}
     },
     {
@@ -21,8 +47,89 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = FastAPI()\n@app.route('/', methods=['GET'])\ndef hello():\n    return \"Hello\"\n@app.get(\"/health\")\nasync def health_check():\n    return {\"status\": \"healthy\"}\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(app, port=8000)",
+        "peekOfCode": "app = FastAPI()\n@app.get(\"/\")\nasync def root():\n    return {\"message\": \"Hello, world!\"}\n@app.get(\"/health\")\nasync def health_check():\n    return {\"status\": \"healthy\"}\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(app, port=8000)",
         "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "get_access_token",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',\n        'refresh_token': REFRESH_TOKEN\n    }\n    response = requests.post(auth_url, data=payload)\n    return response.json()['access_token']",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "get_latest_activities",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def get_latest_activities():\n    logging.info('Inside get_latest_activities')\n    access_token = get_access_token()\n    logging.info('after access token')\n    # API endpoint for athlete activities\n    activities_url = 'https://www.strava.com/api/v3/athlete/activities'\n    headers = {'Authorization': f'Bearer {access_token}'}\n    BEFORE =int(time.time()) - (7*24*60*60*30)\n    AFTER = int(time.time())\n    PAGE =1",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "convert_seconds_in_hhmmss",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return str(mov_speed_min) + ':' + str(mov_speed_sec) + ' min/Km'\ndef give_yoga_summary(yoga_activities):\n    total_yoga_time = 0",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_speed",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return str(mov_speed_min) + ':' + str(mov_speed_sec) + ' min/Km'\ndef give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "give_yoga_summary",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))\n    total_yoga_time = convert_seconds_in_hhmmss(total_yoga_time)\n    overall_yoga_summary_data =[\n        [\"Total yoga sessions:\", f\"{total_sessions}\"],",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "give_run_summary",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def give_run_summary(run_activities):\n    tot_distance_ran_year = 0\n    tot_distance_ran_month = 0\n    avg_distance_per_run = 0\n    avg_distance_per_week = 0\n    tot_elevation_gain = 0\n    avg_elevation_gain = 0\n    tot_elevation_gain_trail = 0\n    avg_elevation_gain_trail = 0\n    tot_trail_distance = 0",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "CLIENT_ID",
+        "kind": 5,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "CLIENT_ID = '114698'\nCLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\nREFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "CLIENT_SECRET",
+        "kind": 5,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\nREFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',\n        'refresh_token': REFRESH_TOKEN",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "REFRESH_TOKEN",
+        "kind": 5,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',\n        'refresh_token': REFRESH_TOKEN\n    }",
+        "detail": "strava",
         "documentation": {}
     }
 ]
