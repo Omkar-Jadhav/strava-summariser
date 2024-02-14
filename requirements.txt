@@ -1,3 +1,15 @@
+typing-extensions
+sniffio
+packaging
+idna
+h11
+exceptiongroup
+click
+annotated-types
 uvicorn
+pydantic-core
 gunicorn
+anyio
+starlette
+pydantic
 fastapi
