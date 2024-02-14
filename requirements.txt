@@ -2,3 +2,4 @@ uvicorn
 gunicorn
 fastapi
 flask
+requests
