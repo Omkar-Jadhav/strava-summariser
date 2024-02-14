@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def start():
-    return {"message": "Hello, world!"}
+    return {"message": "HelloWebhook is listening"}
 
 @app.route("/health")
 def health_check():
