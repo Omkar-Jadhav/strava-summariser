@@ -10,6 +10,7 @@ def start():
 @app.route("/index")
 def index():
     return render_template('index.html')
+
 @app.route("/health")
 def health_check():
     return {"status": "healthy"}
