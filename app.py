@@ -12,8 +12,8 @@ async def health_check():
     return {"status": "healthy"}
 
 
-VERIFY_TOKEN = "STRAVA"
-python_script = "strava.py"
+# VERIFY_TOKEN = "STRAVA"
+# python_script = "strava.py"
 
 # @app.route('/webhook', methods=['GET'])
 # def verify_webhook():

@@ -53,25 +53,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\n@app.get(\"/\")\nasync def root():\n    return {\"message\": \"Hello, world!\"}\n@app.get(\"/health\")\nasync def health_check():\n    return {\"status\": \"healthy\"}\nVERIFY_TOKEN = \"STRAVA\"\npython_script = \"strava.py\"\n# @app.route('/webhook', methods=['GET'])",
-        "detail": "app",
-        "documentation": {}
-    },
-    {
-        "label": "VERIFY_TOKEN",
-        "kind": 5,
-        "importPath": "app",
-        "description": "app",
-        "peekOfCode": "VERIFY_TOKEN = \"STRAVA\"\npython_script = \"strava.py\"\n# @app.route('/webhook', methods=['GET'])\n# def verify_webhook():\n#     mode = request.args.get('hub.mode')\n#     token = request.args.get('hub.verify_token')\n#     challenge = request.args.get('hub.challenge')\n#     if mode and token:\n#         if mode == 'subscribe' and token == VERIFY_TOKEN:\n#             print(\"Webhook verified\")",
-        "detail": "app",
-        "documentation": {}
-    },
-    {
-        "label": "python_script",
-        "kind": 5,
-        "importPath": "app",
-        "description": "app",
-        "peekOfCode": "python_script = \"strava.py\"\n# @app.route('/webhook', methods=['GET'])\n# def verify_webhook():\n#     mode = request.args.get('hub.mode')\n#     token = request.args.get('hub.verify_token')\n#     challenge = request.args.get('hub.challenge')\n#     if mode and token:\n#         if mode == 'subscribe' and token == VERIFY_TOKEN:\n#             print(\"Webhook verified\")\n#             return jsonify({\"hub.challenge\": challenge})",
+        "peekOfCode": "app = Flask(__name__)\n@app.get(\"/\")\nasync def root():\n    return {\"message\": \"Hello, world!\"}\n@app.get(\"/health\")\nasync def health_check():\n    return {\"status\": \"healthy\"}\n# VERIFY_TOKEN = \"STRAVA\"\n# python_script = \"strava.py\"\n# @app.route('/webhook', methods=['GET'])",
         "detail": "app",
         "documentation": {}
     }
