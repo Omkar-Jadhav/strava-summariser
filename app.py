@@ -1,14 +1,17 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
 
-@app.get("/")
-async def root():
+@app.route("/")
+def start():
     return {"message": "Hello, world!"}
 
-@app.get("/health")
-async def health_check():
+@app.route("/index")
+def index():
+    return render_template('index.html')
+@app.route("/health")
+def health_check():
     return {"status": "healthy"}
 
 
