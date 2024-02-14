@@ -1,0 +1,28 @@
+[
+    {
+        "label": "FastAPI",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "hello",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def hello():\n    return \"Hello\"\n@app.get(\"/health\")\nasync def health_check():\n    return {\"status\": \"healthy\"}\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(app, port=8000)\n    print(\"Webhook is listening\")  # Log listening message",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app = FastAPI()\n@app.route('/', methods=['GET'])\ndef hello():\n    return \"Hello\"\n@app.get(\"/health\")\nasync def health_check():\n    return {\"status\": \"healthy\"}\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(app, port=8000)",
+        "detail": "app",
+        "documentation": {}
+    }
+]
