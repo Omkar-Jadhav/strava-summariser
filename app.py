@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-
+import os
 app = FastAPI()
 
 @app.get("/")
@@ -10,7 +10,11 @@ async def root():
 async def health_check():
     return {"status": "healthy"}
 
+
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, port=8000)
-    print("Webhook is listening ")  # Log listening message
+    import uvicorn  # Or gunicorn for production
+    # Note: You don't need a Procfile for Vercel deployment
+    
+    # Environment variables will be injected by Vercel during deployment
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
+    print("webhook is listening")

@@ -8,6 +8,15 @@
         "documentation": {}
     },
     {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
         "label": "requests",
         "kind": 6,
         "isExtraImport": true,
@@ -47,7 +56,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = FastAPI()\n@app.get(\"/\")\nasync def root():\n    return {\"message\": \"Hello, world!\"}\n@app.get(\"/health\")\nasync def health_check():\n    return {\"status\": \"healthy\"}\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(app, port=8000)",
+        "peekOfCode": "app = FastAPI()\n@app.get(\"/\")\nasync def root():\n    return {\"message\": \"Hello, world!\"}\n@app.get(\"/health\")\nasync def health_check():\n    return {\"status\": \"healthy\"}\nif __name__ == \"__main__\":\n    import uvicorn  # Or gunicorn for production\n    # Note: You don't need a Procfile for Vercel deployment",
         "detail": "app",
         "documentation": {}
     },
