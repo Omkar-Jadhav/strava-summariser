@@ -3,3 +3,5 @@ gunicorn
 fastapi
 flask
 requests
+tabulate
+logging
