@@ -1,6 +1,12 @@
-from fastapi import FastAPI,request, jsonify
 import os
-app = FastAPI()
+from flask import Flask, request, jsonify
+import strava
+
+app = Flask(__name__)
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(port=port)
+    print("Webhook is listening on port", port)  # Log listening message
 
 @app.get("/")
 async def root():
