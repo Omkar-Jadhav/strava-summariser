@@ -55,7 +55,8 @@ def get_latest_activities():
         ## this can be added in a separate util file
         if(latest_activity_response.status_code == 200):
             if(activities[0]['type']=='Workout'):
-                updated_activity_type = {'type':'Yoga', 'sport_type':'Yoga'}
+                updated_name = activities[0]['name'].rsplit()[-1] + " Yoga"
+                updated_activity_type = {'type':'Yoga', 'sport_type':'Yoga', 'name':updated_name}
                 update_activity_response = requests.put(latest_activity_url, headers=headers, json=updated_activity_type)
                 
                 if update_activity_response.status_code == 200:
