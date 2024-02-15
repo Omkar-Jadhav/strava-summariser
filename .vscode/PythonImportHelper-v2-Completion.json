@@ -67,14 +67,6 @@
         "documentation": {}
     },
     {
-        "label": "tabulate",
-        "importPath": "tabulate",
-        "description": "tabulate",
-        "isExtraImport": true,
-        "detail": "tabulate",
-        "documentation": {}
-    },
-    {
         "label": "app",
         "importPath": "wsgi",
         "description": "wsgi",
@@ -226,6 +218,15 @@
         "documentation": {}
     },
     {
+        "label": "give_swim_summary",
+        "kind": 2,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "def give_swim_summary(swim_activities):\n    total_swim_time = 0\n    total_swim_sessions = 0\n    for activity in swim_activities:\n        total_swim_time += activity[\"elapsed_time\"]\n        total_swim_sessions += 1\n    avg_swim_session = convert_seconds_in_hhmmss(round(total_swim_time/total_swim_sessions, 2))\n    total_swim_time = convert_seconds_in_hhmmss(total_swim_time)\n    overall_swim_summary_data =[\n        [\"Total swim sessions:\", f\"{total_swim_sessions}\"],",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
         "label": "give_run_summary",
         "kind": 2,
         "importPath": "data_processing",
@@ -248,7 +249,7 @@
         "kind": 2,
         "importPath": "strava",
         "description": "strava",
-        "peekOfCode": "def get_latest_activities():\n    logging.info('Inside get_latest_activities')\n    access_token = get_access_token()\n    logging.info('after access token')\n    # API endpoint for athlete activities\n    activities_url = 'https://www.strava.com/api/v3/athlete/activities'\n    headers = {'Authorization': f'Bearer {access_token}'}\n    BEFORE =int(time.time()) - (7*24*60*60*30)\n    AFTER = int(time.time())\n    PAGE =1",
+        "peekOfCode": "def get_latest_activities():\n    logging.info('Inside get_latest_activities')\n    # Step 1: Retrieve Access Token\n    access_token = get_access_token()\n    logging.info('Access token retrieved')\n    # Step 2: Define API Endpoint and Parameters\n    activities_url = 'https://www.strava.com/api/v3/athlete/activities'\n    headers = {'Authorization': f'Bearer {access_token}'}\n    BEFORE = int(time.time()) - (7 * 24 * 60 * 60 * 30)\n    AFTER = int(time.time())",
         "detail": "strava",
         "documentation": {}
     },
@@ -284,7 +285,7 @@
         "kind": 2,
         "importPath": "utils",
         "description": "utils",
-        "peekOfCode": "def update_activity(activity_url, update_json, headers):\n    update_response = requests.put(activity_url, \n                                   headers=headers, json=update_json)\n    if update_response.status_code == 200:\n        message =\"Activity description updated successfully.\"\n    else:\n        message=f\"Error updating activity description: {update_response.status_code}, Error description : {update_response.text}\"\n    return message\ndef make_url_request(activity_url, headers):\n    activity_response = requests.get(activity_url, headers=headers)",
+        "peekOfCode": "def update_activity(activity_url, update_json, headers):\n    update_response = requests.put(activity_url, headers=headers, json=update_json)\n    if update_response.status_code == 200:\n        message =\"Activity description updated successfully.\"\n    else:\n        message=f\"Error updating activity description: {update_response.status_code}, Error description : {update_response.text}\"\n    return message\ndef make_url_request(activity_url, headers):\n    activity_response = requests.get(activity_url, headers=headers)\n    if(activity_response.status_code == 200):",
         "detail": "utils",
         "documentation": {}
     },

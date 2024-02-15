@@ -33,6 +33,30 @@ def give_yoga_summary(yoga_activities):
     print(result_table)
     return result_table
 
+def give_swim_summary(swim_activities):
+    total_swim_time = 0
+    total_swim_sessions = 0
+    for activity in swim_activities:
+        total_swim_time += activity["elapsed_time"]
+        total_swim_sessions += 1
+    
+    avg_swim_session = convert_seconds_in_hhmmss(round(total_swim_time/total_swim_sessions, 2))
+    total_swim_time = convert_seconds_in_hhmmss(total_swim_time)
+    
+    overall_swim_summary_data =[
+        ["Total swim sessions:", f"{total_swim_sessions}"],
+        ["Avg swim session:", f"{avg_swim_session}"],
+        ["Total swim time:", f"{total_swim_time}"],
+        
+    ]
+    overall_swim_summary_table = tabulate(overall_swim_summary_data, tablefmt="plain")
+    result_table = f"\n------- Four-Week Rolling Swim Summary -------\n{overall_swim_summary_table}\n\n ------- Stats created using StravaAPI by Omkar ------"
+    
+    print(result_table)
+    return result_table
+
+
+
 
 def give_run_summary(run_activities):
     tot_distance_ran_year = 0

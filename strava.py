@@ -1,6 +1,5 @@
 import requests
 import time, datetime
-from tabulate import tabulate
 import logging
 import utils
 import data_processing
@@ -23,72 +22,66 @@ def get_access_token():
     response = requests.post(auth_url, data=payload)
     return response.json()['access_token']
 
-# Step 2: Get Latest Activities
 def get_latest_activities():
     logging.info('Inside get_latest_activities')
+    
+    # Step 1: Retrieve Access Token
     access_token = get_access_token()
-    logging.info('after access token')
+    logging.info('Access token retrieved')
     
-
-    # API endpoint for athlete activities
+    # Step 2: Define API Endpoint and Parameters
     activities_url = 'https://www.strava.com/api/v3/athlete/activities'
-
     headers = {'Authorization': f'Bearer {access_token}'}
-    BEFORE =int(time.time()) - (7*24*60*60*30)
+    BEFORE = int(time.time()) - (7 * 24 * 60 * 60 * 30)
     AFTER = int(time.time())
-    PAGE =1
+    PAGE = 1
     PER_PAGE = 10000
-    
-    parameters = {
-        'page' :PAGE,
-        'per_page' : PER_PAGE
-    }
+    parameters = {'page': PAGE, 'per_page': PER_PAGE}
 
-    # Make GET request to retrieve activities
+    # Step 3: Make GET Request to Retrieve Activities
     response = requests.get(activities_url, headers=headers)
+    
     if response.status_code == 200:
         activities = response.json()
-        result_table= []
-        #Getting latest activity data this can be added in a util file
+        result_table = []
+        
+        # Step 4: Process Latest Activity
         latest_activity_id = activities[0]['id']
         latest_activity_url = f"https://www.strava.com/api/v3/activities/{latest_activity_id}"
         latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)
         
         if latest_activity_response:
-            latest_activity_data=latest_activity_response.json()
-        
-            if(latest_activity_data['type']=='Workout'):
+            latest_activity_data = latest_activity_response.json()
+            
+            if latest_activity_data['type'] == 'Workout':
                 updated_name = latest_activity_data['name'].rsplit(' ', 1)[0] + " Yoga"
-                updated_activity_json = {'type':'Yoga', 'sport_type':'Yoga', 'name':updated_name}
+                updated_activity_json = {'type': 'Yoga', 'sport_type': 'Yoga', 'name': updated_name}
                 
                 update_message = utils.update_activity(activity_url=latest_activity_url, update_json=updated_activity_json, headers=headers)
                 print(update_message)
                 
+            else:
+                print(f"Latest activity is not of type Workout.")
         else:
             print(f"Error while getting latest activity. Please check the logs for details.")
         
-            
+        # Step 5: Update Activity Description Based on Type
         latest_activity_url = f"https://www.strava.com/api/v3/activities/{latest_activity_id}"
         latest_activity_response = requests.get(latest_activity_url, headers=headers)
         latest_activity_data = latest_activity_response.json()
-        update_message= ""
-        if(latest_activity_response.status_code == 200):    
-            if(latest_activity_data['type']=='Run'):
-                run_activities = [activity for activity in activities if activity['type']=='Run']
-                result_table = data_processing.give_run_summary(run_activities) 
-                
-                update_json = utils.update_description(activity_data=latest_activity_data, summary=result_table)
-                update_message = utils.update_activity(activity_url=latest_activity_url, update_json=update_json, headers=headers)
-            
-                
-            elif(latest_activity_data['type']=='Yoga'):
-                yoga_activities = [activity for activity in activities if activity['type']=='Yoga']
-                result_table = data_processing.give_yoga_summary(yoga_activities)    
-                
-                update_json = utils.update_description(activity_data=latest_activity_data, summary=result_table)
-                update_message = utils.update_activity(activity_url=latest_activity_url, update_json=update_json, headers=headers)
+        update_message = ""
         
-            print(update_message)
-            
-    else:   
+        if latest_activity_response.status_code == 200:
+             # Step 5: Update Activity Description Based on Type
+            if latest_activity_data['type'] in ['Run', 'Yoga', 'Swim']:
+                activities_of_type = [activity for activity in activities if activity['type'] == latest_activity_data['type']]
+                result_table = getattr(data_processing, f"give_{latest_activity_data['type'].lower()}_summary")(activities_of_type)
+        
+            if result_table:
+                update_json = utils.update_description(activity_data=latest_activity_data, summary=result_table)
+                update_message = utils.update_activity(activity_url=latest_activity_url, update_json=update_json, headers=headers)  
+                print(update_message)
+        else:
+            print(f"Error: {latest_activity_response.status_code}, {latest_activity_response.text}")
+    else:
         print(f"Error: {response.status_code}, {response.text}")
