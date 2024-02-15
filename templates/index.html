@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Strava Activity Summarizer App</title>
+</head>
+<body>
+  <section class="hero">
+    <h1>Welcome to the Strava Activity Summarizer App!</h1>
+    <p>Get insights at a glance and streamline your training journey with our convenient summaries, automatically updated in your activity descriptions.</p>
+    <button id="authorize-button" onclick="authorize()">Start summarizing your activities today!</button>
+  </section>
+
+  <script>
+    const authorizeButton = document.getElementById('authorize-button');
+    function authorize(){
+        const url = new URL('https://www.strava.com/oauth/authorize');
+        url.searchParams.set('client_id', '114698');
+        url.searchParams.set('redirect_uri', 'https://strava-summariser.vercel.app/');
+        url.searchParams.set('response_type', 'code');
+        url.searchParams.set('approval_prompt', 'auto');
+        url.searchParams.set('scope', 'activity:read_all,activity:write_all,profile:read_all');
+
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+            // Handle the response data here
+            })
+            .catch(error => {
+            console.error(error);
+            });
+    }
+  </script>
+</body>
+</html>

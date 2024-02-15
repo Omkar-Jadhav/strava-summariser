@@ -132,7 +132,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def start():\n    return {\"message\": \"HelloWebhook is listening\"}\n@app.route(\"/health\")\ndef health_check():\n    return {\"status\": \"healthy\"}\nVERIFY_TOKEN = \"STRAVA\"\npython_script = \"strava.py\"\n@app.route('/webhook', methods=['GET'])\ndef verify_webhook():\n    mode = request.args.get('hub.mode')",
+        "peekOfCode": "def start():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():\n    return {\"status\": \"healthy\"}\nVERIFY_TOKEN = \"STRAVA\"\npython_script = \"strava.py\"\n@app.route('/webhook', methods=['GET'])\ndef verify_webhook():\n    mode = request.args.get('hub.mode')",
         "detail": "app",
         "documentation": {}
     },
@@ -168,7 +168,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\n@app.route(\"/\")\ndef start():\n    return {\"message\": \"HelloWebhook is listening\"}\n@app.route(\"/health\")\ndef health_check():\n    return {\"status\": \"healthy\"}\nVERIFY_TOKEN = \"STRAVA\"\npython_script = \"strava.py\"\n@app.route('/webhook', methods=['GET'])",
+        "peekOfCode": "app = Flask(__name__)\n@app.route(\"/\")\ndef start():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():\n    return {\"status\": \"healthy\"}\nVERIFY_TOKEN = \"STRAVA\"\npython_script = \"strava.py\"\n@app.route('/webhook', methods=['GET'])",
         "detail": "app",
         "documentation": {}
     },
