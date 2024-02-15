@@ -47,22 +47,40 @@ def get_latest_activities():
     if response.status_code == 200:
         activities = response.json()
         result_table= []
-        
-        if(activities[0]['type']=='Run'):
-            run_activities = [activity for activity in activities if activity['type']=='Run']
-            result_table = give_run_summary(run_activities) 
-               
-        elif(activities[0]['type']=='Yoga'):
-            yoga_activities = [activity for activity in activities if activity['type']=='Yoga']
-            result_table = give_yoga_summary(yoga_activities)    
-        
-        #Getting latest activity data
+        #Getting latest activity data this can be added in a util file
         latest_activity_id = activities[0]['id']
         latest_activity_url = f"https://www.strava.com/api/v3/activities/{latest_activity_id}"
         latest_activity_response = requests.get(latest_activity_url, headers=headers)
         
+        ## this can be added in a separate util file
         if(latest_activity_response.status_code == 200):
+            if(activities[0]['type']=='Workout'):
+                updated_activity_type = {'type':'Yoga', 'sport_type':'Yoga'}
+                update_activity_response = requests.put(latest_activity_url, headers=headers, json=updated_activity_type)
+                
+                if update_activity_response.status_code == 200:
+                    print("Activity description updated successfully.")
+                else:
+                    print(f"Error updating activity description: {update_activity_response.status_code}, Error description : {update_activity_response.text}")
+        else:
+            print(f"Error while getting latest activity: {latest_activity_response.status_code}, Error description : {latest_activity_response.text}")
+        ## --- ##
+            
+        latest_activity_url = f"https://www.strava.com/api/v3/activities/{latest_activity_id}"
+        latest_activity_response = requests.get(latest_activity_url, headers=headers)
+        
+        if(latest_activity_response.status_code == 200):    
+            if(activities[0]['type']=='Run'):
+                run_activities = [activity for activity in activities if activity['type']=='Run']
+                result_table = give_run_summary(run_activities) 
+                
+            elif(activities[0]['type']=='Yoga'):
+                yoga_activities = [activity for activity in activities if activity['type']=='Yoga']
+                result_table = give_yoga_summary(yoga_activities)    
+        
             latest_activity = latest_activity_response.json()
+            
+            #updating the activity can be added to util file
             #Updating the description
             description = latest_activity['description']
             updated_description = f"{description} \n {result_table}"
@@ -73,9 +91,7 @@ def get_latest_activities():
                 print("Activity description updated successfully.")
             else:
                 print(f"Error updating activity description: {update_response.status_code}, Error description : {update_response.text}")
-        else:
-            print(f"Error while getting latest activity: {latest_activity_response.status_code}, Error description : {latest_activity_response.text}")
-        
+      
     else:   
         print(f"Error: {response.status_code}, {response.text}")
         
@@ -227,6 +243,3 @@ def give_run_summary(run_activities):
     
     return result_table
         
-
-# Call the function to get latest activities
-get_latest_activities()

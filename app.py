@@ -28,15 +28,16 @@ def verify_webhook():
         else:
             return "Invalid verification token", 403
 
+
 @app.route('/webhook', methods=['POST'])
 def handle_webhook():
-    # data = request.get_json()
     latest_activity_id = request.args.get('object_id')
     print("Webhook event received with activity:", latest_activity_id)
 
     strava.get_latest_activities()
-    # subprocess.run(["python", python_script], check=True, capture_output=True)
-    # stdout = subprocess.check_output(["python", python_script])  # Capture output for logging
-    # print("Python script output:", stdout.decode())
-
     return jsonify({"message": "EVENT_RECEIVED"}), 200
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=int(os.getenv("PORT", 80)))
+    print("webhook is listening")

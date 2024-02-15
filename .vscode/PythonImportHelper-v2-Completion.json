@@ -132,7 +132,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def handle_webhook():\n    # data = request.get_json()\n    latest_activity_id = request.args.get('object_id')\n    print(\"Webhook event received with activity:\", latest_activity_id)\n    strava.get_latest_activities()\n    # subprocess.run([\"python\", python_script], check=True, capture_output=True)\n    # stdout = subprocess.check_output([\"python\", python_script])  # Capture output for logging\n    # print(\"Python script output:\", stdout.decode())\n    return jsonify({\"message\": \"EVENT_RECEIVED\"}), 200",
+        "peekOfCode": "def handle_webhook():\n    latest_activity_id = request.args.get('object_id')\n    print(\"Webhook event received with activity:\", latest_activity_id)\n    strava.get_latest_activities()\n    return jsonify({\"message\": \"EVENT_RECEIVED\"}), 200\nif __name__ == \"__main__\":\n    app.run(debug=True, port=int(os.getenv(\"PORT\", 80)))\n    print(\"webhook is listening\")",
         "detail": "app",
         "documentation": {}
     },
