@@ -54,8 +54,8 @@ def get_latest_activities():
         
         ## this can be added in a separate util file
         if(latest_activity_response.status_code == 200):
-            if(activities[0]['type']=='Workout'):
-                updated_name = activities[0]['name'].rsplit()[-1] + " Yoga"
+            if(latest_activity_response['type']=='Workout'):
+                updated_name = latest_activity_response['name'].rsplit()[-1] + " Yoga"
                 updated_activity_type = {'type':'Yoga', 'sport_type':'Yoga', 'name':updated_name}
                 update_activity_response = requests.put(latest_activity_url, headers=headers, json=updated_activity_type)
                 
@@ -71,11 +71,11 @@ def get_latest_activities():
         latest_activity_response = requests.get(latest_activity_url, headers=headers)
         
         if(latest_activity_response.status_code == 200):    
-            if(activities[0]['type']=='Run'):
+            if(latest_activity_response['type']=='Run'):
                 run_activities = [activity for activity in activities if activity['type']=='Run']
                 result_table = give_run_summary(run_activities) 
                 
-            elif(activities[0]['type']=='Yoga'):
+            elif(latest_activity_response['type']=='Yoga'):
                 yoga_activities = [activity for activity in activities if activity['type']=='Yoga']
                 result_table = give_yoga_summary(yoga_activities)    
         
