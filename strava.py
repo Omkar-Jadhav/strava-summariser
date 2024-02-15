@@ -58,7 +58,7 @@ def get_latest_activities():
             latest_activity_data=latest_activity_response.json()
         
             if(latest_activity_data['type']=='Workout'):
-                updated_name = latest_activity_response['name'].rsplit(' ', 1)[0] + " Yoga"
+                updated_name = latest_activity_data['name'].rsplit(' ', 1)[0] + " Yoga"
                 updated_activity_json = {'type':'Yoga', 'sport_type':'Yoga', 'name':updated_name}
                 
                 update_message = utils.update_activity(activity_url=latest_activity_url, update_json=updated_activity_json, headers=headers)
