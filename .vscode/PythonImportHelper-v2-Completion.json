@@ -60,10 +60,9 @@
     },
     {
         "label": "tabulate",
-        "kind": 6,
-        "isExtraImport": true,
         "importPath": "tabulate",
         "description": "tabulate",
+        "isExtraImport": true,
         "detail": "tabulate",
         "documentation": {}
     },

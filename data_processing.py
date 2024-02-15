@@ -1,4 +1,4 @@
-import tabulate
+from tabulate import tabulate
         
 def convert_seconds_in_hhmmss(seconds):
     hours = int(seconds//3600)
