@@ -87,6 +87,9 @@
         const currentUrl = window.location.href;
         const baseUrl = window.location.origin
 
+        redirectUrl = 'https://strava-summariser.vercel.app/saveRefreshToken'
+        // redirectUrl = 'http://localhost/saveRefreshToken'
+
         // Parse the current URL
         const parsedUrl = new URL(currentUrl);
 
@@ -125,7 +128,7 @@
                   console.log('Strava API response:', responseData);
 
                   // Send the response data to the local server for further processing
-                  fetch(baseUrl+'/saveRefreshToken', {
+                  fetch(redirectUrl, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json'

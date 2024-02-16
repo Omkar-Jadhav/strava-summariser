@@ -73,9 +73,11 @@
     const authorizeButton = document.getElementById('authorize-button');
     function authorize(){
         const baseUrl = window.location.origin;
+        redirectUrl = 'https://strava-summariser.vercel.app/getCode'
+        // redirectUrl = 'http://localhost/getCode'
         const url = new URL('https://www.strava.com/oauth/authorize');
         url.searchParams.set('client_id', '114698');
-        url.searchParams.set('redirect_uri', baseUrl+'/getCode');
+        url.searchParams.set('redirect_uri', redirectUrl);
         url.searchParams.set('response_type', 'code');
         url.searchParams.set('approval_prompt', 'auto');
         url.searchParams.set('scope', 'activity:read_all,activity:write'); 
