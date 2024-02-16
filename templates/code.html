@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Strava Summarizer App</title>
+  <script src="script.js"></script>
+</head>
+<body>
+  <h1>Welcome to Strava Summarizer App!</h1>
+  <p>Just one step away from summarizing your activities!</p>
+  <button id="getStartedBtn" onclick="getRefreshCode()">Get Started</button>
+
+  <script>
+    function getRefreshCode(){
+        // Get the current URL
+        const currentUrl = window.location.href;
+
+        // Parse the current URL
+        const parsedUrl = new URL(currentUrl);
+
+        // Extract query parameters efficiently
+        const searchParams = parsedUrl.searchParams;
+
+        // Check if the 'code' parameter exists
+        if (searchParams.has('code')) {
+            // Extract the 'code' parameter value
+            const code = searchParams.get('code');
+            if (code) {
+                // Prepare data for sending to Strava API
+                const data = {
+                  client_id: '114698', // Replace with your Strava client ID
+                  client_secret: '858dd455b9a1d41095727a9285943ec4210810b2', // Replace with your Strava client secret
+                  code: code,
+                  grant_type: "authorization_code"
+                };
+
+                // Send a POST request to Strava API to exchange code for access token
+                fetch('https://www.strava.com/oauth/token', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(data)
+                })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error(`Strava API error: ${response.status} ${response.statusText}`);
+                  }
+                  return response.json();
+                })
+                .then(responseData => {
+                  // Log specific details about the response
+                  console.log('Strava API response:', responseData);
+
+                  // Send the response data to the local server for further processing
+                  fetch('${baseUrl}/saveRefreshToken', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(responseData)
+                  })
+                  .then(refreshTokenResponse => {
+                    if (!refreshTokenResponse.ok) {
+                      throw new Error(`Local server error: ${refreshTokenResponse.status} ${refreshTokenResponse.statusText}`);
+                    }
+                    return refreshTokenResponse.json();
+                  })
+                  .then(refreshTokenResponseData => {
+                    // Redirect to the provided URL if available
+                    if (refreshTokenResponseData.redirect_url) {
+                      window.location.href = refreshTokenResponseData.redirect_url;
+                    } else {
+                      console.error('No redirect URL received');
+                    }
+                  })
+                  .catch(error => {
+                    console.error('Error saving refresh token:', error);
+                  });
+                })
+                .catch(error => {
+                  console.error('Error fetching refresh token:', error);
+                });
+              }
+        }
+    }
+  </script>
+</body>
+</html>

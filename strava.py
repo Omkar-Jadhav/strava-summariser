@@ -3,30 +3,44 @@ import time, datetime
 import logging
 import utils
 import data_processing
+import json
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s %(levelname)s %(message)s')
 
 # Replace these with your Strava API credentials
 CLIENT_ID = '114698'
 CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'
-REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'
+# REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'
 
 # Step 1: Get Access Token (you may do this once to obtain the token)
-def get_access_token():
-    auth_url = 'https://www.strava.com/oauth/token'
-    payload = {
-        'client_id': CLIENT_ID,
-        'client_secret': CLIENT_SECRET,
-        'grant_type': 'refresh_token',
-        'refresh_token': REFRESH_TOKEN
-    }
-    response = requests.post(auth_url, data=payload)
-    return response.json()['access_token']
-
-def get_latest_activities():
-    logging.info('Inside get_latest_activities')
+def get_access_token(athlete_id):
+    with open("refresh_tokens.json", "r") as f:
+        refresh_tokens = json.load(f)
     
+    # Check if the athlete_id exists in the refresh_tokens
+    if str(athlete_id) in refresh_tokens:
+        # Retrieve the refresh_token for the athlete_id
+        REFRESH_TOKEN = refresh_tokens[str(athlete_id)]["refresh_token"]
+        
+        auth_url = 'https://www.strava.com/oauth/token'
+        payload = {
+            'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+            'grant_type': 'refresh_token',
+            'refresh_token': REFRESH_TOKEN
+        }
+        response = requests.post(auth_url, data=payload)
+        return response.json()['access_token']
+    else:
+        # Handle the case where athlete_id is not found in the refresh_tokens
+        print("Athlete ID not found in refresh_tokens.json")
+        return "Athlete ID not found in refresh_tokens.json"
+
+def get_latest_activities(inputs):
+    logging.info('Inside get_latest_activities')
+    latest_activity_id = inputs.get('activity_id')
+    athlete_id = inputs.get('athlete_id')
     # Step 1: Retrieve Access Token
-    access_token = get_access_token()
+    access_token = get_access_token(athlete_id)
     logging.info('Access token retrieved')
     
     # Step 2: Define API Endpoint and Parameters
@@ -73,7 +87,7 @@ def get_latest_activities():
         
         if latest_activity_response.status_code == 200:
              # Step 5: Update Activity Description Based on Type
-            if latest_activity_data['type'] in ['Run', 'Yoga', 'Swim']:
+            if latest_activity_data['type'] in ['Run', 'Yoga', 'Swim','Ride']:
                 activities_of_type = [activity for activity in activities if activity['type'] == latest_activity_data['type']]
                 result_table = getattr(data_processing, f"give_{latest_activity_data['type'].lower()}_summary")(activities_of_type)
         

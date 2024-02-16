@@ -34,6 +34,14 @@
         "documentation": {}
     },
     {
+        "label": "url_for",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
         "label": "jsonify",
         "importPath": "flask",
         "description": "flask",
@@ -56,6 +64,15 @@
         "importPath": "strava",
         "description": "strava",
         "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
         "documentation": {}
     },
     {
@@ -132,7 +149,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def start():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():\n    return {\"status\": \"healthy\"}\nVERIFY_TOKEN = \"STRAVA\"\npython_script = \"strava.py\"\n@app.route('/webhook', methods=['GET'])\ndef verify_webhook():\n    mode = request.args.get('hub.mode')",
+        "peekOfCode": "def start():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():\n    return jsonify({\"status\": \"healthy\"})\n@app.route('/webhook', methods=['GET', 'POST'])\ndef webhook():\n    if request.method == 'GET':\n        return verify_webhook()\n    elif request.method == 'POST':",
         "detail": "app",
         "documentation": {}
     },
@@ -141,7 +158,52 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def health_check():\n    return {\"status\": \"healthy\"}\nVERIFY_TOKEN = \"STRAVA\"\npython_script = \"strava.py\"\n@app.route('/webhook', methods=['GET'])\ndef verify_webhook():\n    mode = request.args.get('hub.mode')\n    token = request.args.get('hub.verify_token')\n    challenge = request.args.get('hub.challenge')\n    if mode and token:",
+        "peekOfCode": "def health_check():\n    return jsonify({\"status\": \"healthy\"})\n@app.route('/webhook', methods=['GET', 'POST'])\ndef webhook():\n    if request.method == 'GET':\n        return verify_webhook()\n    elif request.method == 'POST':\n        return handle_webhook()\n@app.route('/getCode')\ndef get_code():",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "webhook",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def webhook():\n    if request.method == 'GET':\n        return verify_webhook()\n    elif request.method == 'POST':\n        return handle_webhook()\n@app.route('/getCode')\ndef get_code():\n    return render_template('code.html')\n@app.route('/saveRefreshToken', methods=['POST'])\ndef save_refresh_token():",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "get_code",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def get_code():\n    return render_template('code.html')\n@app.route('/saveRefreshToken', methods=['POST'])\ndef save_refresh_token():\n    data = request.get_json()\n    refresh_token = data.get('refresh_token')\n    athlete = data.get('athlete')\n    if not (refresh_token and athlete):\n        return jsonify({\"error\": \"Invalid data format\"}), 400\n    athlete_id = athlete.get('id')",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "save_refresh_token",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def save_refresh_token():\n    data = request.get_json()\n    refresh_token = data.get('refresh_token')\n    athlete = data.get('athlete')\n    if not (refresh_token and athlete):\n        return jsonify({\"error\": \"Invalid data format\"}), 400\n    athlete_id = athlete.get('id')\n    athlete_name = athlete.get('firstname') + athlete.get('lastname')\n    if not athlete_id:\n        return jsonify({\"error\": \"Athlete ID not provided\"}), 400",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "auth_success_page",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def auth_success_page():\n    return render_template('authSuccessPage.html')    \n@app.route('/alreadyAuthorized')\ndef already_authorized():\n    return render_template('alreadyAuthorized.html')    \n# Helper Functions\ndef verify_webhook():\n    mode = request.args.get('hub.mode')\n    token = request.args.get('hub.verify_token')\n    challenge = request.args.get('hub.challenge')",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "already_authorized",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def already_authorized():\n    return render_template('alreadyAuthorized.html')    \n# Helper Functions\ndef verify_webhook():\n    mode = request.args.get('hub.mode')\n    token = request.args.get('hub.verify_token')\n    challenge = request.args.get('hub.challenge')\n    if mode == 'subscribe' and token == VERIFY_TOKEN:\n        return jsonify({\"hub.challenge\": challenge}), 200\n    else:",
         "detail": "app",
         "documentation": {}
     },
@@ -150,7 +212,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def verify_webhook():\n    mode = request.args.get('hub.mode')\n    token = request.args.get('hub.verify_token')\n    challenge = request.args.get('hub.challenge')\n    if mode and token:\n        if mode == 'subscribe' and token == VERIFY_TOKEN:\n            print(\"Webhook verified\")\n            return jsonify({\"hub.challenge\": challenge})\n        else:\n            return \"Invalid verification token\", 403",
+        "peekOfCode": "def verify_webhook():\n    mode = request.args.get('hub.mode')\n    token = request.args.get('hub.verify_token')\n    challenge = request.args.get('hub.challenge')\n    if mode == 'subscribe' and token == VERIFY_TOKEN:\n        return jsonify({\"hub.challenge\": challenge}), 200\n    else:\n        return \"Invalid verification token\", 403\ndef handle_webhook():\n    latest_activity_id = request.args.get('object_id')",
         "detail": "app",
         "documentation": {}
     },
@@ -159,7 +221,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def handle_webhook():\n    latest_activity_id = request.args.get('object_id')\n    print(\"Webhook event received with activity:\", latest_activity_id)\n    strava.get_latest_activities()\n    return jsonify({\"message\": \"EVENT_RECEIVED\"}), 200\nif __name__ == \"__main__\":\n    app.run(debug=True, port=int(os.getenv(\"PORT\", 80)))\n    print(\"webhook is listening\")",
+        "peekOfCode": "def handle_webhook():\n    latest_activity_id = request.args.get('object_id')\n    athlete_id = request.args.get('owner_id')\n    print(f\"Webhook event received with activity:{latest_activity_id} for athlete ID: {athlete_id}\")\n    inputs={\n        \"activity_id\":latest_activity_id,\n        \"athlete_id\":athlete_id\n    }\n    strava.get_latest_activities(inputs)\n    return jsonify({\"message\": \"EVENT_RECEIVED\"}), 200",
         "detail": "app",
         "documentation": {}
     },
@@ -168,7 +230,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\n@app.route(\"/\")\ndef start():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():\n    return {\"status\": \"healthy\"}\nVERIFY_TOKEN = \"STRAVA\"\npython_script = \"strava.py\"\n@app.route('/webhook', methods=['GET'])",
+        "peekOfCode": "app = Flask(__name__)\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\n# Routes\n@app.route(\"/\")\ndef start():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():",
         "detail": "app",
         "documentation": {}
     },
@@ -177,16 +239,16 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "VERIFY_TOKEN = \"STRAVA\"\npython_script = \"strava.py\"\n@app.route('/webhook', methods=['GET'])\ndef verify_webhook():\n    mode = request.args.get('hub.mode')\n    token = request.args.get('hub.verify_token')\n    challenge = request.args.get('hub.challenge')\n    if mode and token:\n        if mode == 'subscribe' and token == VERIFY_TOKEN:\n            print(\"Webhook verified\")",
+        "peekOfCode": "VERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\n# Routes\n@app.route(\"/\")\ndef start():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():\n    return jsonify({\"status\": \"healthy\"})\n@app.route('/webhook', methods=['GET', 'POST'])",
         "detail": "app",
         "documentation": {}
     },
     {
-        "label": "python_script",
+        "label": "DATA_FILE",
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "python_script = \"strava.py\"\n@app.route('/webhook', methods=['GET'])\ndef verify_webhook():\n    mode = request.args.get('hub.mode')\n    token = request.args.get('hub.verify_token')\n    challenge = request.args.get('hub.challenge')\n    if mode and token:\n        if mode == 'subscribe' and token == VERIFY_TOKEN:\n            print(\"Webhook verified\")\n            return jsonify({\"hub.challenge\": challenge})",
+        "peekOfCode": "DATA_FILE = \"refresh_tokens.json\"\n# Routes\n@app.route(\"/\")\ndef start():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():\n    return jsonify({\"status\": \"healthy\"})\n@app.route('/webhook', methods=['GET', 'POST'])\ndef webhook():",
         "detail": "app",
         "documentation": {}
     },
@@ -195,7 +257,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return str(mov_speed_min) + ':' + str(mov_speed_sec) + ' min/Km'\ndef give_yoga_summary(yoga_activities):\n    total_yoga_time = 0",
+        "peekOfCode": "def convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return str(mov_speed_min) + ':' + str(mov_speed_sec) + ' min/Km'\ndef calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -204,7 +266,16 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return str(mov_speed_min) + ':' + str(mov_speed_sec) + ' min/Km'\ndef give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))",
+        "peekOfCode": "def calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return str(mov_speed_min) + ':' + str(mov_speed_sec) + ' min/Km'\ndef calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)\n    return f\"{speed_kph:.2f} km/hr\"\ndef give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_speed_in_kmph",
+        "kind": 2,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "def calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)\n    return f\"{speed_kph:.2f} km/hr\"\ndef give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -227,6 +298,15 @@
         "documentation": {}
     },
     {
+        "label": "give_ride_summar",
+        "kind": 2,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "def give_ride_summar(ride_activities):\n    total_ride_time = 0\n    total_ride_sessions = 0\n    total_ride_distance = 0\n    total_elevation_gain = 0\n    for activity in ride_activities:\n        total_ride_time += activity['elapsed_time']\n        total_ride_sessions += 1\n        total_ride_distance += activity['distance']\n        total_elevation_gain += activity['total_elevation_gain']",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
         "label": "give_run_summary",
         "kind": 2,
         "importPath": "data_processing",
@@ -240,7 +320,7 @@
         "kind": 2,
         "importPath": "strava",
         "description": "strava",
-        "peekOfCode": "def get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',\n        'refresh_token': REFRESH_TOKEN\n    }\n    response = requests.post(auth_url, data=payload)\n    return response.json()['access_token']",
+        "peekOfCode": "def get_access_token(athlete_id):\n    with open(\"refresh_tokens.json\", \"r\") as f:\n        refresh_tokens = json.load(f)\n    # Check if the athlete_id exists in the refresh_tokens\n    if str(athlete_id) in refresh_tokens:\n        # Retrieve the refresh_token for the athlete_id\n        REFRESH_TOKEN = refresh_tokens[str(athlete_id)][\"refresh_token\"]\n        auth_url = 'https://www.strava.com/oauth/token'\n        payload = {\n            'client_id': CLIENT_ID,",
         "detail": "strava",
         "documentation": {}
     },
@@ -249,7 +329,7 @@
         "kind": 2,
         "importPath": "strava",
         "description": "strava",
-        "peekOfCode": "def get_latest_activities():\n    logging.info('Inside get_latest_activities')\n    # Step 1: Retrieve Access Token\n    access_token = get_access_token()\n    logging.info('Access token retrieved')\n    # Step 2: Define API Endpoint and Parameters\n    activities_url = 'https://www.strava.com/api/v3/athlete/activities'\n    headers = {'Authorization': f'Bearer {access_token}'}\n    BEFORE = int(time.time()) - (7 * 24 * 60 * 60 * 30)\n    AFTER = int(time.time())",
+        "peekOfCode": "def get_latest_activities(inputs):\n    logging.info('Inside get_latest_activities')\n    latest_activity_id = inputs.get('activity_id')\n    athlete_id = inputs.get('athlete_id')\n    # Step 1: Retrieve Access Token\n    access_token = get_access_token(athlete_id)\n    logging.info('Access token retrieved')\n    # Step 2: Define API Endpoint and Parameters\n    activities_url = 'https://www.strava.com/api/v3/athlete/activities'\n    headers = {'Authorization': f'Bearer {access_token}'}",
         "detail": "strava",
         "documentation": {}
     },
@@ -258,7 +338,7 @@
         "kind": 5,
         "importPath": "strava",
         "description": "strava",
-        "peekOfCode": "CLIENT_ID = '114698'\nCLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\nREFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',",
+        "peekOfCode": "CLIENT_ID = '114698'\nCLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\n# REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token(athlete_id):\n    with open(\"refresh_tokens.json\", \"r\") as f:\n        refresh_tokens = json.load(f)\n    # Check if the athlete_id exists in the refresh_tokens\n    if str(athlete_id) in refresh_tokens:\n        # Retrieve the refresh_token for the athlete_id",
         "detail": "strava",
         "documentation": {}
     },
@@ -267,16 +347,7 @@
         "kind": 5,
         "importPath": "strava",
         "description": "strava",
-        "peekOfCode": "CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\nREFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',\n        'refresh_token': REFRESH_TOKEN",
-        "detail": "strava",
-        "documentation": {}
-    },
-    {
-        "label": "REFRESH_TOKEN",
-        "kind": 5,
-        "importPath": "strava",
-        "description": "strava",
-        "peekOfCode": "REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',\n        'refresh_token': REFRESH_TOKEN\n    }",
+        "peekOfCode": "CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\n# REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token(athlete_id):\n    with open(\"refresh_tokens.json\", \"r\") as f:\n        refresh_tokens = json.load(f)\n    # Check if the athlete_id exists in the refresh_tokens\n    if str(athlete_id) in refresh_tokens:\n        # Retrieve the refresh_token for the athlete_id\n        REFRESH_TOKEN = refresh_tokens[str(athlete_id)][\"refresh_token\"]",
         "detail": "strava",
         "documentation": {}
     },

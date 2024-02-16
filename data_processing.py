@@ -1,5 +1,5 @@
 from tabulate import tabulate
-        
+
 def convert_seconds_in_hhmmss(seconds):
     hours = int(seconds//3600)
     minutes = int((seconds%3600)//60)
@@ -10,6 +10,9 @@ def calculate_speed(moving_time, distance):
     mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))
     return str(mov_speed_min) + ':' + str(mov_speed_sec) + ' min/Km'
 
+def calculate_speed_in_kmph(moving_time, distance):
+    speed_kph = (distance / 1000) / (moving_time / 3600)
+    return f"{speed_kph:.2f} km/hr"
 
 def give_yoga_summary(yoga_activities):
     total_yoga_time = 0
@@ -55,8 +58,40 @@ def give_swim_summary(swim_activities):
     print(result_table)
     return result_table
 
+def give_ride_summar(ride_activities):
+    total_ride_time = 0
+    total_ride_sessions = 0
+    total_ride_distance = 0
+    total_elevation_gain = 0
+    
+    for activity in ride_activities:
+        total_ride_time += activity['elapsed_time']
+        total_ride_sessions += 1
+        total_ride_distance += activity['distance']
+        total_elevation_gain += activity['total_elevation_gain']
+    
+    avg_ride_time = convert_seconds_in_hhmmss(round(total_ride_time / total_ride_sessions, 2))
+    total_ride_time = convert_seconds_in_hhmmss(total_ride_time)
+    avg_ride_distance = round(total_ride_distance / total_ride_sessions / 1000, 2)
+    avg_elevation_gain = round(total_elevation_gain / total_ride_sessions, 2)
+    avg_ride_speed = calculate_speed_in_kmph(total_ride_time, total_ride_distance)
+    
+    overall_ride_summary_data = [
+        ["Total ride sessions:", f"{total_ride_sessions}"],
+        ["Avg ride time:", f"{avg_ride_time}"],
+        ["Total ride time:", f"{total_ride_time}"],
+        ["Total ride distance:", f"{total_ride_distance / 1000} Km"],
+        ["Avg ride distance:", f"{avg_ride_distance} Km"],
+        ["Total elevation gain:", f"{total_elevation_gain} m"],
+        ["Avg elevation gain:", f"{avg_elevation_gain} m/ride"],
+        ["Avg ride speed:", f"{avg_ride_speed}"]
+    ]
 
-
+    overall_ride_summary_table = tabulate(overall_ride_summary_data, tablefmt="plain")
+    result_table = f"\n------- Four-Week Rolling Ride Summary -------\n{overall_ride_summary_table}\n\n ------- Stats created using StravaAPI by Omkar ------"
+    
+    print(result_table)
+    return result_table
 
 def give_run_summary(run_activities):
     tot_distance_ran_year = 0
@@ -79,6 +114,8 @@ def give_run_summary(run_activities):
     avg_elapsed_speed_trail = 0
     tot_elapsed_time = 0
     tot_moving_time = 0
+    avg_trail_distance = 0
+    avg_mov_speed_trail = 0
     
     for activity in run_activities:
         tot_elapsed_time += activity['elapsed_time']
@@ -126,16 +163,16 @@ def give_run_summary(run_activities):
         
 
     overall_summary_data = [
-    ["Total runs: ", f"{total_runs_month}"],
-    ["Total distance: ", f"{tot_distance_ran_month} Km"],
-    ["Average distance:", f"{avg_distance_per_run} Km/run"],
-    ["Average pace: ", f"{avg_mov_speed}"],
-    ["Total elevation gained: ", f"{tot_elevation_gain} m"],
-    ["Avg elevation gain: ", f"{avg_elevation_gain} m/run"],
-    ["Total moving time: ", f"{moving_time_hhmm}"],
-    ["Total elapsed time: ", f"{elapsed_time_hhmm}"],
-    ["Avg pace: ", f"{avg_mov_speed}"]
-        ]
+        ["Total runs: ", f"{total_runs_month}"],
+        ["Total distance: ", f"{tot_distance_ran_month} Km"],
+        ["Average distance:", f"{avg_distance_per_run} Km/run"],
+        ["Average pace: ", f"{avg_mov_speed}"],
+        ["Total elevation gained: ", f"{tot_elevation_gain} m"],
+        ["Avg elevation gain: ", f"{avg_elevation_gain} m/run"],
+        ["Total moving time: ", f"{moving_time_hhmm}"],
+        ["Total elapsed time: ", f"{elapsed_time_hhmm}"],
+        ["Avg pace: ", f"{avg_mov_speed}"]
+    ]
 
     # Data for road runs summary
     road_runs_summary_data = [
@@ -158,8 +195,6 @@ def give_run_summary(run_activities):
         ["Avg elapsed time pace on trails: ", f"{avg_elapsed_speed_trail}"]
     ]
 
-
-
     # Store tables in variables with headers
     header_table = tabulate([], headers= 'Overall summary')
     overall_summary_table = tabulate(overall_summary_data, tablefmt="plain")
@@ -169,6 +204,5 @@ def give_run_summary(run_activities):
     # Combine tables and print
     result_table = f"\n------- Four-Week Rolling Overall Run Summary -------\n{overall_summary_table}\n\n  ------- Four-Week Rolling Road Run Summary -------\n {road_runs_summary_table}\n\n------- Four-Week Rolling Trail Run Summary -------\n{trail_runs_summary_table} \n \nStats created using StravaAPI by Omkar"
     print(result_table)
-    
+
     return result_table
-        

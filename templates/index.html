@@ -17,19 +17,12 @@
     function authorize(){
         const url = new URL('https://www.strava.com/oauth/authorize');
         url.searchParams.set('client_id', '114698');
-        url.searchParams.set('redirect_uri', 'https://strava-summariser.vercel.app/');
+        url.searchParams.set('redirect_uri', '${baseUrl}/getCode');
         url.searchParams.set('response_type', 'code');
         url.searchParams.set('approval_prompt', 'auto');
-        url.searchParams.set('scope', 'activity:read_all,activity:write_all,profile:read_all');
+        url.searchParams.set('scope', 'activity:read_all,activity:write'); 
 
-        fetch(url)
-            .then(response => response.text())
-            .then(data => {
-            // Handle the response data here
-            })
-            .catch(error => {
-            console.error(error);
-            });
+        window.open(url,'_blank')    
     }
   </script>
 </body>
