@@ -4,17 +4,88 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Strava Summarizer App</title>
-  <script src="script.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 36px;
+      color: #333;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    p {
+      font-size: 18px;
+      color: #666;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      display: block;
+      margin: 0 auto;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .info {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 20px;
+      margin-top: 50px;
+    }
+
+    .info h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .info p {
+      font-size: 16px;
+      color: #666;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to Strava Summarizer App!</h1>
-  <p>Just one step away from summarizing your activities!</p>
-  <button id="getStartedBtn" onclick="getRefreshCode()">Get Started</button>
+  <div class="container">
+    <h1>Welcome to Strava Summarizer App!</h1>
+    <p>Just one step away from summarizing your activities!</p>
+    <button id="getStartedBtn" onclick="getRefreshCode()">Get Started</button>
 
+    <div class="info">
+      <h2>How It Works</h2>
+      <p>This app allows you to generate rolling summaries of your Strava activities and automatically update them in your activity descriptions. Simply click the "Get Started" button above to complete the authorization process.</p>
+      <p>Once authorized, the app will retrieve your activities from Strava, calculate rolling summaries, and update your activity descriptions with the latest insights.</p>
+      <p>Stay organized and motivated on your fitness journey with our Strava Summarizer App!</p>
+    </div>
+  </div>
   <script>
     function getRefreshCode(){
         // Get the current URL
         const currentUrl = window.location.href;
+        const baseUrl = window.location.origin
 
         // Parse the current URL
         const parsedUrl = new URL(currentUrl);
@@ -54,7 +125,7 @@
                   console.log('Strava API response:', responseData);
 
                   // Send the response data to the local server for further processing
-                  fetch('${baseUrl}/saveRefreshToken', {
+                  fetch(baseUrl+'/saveRefreshToken', {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json'

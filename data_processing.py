@@ -129,7 +129,7 @@ def give_run_summary(run_activities):
         tot_distance_ran_month +=round(activity['distance']/1000,2)
         avg_distance_per_run = round(tot_distance_ran_month/total_runs_month,2)
 
-        tot_elevation_gain += int(activity['total_elevation_gain'])
+        tot_elevation_gain += round(int(activity['total_elevation_gain']),2)
         avg_elevation_gain = round(tot_elevation_gain/total_runs_month,2)
         
         avg_mov_speed = calculate_speed(tot_moving_time, tot_distance_ran_month)
