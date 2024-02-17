@@ -18,7 +18,7 @@ CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'
 # Step 1: Get Access Token (you may do this once to obtain the token)
 def get_access_token(athlete_id):
     client = database.initiate_mango_connection()
-    refresh_token = database.check_access_token(client,athlete_id)
+    refresh_token = database.check_athlete_in_data(client,athlete_id)
     logger.info(f'Refresh token{refresh_token} for athlete ID {athlete_id}')
     # Check if the athlete_id exists in the refresh_tokens
     if refresh_token is not None:
