@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Strava Activity Summarizer App</title>
+  <meta name="description" content="Get your Strava activity insights effortlessly! Our app automatically summarizes your rides, runs, swims, and yoga sessions in 4-week rolling periods, helping you track progress and stay motivated.">
+  <title>Strava Activity Summarizer - Unlock Personalized Insights</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f8f9fa; /* Soft gray background */
+      background-color: #f8f9fa;
       margin: 0;
       padding: 0;
     }
@@ -15,57 +17,87 @@
     .container {
       max-width: 800px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 60px 20px;
     }
 
     .hero {
-      background-color: #fff; /* White background */
-      border-radius: 10px; /* Rounded corners */
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow */
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       padding: 50px 20px;
       text-align: center;
     }
 
     h1 {
-      font-size: 36px;
+      font-size: 42px;
       margin-bottom: 20px;
-      color: #343a40; /* Dark gray text color */
+      color: #343a40;
     }
 
     p {
       font-size: 18px;
       margin-bottom: 30px;
-      color: #6c757d; /* Medium gray text color */
+      color: #6c757d;
+    }
+
+    .icon {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
+    }
+
+    .stats-list {
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+
+    .stats-list li {
+      flex: 1;
+      text-align: center;
     }
 
     button {
-      padding: 10px 20px;
+      padding: 12px 24px;
       font-size: 18px;
       border: none;
-      background-color: #28a745; /* Green button color */
-      color: #fff; /* White text color */
+      background-color: #28a745;
+      color: #fff;
       cursor: pointer;
       transition: background-color 0.3s;
+      border-radius: 5px;
     }
 
     button:hover {
-      background-color: #218838; /* Darker green on hover */
+      background-color: #218838;
+    }
+
+    @media (max-width: 768px) {
+      .stats-list {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <section class="hero">
-      <h1>Welcome to the Strava Activity Summarizer App!</h1>
-      <p>Get insights at a glance and streamline your training journey with our convenient summaries, automatically updated in your activity descriptions.</p>
-      <p>With our app, you can:</p>
-      <ul style="text-align: left;">
-        <li>Track your activity statistics.</li>
-        <li>View summaries of your rides, runs, swims, and yoga sessions.</li>
-        <li>Monitor your progress over time.</li>
-        <li>Stay motivated and achieve your fitness goals!</li>
+      <img class="icon" src="https://miro.medium.com/v2/resize:fit:1080/1*Ho5nE8Legtx0nVaxMEyMqQ.png" alt="Strava logo" style="width: 200px; height: 200px;">
+      <h1>Unlock Personalized Insights with Strava Summarizer</h1>
+      <p>Effortlessly gain in-depth insights into your Strava activity. We automatically summarize your rides, runs, swims, and yoga sessions in convenient 4-week rolling periods, helping you track progress, identify trends, and stay motivated to achieve your fitness goals!</p>
+      <ul class="stats-list">
+        <li>
+          <i class="fa fa-chart-line"></i><span>Track distance, pace, duration, and more.</span>
+        </li>
+        <li>
+          <i class="fa fa-running"></i><span>Compare performance across activities.</span>
+        </li>
+        <li>
+          <i class="fa fa-trophy"></i><span>Celebrate milestones and set new goals.</span>
+        </li>
       </ul>
-      <button id="authorize-button" onclick="authorize()">Connect your strava profile</button>
+      <button id="authorize-button" onclick="authorize()">Connect Your Strava Profile</button>
     </section>
   </div>
 
