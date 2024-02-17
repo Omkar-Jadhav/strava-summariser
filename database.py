@@ -33,10 +33,12 @@ def check_athlete_in_data(client, athlete_id):
     logger.debug("Checking for athlete ID %s in database", athlete_id)
 
     db = client["database-name"]
+    logger.info("after collection", db)
     collection = db["collection-name"]
 
+    logger.info("after collection", collection)
     results = collection.find({"athlete_id": athlete_id})
-
+    logger.info(results)
     if results.count() == 0:
         logger.info("Athlete ID %s not found in collection", athlete_id)
         return None

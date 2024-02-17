@@ -292,7 +292,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def check_athlete_in_data(client, athlete_id):\n    \"\"\"Checks if an athlete ID exists in the database and logs results.\"\"\"\n    logger.debug(\"Checking for athlete ID %s in database\", athlete_id)\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    results = collection.find({\"athlete_id\": athlete_id})\n    if results.count() == 0:\n        logger.info(\"Athlete ID %s not found in collection\", athlete_id)\n        return None\n    for result in results:",
+        "peekOfCode": "def check_athlete_in_data(client, athlete_id):\n    \"\"\"Checks if an athlete ID exists in the database and logs results.\"\"\"\n    logger.debug(\"Checking for athlete ID %s in database\", athlete_id)\n    db = client[\"database-name\"]\n    logger.info(\"after collection\", db)\n    collection = db[\"collection-name\"]\n    logger.info(\"after collection\", collection)\n    results = collection.find({\"athlete_id\": athlete_id})\n    logger.info(results)\n    if results.count() == 0:",
         "detail": "database",
         "documentation": {}
     },
