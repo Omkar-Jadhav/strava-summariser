@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,66 +6,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Strava Summarizer App</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
-      margin: 0;
-      padding: 0;
+    /* ... same styles as before ... */
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 10; /* ensure overlay is on top */
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
+    .loading-icon {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 5px solid #3498db;
+      animation: spin 1s linear infinite;
     }
 
-    h1 {
-      font-size: 36px;
-      color: #333;
-      text-align: center;
-      margin-top: 50px;
-    }
-
-    p {
-      font-size: 18px;
-      color: #666;
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    button {
-      padding: 10px 20px;
-      font-size: 18px;
-      border: none;
-      background-color: #007bff;
-      color: #fff;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      display: block;
-      margin: 0 auto;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .info {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      padding: 20px;
-      margin-top: 50px;
-    }
-
-    .info h2 {
-      font-size: 24px;
-      color: #333;
-      margin-bottom: 20px;
-    }
-
-    .info p {
-      font-size: 16px;
-      color: #666;
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -73,6 +41,10 @@
     <h1>Welcome to Strava Summarizer App!</h1>
     <p>Just one step away from summarizing your activities!</p>
     <button id="getStartedBtn" onclick="getRefreshCode()">Get Started</button>
+
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+      <div class="loading-icon"></div>
+    </div>
 
     <div class="info">
       <h2>How It Works</h2>
@@ -83,6 +55,8 @@
   </div>
   <script>
     function getRefreshCode(){
+        document.getElementById('loadingSpinner').style.display = 'block';
+
         // Get the current URL
         const currentUrl = window.location.href;
         const baseUrl = window.location.origin

@@ -1,3 +1,4 @@
+import database
 import requests
 import time, datetime
 import logging
@@ -13,13 +14,12 @@ CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'
 
 # Step 1: Get Access Token (you may do this once to obtain the token)
 def get_access_token(athlete_id):
-    with open("refresh_tokens.json", "r") as f:
-        refresh_tokens = json.load(f)
     
+    refresh_token = database.get_access_token_for_athlete(athlete_id)
     # Check if the athlete_id exists in the refresh_tokens
-    if str(athlete_id) in refresh_tokens:
+    if refresh_token is not None:
         # Retrieve the refresh_token for the athlete_id
-        REFRESH_TOKEN = refresh_tokens[str(athlete_id)]["refresh_token"]
+        REFRESH_TOKEN = refresh_token
         
         auth_url = 'https://www.strava.com/oauth/token'
         payload = {

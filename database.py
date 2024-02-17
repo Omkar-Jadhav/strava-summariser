@@ -72,6 +72,23 @@ def save_athlete_data(client, data):
         logger.error("Error saving athlete data: %s", str(e))
         return None
 
+
+def get_access_token_for_athlete(athlete_id):
+    client=initiate_mango_connection()
+    
+    db = client["strava"]
+    collection = db["refresh tokens"]
+    results = collection.find({"athlete_id":athlete_id})
+    logger.info(results)
+    refresh_token =""
+    
+    for result in results:
+        logger.info(result)
+        refresh_token = result.get("refresh_token")
+        
+    close_client(client)
+    return refresh_token
+
 def close_client(client):
     """Closes the connection to the MongoDB client and logs it."""
 

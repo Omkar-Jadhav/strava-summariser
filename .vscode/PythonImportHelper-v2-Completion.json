@@ -314,6 +314,15 @@
         "documentation": {}
     },
     {
+        "label": "get_access_token_for_athlete",
+        "kind": 2,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "def get_access_token_for_athlete(athlete_id):\n    client=initiate_mango_connection()\n    db = client[\"strava\"]\n    collection = db[\"refresh tokens\"]\n    results = collection.find({\"athlete_id\":athlete_id})\n    logger.info(results)\n    refresh_token =\"\"\n    for result in results:\n        logger.info(result)\n        refresh_token = result.get(\"refresh_token\")",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
         "label": "close_client",
         "kind": 2,
         "importPath": "database",
@@ -417,7 +426,7 @@
         "kind": 2,
         "importPath": "strava",
         "description": "strava",
-        "peekOfCode": "def get_access_token(athlete_id):\n    with open(\"refresh_tokens.json\", \"r\") as f:\n        refresh_tokens = json.load(f)\n    # Check if the athlete_id exists in the refresh_tokens\n    if str(athlete_id) in refresh_tokens:\n        # Retrieve the refresh_token for the athlete_id\n        REFRESH_TOKEN = refresh_tokens[str(athlete_id)][\"refresh_token\"]\n        auth_url = 'https://www.strava.com/oauth/token'\n        payload = {\n            'client_id': CLIENT_ID,",
+        "peekOfCode": "def get_access_token(athlete_id):\n    refresh_token = database.get_access_token_for_athlete(athlete_id)\n    # Check if the athlete_id exists in the refresh_tokens\n    if refresh_token is not None:\n        # Retrieve the refresh_token for the athlete_id\n        REFRESH_TOKEN = refresh_token\n        auth_url = 'https://www.strava.com/oauth/token'\n        payload = {\n            'client_id': CLIENT_ID,\n            'client_secret': CLIENT_SECRET,",
         "detail": "strava",
         "documentation": {}
     },
@@ -435,7 +444,7 @@
         "kind": 5,
         "importPath": "strava",
         "description": "strava",
-        "peekOfCode": "CLIENT_ID = '114698'\nCLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\n# REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token(athlete_id):\n    with open(\"refresh_tokens.json\", \"r\") as f:\n        refresh_tokens = json.load(f)\n    # Check if the athlete_id exists in the refresh_tokens\n    if str(athlete_id) in refresh_tokens:\n        # Retrieve the refresh_token for the athlete_id",
+        "peekOfCode": "CLIENT_ID = '114698'\nCLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\n# REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token(athlete_id):\n    refresh_token = database.get_access_token_for_athlete(athlete_id)\n    # Check if the athlete_id exists in the refresh_tokens\n    if refresh_token is not None:\n        # Retrieve the refresh_token for the athlete_id\n        REFRESH_TOKEN = refresh_token",
         "detail": "strava",
         "documentation": {}
     },
@@ -444,7 +453,7 @@
         "kind": 5,
         "importPath": "strava",
         "description": "strava",
-        "peekOfCode": "CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\n# REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token(athlete_id):\n    with open(\"refresh_tokens.json\", \"r\") as f:\n        refresh_tokens = json.load(f)\n    # Check if the athlete_id exists in the refresh_tokens\n    if str(athlete_id) in refresh_tokens:\n        # Retrieve the refresh_token for the athlete_id\n        REFRESH_TOKEN = refresh_tokens[str(athlete_id)][\"refresh_token\"]",
+        "peekOfCode": "CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\n# REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token(athlete_id):\n    refresh_token = database.get_access_token_for_athlete(athlete_id)\n    # Check if the athlete_id exists in the refresh_tokens\n    if refresh_token is not None:\n        # Retrieve the refresh_token for the athlete_id\n        REFRESH_TOKEN = refresh_token\n        auth_url = 'https://www.strava.com/oauth/token'",
         "detail": "strava",
         "documentation": {}
     },
