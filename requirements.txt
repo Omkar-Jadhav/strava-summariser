@@ -5,4 +5,4 @@ flask
 requests
 tabulate
 logging
-pymongo[srv]=3.11
+pymongo[srv]==3.11
