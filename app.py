@@ -45,6 +45,8 @@ def save_refresh_token():
     try:
         client = database.initiate_mango_connection()
         token = database.check_athlete_in_data(client, athlete_id)
+        database.close_client()
+        
         if token is not None:
             redirect_url = url_for('already_authorized', _external=True)
         else:
