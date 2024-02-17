@@ -39,29 +39,32 @@ def save_refresh_token():
         return jsonify({"error": "Invalid data format"}), 400
 
     athlete_id = athlete.get('id')
-    athlete_name = athlete.get('firstname') + athlete.get('lastname')
+    athlete_name = f"{athlete.get('firstname')} {athlete.get('lastname')}"
 
     if not athlete_id:
         return jsonify({"error": "Athlete ID not provided"}), 400
 
     try:
-        with open(DATA_FILE, "r+") as f:
-            try:
-                tokens_data = json.load(f)
-            except json.JSONDecodeError:
-                tokens_data = {}
+        if os.path.exists(DATA_FILE):
+            with open(DATA_FILE, "r+") as f:
+                try:
+                    tokens_data = json.load(f)
+                except json.JSONDecodeError:
+                    tokens_data = {}
+        else:
+            tokens_data = {}
 
-            if str(athlete_id) in tokens_data:
-                redirect_url = url_for('already_authorized', _external=True)
-            else:
-                tokens_data[athlete_id] = {
-                    "refresh_token": refresh_token,
-                    "athlete_name": athlete_name
-                }
-                f.seek(0)
+        if str(athlete_id) in tokens_data:
+            redirect_url = url_for('already_authorized', _external=True)
+        else:
+            tokens_data[athlete_id] = {
+                "refresh_token": refresh_token,
+                "athlete_name": athlete_name
+            }
+            with open(DATA_FILE, "w") as f:
                 json.dump(tokens_data, f, indent=4)
-                f.write('\n')  # Add a newline character to separate JSON objects
-                redirect_url = url_for('auth_success_page', _external=True)
+
+            redirect_url = url_for('auth_success_page', _external=True)
 
         return jsonify({'redirect_url': redirect_url}), 200
 

@@ -185,7 +185,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def save_refresh_token():\n    data = request.get_json()\n    refresh_token = data.get('refresh_token')\n    athlete = data.get('athlete')\n    if not (refresh_token and athlete):\n        return jsonify({\"error\": \"Invalid data format\"}), 400\n    athlete_id = athlete.get('id')\n    athlete_name = athlete.get('firstname') + athlete.get('lastname')\n    if not athlete_id:\n        return jsonify({\"error\": \"Athlete ID not provided\"}), 400",
+        "peekOfCode": "def save_refresh_token():\n    data = request.get_json()\n    refresh_token = data.get('refresh_token')\n    athlete = data.get('athlete')\n    if not (refresh_token and athlete):\n        return jsonify({\"error\": \"Invalid data format\"}), 400\n    athlete_id = athlete.get('id')\n    athlete_name = f\"{athlete.get('firstname')} {athlete.get('lastname')}\"\n    if not athlete_id:\n        return jsonify({\"error\": \"Athlete ID not provided\"}), 400",
         "detail": "app",
         "documentation": {}
     },
