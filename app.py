@@ -90,7 +90,7 @@ def verify_webhook():
 def handle_webhook():
     latest_activity_id = request.args.get('object_id')
     athlete_id = request.args.get('owner_id')
-    logger.info(f"request inputs are {request.arg}")
+    logger.info(f"request inputs are {request.args}")
     print(f"Webhook event received with activity:{latest_activity_id} for athlete ID: {athlete_id}")
     inputs={
         "activity_id":latest_activity_id,
