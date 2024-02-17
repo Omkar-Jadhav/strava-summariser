@@ -300,7 +300,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def check_athlete_in_data(client, athlete_id):\n    \"\"\"Checks if an athlete ID exists in the database and logs results.\"\"\"\n    logger.debug(\"Checking for athlete ID %s in database\", athlete_id)\n    db = client[\"strava\"]\n    collection = db[\"refresh tokens\"]\n    logger.info(\"before find\")\n    results = collection.find({})\n    logger.info(results)\n    for result in results:\n        # logger.debug(\"Found document: %s\", result)",
+        "peekOfCode": "def check_athlete_in_data(client, athlete_id):\n    \"\"\"Checks if an athlete ID exists in the database and logs results.\"\"\"\n    logger.debug(\"Checking for athlete ID %s in database\", athlete_id)\n    db = client[\"strava\"]\n    collection = db[\"refresh tokens\"]\n    logger.info(\"before find\")\n    results = collection.find({\"athlete_id\":athlete_id})\n    logger.info(results)\n    for result in results:\n        # logger.debug(\"Found document: %s\", result)",
         "detail": "database",
         "documentation": {}
     },

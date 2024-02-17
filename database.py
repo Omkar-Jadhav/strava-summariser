@@ -36,7 +36,7 @@ def check_athlete_in_data(client, athlete_id):
     collection = db["refresh tokens"]
 
     logger.info("before find")
-    results = collection.find({})
+    results = collection.find({"athlete_id":athlete_id})
     logger.info(results)
 
     for result in results:
