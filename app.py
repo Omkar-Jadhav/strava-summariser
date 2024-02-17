@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, url_for, jsonify, render_template
 import strava
 import json
+import database
 
 app = Flask(__name__)
 
@@ -41,29 +42,18 @@ def save_refresh_token():
     athlete_id = athlete.get('id')
     athlete_name = f"{athlete.get('firstname')} {athlete.get('lastname')}"
 
-    if not athlete_id:
-        return jsonify({"error": "Athlete ID not provided"}), 400
-
     try:
-        if os.path.exists(DATA_FILE):
-            with open(DATA_FILE, "r+") as f:
-                try:
-                    tokens_data = json.load(f)
-                except json.JSONDecodeError:
-                    tokens_data = {}
-        else:
-            tokens_data = {}
-
-        if str(athlete_id) in tokens_data:
+        client = database.initiate_mango_connection()
+        token = database.check_athlete_in_data(client, athlete_id)
+        if token is not None:
             redirect_url = url_for('already_authorized', _external=True)
         else:
-            tokens_data[athlete_id] = {
+            data = {
+                "athlete_id":athlete_id,
                 "refresh_token": refresh_token,
                 "athlete_name": athlete_name
             }
-            with open(DATA_FILE, "w") as f:
-                json.dump(tokens_data, f, indent=4)
-
+            message = database.save_athlete_data(client, data)
             redirect_url = url_for('auth_success_page', _external=True)
 
         return jsonify({'redirect_url': redirect_url}), 200

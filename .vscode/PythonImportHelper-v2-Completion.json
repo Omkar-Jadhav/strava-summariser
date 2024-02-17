@@ -76,6 +76,32 @@
         "documentation": {}
     },
     {
+        "label": "database",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "database",
+        "description": "database",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "certifi",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "certifi",
+        "description": "certifi",
+        "detail": "certifi",
+        "documentation": {}
+    },
+    {
+        "label": "MongoClient",
+        "importPath": "pymongo.mongo_client",
+        "description": "pymongo.mongo_client",
+        "isExtraImport": true,
+        "detail": "pymongo.mongo_client",
+        "documentation": {}
+    },
+    {
         "label": "tabulate",
         "importPath": "tabulate",
         "description": "tabulate",
@@ -185,7 +211,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def save_refresh_token():\n    data = request.get_json()\n    refresh_token = data.get('refresh_token')\n    athlete = data.get('athlete')\n    if not (refresh_token and athlete):\n        return jsonify({\"error\": \"Invalid data format\"}), 400\n    athlete_id = athlete.get('id')\n    athlete_name = f\"{athlete.get('firstname')} {athlete.get('lastname')}\"\n    if not athlete_id:\n        return jsonify({\"error\": \"Athlete ID not provided\"}), 400",
+        "peekOfCode": "def save_refresh_token():\n    data = request.get_json()\n    refresh_token = data.get('refresh_token')\n    athlete = data.get('athlete')\n    if not (refresh_token and athlete):\n        return jsonify({\"error\": \"Invalid data format\"}), 400\n    athlete_id = athlete.get('id')\n    athlete_name = f\"{athlete.get('firstname')} {athlete.get('lastname')}\"\n    try:\n        client = database.initiate_mango_connection()",
         "detail": "app",
         "documentation": {}
     },
@@ -250,6 +276,60 @@
         "description": "app",
         "peekOfCode": "DATA_FILE = \"refresh_tokens.json\"\n# Routes\n@app.route(\"/\")\ndef start():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():\n    return jsonify({\"status\": \"healthy\"})\n@app.route('/webhook', methods=['GET', 'POST'])\ndef webhook():",
         "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "initiate_mango_connection",
+        "kind": 2,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "def initiate_mango_connection():\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority\"\n    # Create a new client and connect to the server\n    client = MongoClient(uri,tlsCAFile=ca)\n    # Send a ping to confirm a successful connection\n    try:\n        client.admin.command('ping')\n        print(\"Pinged your deployment. You successfully connected to MongoDB!\")\n        return client",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "check_athlete_in_data",
+        "kind": 2,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "def check_athlete_in_data(client, athlete_id):\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    # results = collection.find({\"key\": athlete_id})s\n    results = collection.find({})\n    value = None\n        # Get the value from the retrieved document\n    for result in results:\n        print(result)\n        if result.get(str(athlete_id)) is None:",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "save_athlete_data",
+        "kind": 2,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "def save_athlete_data(client, data):\n    athlete_id = data['athlete_id']\n    refresh_token = data['refresh_token']\n    athlete_name = data ['athlete_name']\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    tokens_data={}\n    tokens_data[str(athlete_id)] = {\n                \"refresh_token\": refresh_token,\n                \"athlete_name\": athlete_name",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "close_client",
+        "kind": 2,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "def close_client(client):\n    client.close()\ndef delete_all_data(client):\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    result = collection.delete_many({})\ndef test_saving():\n    client = initiate_mango_connection()\n    delete_all_data(client)\n    test_json = {",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "delete_all_data",
+        "kind": 2,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "def delete_all_data(client):\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    result = collection.delete_many({})\ndef test_saving():\n    client = initiate_mango_connection()\n    delete_all_data(client)\n    test_json = {\n    \"athlete_id\": \"64768690\",\n        \"refresh_token\": \"239efcb1a295abda6e7d930587d120817cb5997d\",",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "test_saving",
+        "kind": 2,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "def test_saving():\n    client = initiate_mango_connection()\n    delete_all_data(client)\n    test_json = {\n    \"athlete_id\": \"64768690\",\n        \"refresh_token\": \"239efcb1a295abda6e7d930587d120817cb5997d\",\n        \"athlete_name\": \"Omkar Jadhav\"\n    }\n    # message = save_athlete_data(client,test_json)\n    refresh_token=check_athlete_in_data(client,test_json[\"athlete_id\"])",
+        "detail": "database",
         "documentation": {}
     },
     {
