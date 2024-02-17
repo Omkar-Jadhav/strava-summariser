@@ -283,7 +283,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def initiate_mango_connection():\n    \"\"\"Connects to the MongoDB database and logs success or errors.\"\"\"\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority\"\n    logger.debug(\"Connecting to MongoDB with URI: %s\", uri)\n    try:\n        # Create a new client and connect to the server\n        client = MongoClient(uri, tlsCAFile=ca,serverSelectionTimeoutMS=10000)\n        logger.info(\"Before ping!\")\n        # Send a ping to confirm a successful connection",
+        "peekOfCode": "def initiate_mango_connection():\n    \"\"\"Connects to the MongoDB database and logs success or errors.\"\"\"\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority\"\n    logger.debug(\"Connecting to MongoDB with URI: %s\", uri)\n    try:\n        # Create a new client and connect to the server\n        client = MongoClient(uri, tlsCAFile=ca)\n        logger.info(\"Before ping!\")\n        # Send a ping to confirm a successful connection",
         "detail": "database",
         "documentation": {}
     },
@@ -292,7 +292,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def check_athlete_in_data(client, athlete_id):\n    \"\"\"Checks if an athlete ID exists in the database and logs results.\"\"\"\n    logger.debug(\"Checking for athlete ID %s in database\", athlete_id)\n    db = client[\"database-name\"]\n    logger.info(\"after collection\", db)\n    collection = db[\"collection-name\"]\n    logger.info(\"after collection\", collection)\n    results = collection.find({\"athlete_id\": athlete_id})\n    logger.info(results)\n    if results.count() == 0:",
+        "peekOfCode": "def check_athlete_in_data(client, athlete_id):\n    \"\"\"Checks if an athlete ID exists in the database and logs results.\"\"\"\n    logger.debug(\"Checking for athlete ID %s in database\", athlete_id)\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    logger.info(\"before find\")\n    results = collection.find({\"athlete_id\": athlete_id})\n    logger.info(results)\n    if results.count() == 0:\n        logger.info(\"Athlete ID %s not found in collection\", athlete_id)",
         "detail": "database",
         "documentation": {}
     },
@@ -337,7 +337,7 @@
         "kind": 5,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\ndef initiate_mango_connection():\n    \"\"\"Connects to the MongoDB database and logs success or errors.\"\"\"\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority\"\n    logger.debug(\"Connecting to MongoDB with URI: %s\", uri)\n    try:\n        # Create a new client and connect to the server\n        client = MongoClient(uri, tlsCAFile=ca,serverSelectionTimeoutMS=10000)",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\ndef initiate_mango_connection():\n    \"\"\"Connects to the MongoDB database and logs success or errors.\"\"\"\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority\"\n    logger.debug(\"Connecting to MongoDB with URI: %s\", uri)\n    try:\n        # Create a new client and connect to the server\n        client = MongoClient(uri, tlsCAFile=ca)",
         "detail": "database",
         "documentation": {}
     },

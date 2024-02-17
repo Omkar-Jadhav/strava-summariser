@@ -16,7 +16,7 @@ def initiate_mango_connection():
 
     try:
         # Create a new client and connect to the server
-        client = MongoClient(uri, tlsCAFile=ca,serverSelectionTimeoutMS=10000)
+        client = MongoClient(uri, tlsCAFile=ca)
         logger.info("Before ping!")
         # Send a ping to confirm a successful connection
         # client.admin.command('ping')
@@ -33,10 +33,9 @@ def check_athlete_in_data(client, athlete_id):
     logger.debug("Checking for athlete ID %s in database", athlete_id)
 
     db = client["database-name"]
-    logger.info("after collection", db)
     collection = db["collection-name"]
 
-    logger.info("after collection", collection)
+    logger.info("before find")
     results = collection.find({"athlete_id": athlete_id})
     logger.info(results)
     if results.count() == 0:
