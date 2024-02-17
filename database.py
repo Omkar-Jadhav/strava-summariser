@@ -40,7 +40,8 @@ def check_athlete_in_data(client, athlete_id):
     logger.info(results)
 
     for result in results:
-        logger.debug("Found document: %s", result)
+        # logger.debug("Found document: %s", result)
+        logger.info(result)
         refresh_token = result.get("refresh_token")
         if refresh_token:
             logger.info("Found refresh token for athlete ID %s", athlete_id)
@@ -89,7 +90,7 @@ def delete_all_data(client):
 
 def test_saving():
     client = initiate_mango_connection()
-    delete_all_data(client)
+    # delete_all_data(client)
     test_json = {
     "athlete_id": "64768690",
         "refresh_token": "239efcb1a295abda6e7d930587d120817cb5997d",
@@ -101,7 +102,7 @@ def test_saving():
     print(refresh_token)
     
 
-# test_saving()
+test_saving()
     
     
     

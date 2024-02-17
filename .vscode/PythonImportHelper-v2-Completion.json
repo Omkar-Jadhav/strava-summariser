@@ -292,7 +292,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def check_athlete_in_data(client, athlete_id):\n    \"\"\"Checks if an athlete ID exists in the database and logs results.\"\"\"\n    logger.debug(\"Checking for athlete ID %s in database\", athlete_id)\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    logger.info(\"before find\")\n    results = collection.find({\"athlete_id\": athlete_id})\n    logger.info(results)\n    for result in results:\n        logger.debug(\"Found document: %s\", result)",
+        "peekOfCode": "def check_athlete_in_data(client, athlete_id):\n    \"\"\"Checks if an athlete ID exists in the database and logs results.\"\"\"\n    logger.debug(\"Checking for athlete ID %s in database\", athlete_id)\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    logger.info(\"before find\")\n    results = collection.find({\"athlete_id\": athlete_id})\n    logger.info(results)\n    for result in results:\n        # logger.debug(\"Found document: %s\", result)",
         "detail": "database",
         "documentation": {}
     },
@@ -319,7 +319,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def delete_all_data(client):\n    \"\"\"Deletes all data from the collection and logs the action.\"\"\"\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    logger.info(\"Deleting all data from collection\")\n    result = collection.delete_many({})\n    logger.info(\"Deleted %d documents\", result.deleted_count)\ndef test_saving():\n    client = initiate_mango_connection()\n    delete_all_data(client)",
+        "peekOfCode": "def delete_all_data(client):\n    \"\"\"Deletes all data from the collection and logs the action.\"\"\"\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    logger.info(\"Deleting all data from collection\")\n    result = collection.delete_many({})\n    logger.info(\"Deleted %d documents\", result.deleted_count)\ndef test_saving():\n    client = initiate_mango_connection()\n    # delete_all_data(client)",
         "detail": "database",
         "documentation": {}
     },
@@ -328,7 +328,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def test_saving():\n    client = initiate_mango_connection()\n    delete_all_data(client)\n    test_json = {\n    \"athlete_id\": \"64768690\",\n        \"refresh_token\": \"239efcb1a295abda6e7d930587d120817cb5997d\",\n        \"athlete_name\": \"Omkar Jadhav\"\n    }\n    # message = save_athlete_data(client,test_json)\n    refresh_token=check_athlete_in_data(client,test_json[\"athlete_id\"])",
+        "peekOfCode": "def test_saving():\n    client = initiate_mango_connection()\n    # delete_all_data(client)\n    test_json = {\n    \"athlete_id\": \"64768690\",\n        \"refresh_token\": \"239efcb1a295abda6e7d930587d120817cb5997d\",\n        \"athlete_name\": \"Omkar Jadhav\"\n    }\n    # message = save_athlete_data(client,test_json)\n    refresh_token=check_athlete_in_data(client,test_json[\"athlete_id\"])",
         "detail": "database",
         "documentation": {}
     },
