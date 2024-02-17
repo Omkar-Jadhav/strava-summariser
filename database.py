@@ -38,9 +38,6 @@ def check_athlete_in_data(client, athlete_id):
     logger.info("before find")
     results = collection.find({"athlete_id": athlete_id})
     logger.info(results)
-    if results.count() == 0:
-        logger.info("Athlete ID %s not found in collection", athlete_id)
-        return None
 
     for result in results:
         logger.debug("Found document: %s", result)
