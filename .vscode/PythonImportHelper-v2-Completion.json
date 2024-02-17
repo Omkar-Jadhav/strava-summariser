@@ -102,6 +102,14 @@
         "documentation": {}
     },
     {
+        "label": "MongoClient",
+        "importPath": "pymongo.mongo_client",
+        "description": "pymongo.mongo_client",
+        "isExtraImport": true,
+        "detail": "pymongo.mongo_client",
+        "documentation": {}
+    },
+    {
         "label": "logging",
         "kind": 6,
         "isExtraImport": true,
@@ -283,7 +291,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def initiate_mango_connection():\n    \"\"\"Connects to the MongoDB database and logs success or errors.\"\"\"\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority\"\n    logger.debug(\"Connecting to MongoDB with URI: %s\", uri)\n    try:\n        # Create a new client and connect to the server\n        client = MongoClient(uri, tlsCAFile=ca,connectTimeoutMS=8000, serverSelectionTimeoutMS=2000)\n        logger.info(\"Before ping!\")\n        # Send a ping to confirm a successful connection",
+        "peekOfCode": "def initiate_mango_connection():\n    \"\"\"Connects to the MongoDB database and logs success or errors.\"\"\"\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-token.6r1ebob.mongodb.net/?ssl=true&ssl_cert_reqs=CERT_NONE&retryWrites=true&w=majority\"\n    logger.debug(\"Connecting to MongoDB with URI: %s\", uri)\n    try:\n        # Create a new client and connect to the server\n        client = MongoClient(uri, tlsCAFile=ca)\n        logger.info(\"Before ping!\")\n        # Send a ping to confirm a successful connection",
         "detail": "database",
         "documentation": {}
     },
@@ -292,7 +300,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def check_athlete_in_data(client, athlete_id):\n    \"\"\"Checks if an athlete ID exists in the database and logs results.\"\"\"\n    logger.debug(\"Checking for athlete ID %s in database\", athlete_id)\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    logger.info(\"before find\")\n    results = collection.find({\"athlete_id\": athlete_id})\n    logger.info(results)\n    for result in results:\n        # logger.debug(\"Found document: %s\", result)",
+        "peekOfCode": "def check_athlete_in_data(client, athlete_id):\n    \"\"\"Checks if an athlete ID exists in the database and logs results.\"\"\"\n    logger.debug(\"Checking for athlete ID %s in database\", athlete_id)\n    db = client[\"strava\"]\n    collection = db[\"refresh tokens\"]\n    logger.info(\"before find\")\n    results = collection.find({})\n    logger.info(results)\n    for result in results:\n        # logger.debug(\"Found document: %s\", result)",
         "detail": "database",
         "documentation": {}
     },
@@ -301,7 +309,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def save_athlete_data(client, data):\n    \"\"\"Saves athlete data to the database and logs success or errors.\"\"\"\n    athlete_id = data[\"athlete_id\"]\n    refresh_token = data[\"refresh_token\"]\n    athlete_name = data[\"athlete_name\"]\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    try:\n        collection.insert_one({\n            \"athlete_id\": athlete_id,",
+        "peekOfCode": "def save_athlete_data(client, data):\n    \"\"\"Saves athlete data to the database and logs success or errors.\"\"\"\n    athlete_id = data[\"athlete_id\"]\n    refresh_token = data[\"refresh_token\"]\n    athlete_name = data[\"athlete_name\"]\n    db = client[\"strava\"]\n    collection = db[\"refresh tokens\"]\n    try:\n        collection.insert_one({\n            \"athlete_id\": athlete_id,",
         "detail": "database",
         "documentation": {}
     },
@@ -328,7 +336,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def test_saving():\n    client = initiate_mango_connection()\n    # delete_all_data(client)\n    test_json = {\n    \"athlete_id\": \"64768690\",\n        \"refresh_token\": \"239efcb1a295abda6e7d930587d120817cb5997d\",\n        \"athlete_name\": \"Omkar Jadhav\"\n    }\n    # message = save_athlete_data(client,test_json)\n    refresh_token=check_athlete_in_data(client,test_json[\"athlete_id\"])",
+        "peekOfCode": "def test_saving():\n    client = initiate_mango_connection()\n    # delete_all_data(client)\n    test_json = {\n    \"athlete_id\": \"64768690\",\n        \"refresh_token\": \"239efcb1a295abda6e7d930587d120817cb5997d\",\n        \"athlete_name\": \"Omkar Jadhav\"\n    }\n    message = save_athlete_data(client,test_json)\n    refresh_token=check_athlete_in_data(client,test_json[\"athlete_id\"])",
         "detail": "database",
         "documentation": {}
     },
@@ -337,7 +345,7 @@
         "kind": 5,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\ndef initiate_mango_connection():\n    \"\"\"Connects to the MongoDB database and logs success or errors.\"\"\"\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority\"\n    logger.debug(\"Connecting to MongoDB with URI: %s\", uri)\n    try:\n        # Create a new client and connect to the server\n        client = MongoClient(uri, tlsCAFile=ca,connectTimeoutMS=8000, serverSelectionTimeoutMS=2000)",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\ndef initiate_mango_connection():\n    \"\"\"Connects to the MongoDB database and logs success or errors.\"\"\"\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-token.6r1ebob.mongodb.net/?ssl=true&ssl_cert_reqs=CERT_NONE&retryWrites=true&w=majority\"\n    logger.debug(\"Connecting to MongoDB with URI: %s\", uri)\n    try:\n        # Create a new client and connect to the server\n        client = MongoClient(uri, tlsCAFile=ca)",
         "detail": "database",
         "documentation": {}
     },
@@ -438,6 +446,24 @@
         "description": "strava",
         "peekOfCode": "CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\n# REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token(athlete_id):\n    with open(\"refresh_tokens.json\", \"r\") as f:\n        refresh_tokens = json.load(f)\n    # Check if the athlete_id exists in the refresh_tokens\n    if str(athlete_id) in refresh_tokens:\n        # Retrieve the refresh_token for the athlete_id\n        REFRESH_TOKEN = refresh_tokens[str(athlete_id)][\"refresh_token\"]",
         "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "uri",
+        "kind": 5,
+        "importPath": "test",
+        "description": "test",
+        "peekOfCode": "uri = \"mongodb+srv://omkarjadhav00:mango@strava-token.6r1ebob.mongodb.net/?ssl=true&ssl_cert_reqs=CERT_NONE&retryWrites=true&w=majority\"\n# Create a new client and connect to the server\nclient = MongoClient(uri)\n# Send a ping to confirm a successful connection\ntry:\n    client.admin.command('ping')\n    print(\"Pinged your deployment. You successfully connected to MongoDB!\")\nexcept Exception as e:\n    print(e)",
+        "detail": "test",
+        "documentation": {}
+    },
+    {
+        "label": "client",
+        "kind": 5,
+        "importPath": "test",
+        "description": "test",
+        "peekOfCode": "client = MongoClient(uri)\n# Send a ping to confirm a successful connection\ntry:\n    client.admin.command('ping')\n    print(\"Pinged your deployment. You successfully connected to MongoDB!\")\nexcept Exception as e:\n    print(e)",
+        "detail": "test",
         "documentation": {}
     },
     {

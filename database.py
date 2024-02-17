@@ -10,13 +10,13 @@ def initiate_mango_connection():
     """Connects to the MongoDB database and logs success or errors."""
 
     ca = certifi.where()  # Load the updated CA bundle
-    uri = "mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority"
+    uri = "mongodb+srv://omkarjadhav00:mango@strava-token.6r1ebob.mongodb.net/?ssl=true&ssl_cert_reqs=CERT_NONE&retryWrites=true&w=majority"
 
     logger.debug("Connecting to MongoDB with URI: %s", uri)
 
     try:
         # Create a new client and connect to the server
-        client = MongoClient(uri, tlsCAFile=ca,connectTimeoutMS=8000, serverSelectionTimeoutMS=2000)
+        client = MongoClient(uri, tlsCAFile=ca)
         logger.info("Before ping!")
         # Send a ping to confirm a successful connection
         # client.admin.command('ping')
@@ -32,11 +32,11 @@ def check_athlete_in_data(client, athlete_id):
 
     logger.debug("Checking for athlete ID %s in database", athlete_id)
 
-    db = client["database-name"]
-    collection = db["collection-name"]
+    db = client["strava"]
+    collection = db["refresh tokens"]
 
     logger.info("before find")
-    results = collection.find({"athlete_id": athlete_id})
+    results = collection.find({})
     logger.info(results)
 
     for result in results:
@@ -57,8 +57,8 @@ def save_athlete_data(client, data):
     refresh_token = data["refresh_token"]
     athlete_name = data["athlete_name"]
 
-    db = client["database-name"]
-    collection = db["collection-name"]
+    db = client["strava"]
+    collection = db["refresh tokens"]
 
     try:
         collection.insert_one({
@@ -96,13 +96,14 @@ def test_saving():
         "refresh_token": "239efcb1a295abda6e7d930587d120817cb5997d",
         "athlete_name": "Omkar Jadhav"
     }
-    # message = save_athlete_data(client,test_json)
+    message = save_athlete_data(client,test_json)
     
     refresh_token=check_athlete_in_data(client,test_json["athlete_id"])
+    close_client(client)
     print(refresh_token)
     
 
-# test_saving()
+test_saving()
     
     
     
