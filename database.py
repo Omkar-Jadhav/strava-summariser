@@ -16,7 +16,7 @@ def initiate_mango_connection():
 
     try:
         # Create a new client and connect to the server
-        client = MongoClient(uri, tlsCAFile=ca)
+        client = MongoClient(uri, tlsCAFile=ca,connectTimeoutMS=8000, serverSelectionTimeoutMS=2000)
         logger.info("Before ping!")
         # Send a ping to confirm a successful connection
         # client.admin.command('ping')

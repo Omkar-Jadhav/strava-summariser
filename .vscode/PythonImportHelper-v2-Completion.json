@@ -283,7 +283,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def initiate_mango_connection():\n    \"\"\"Connects to the MongoDB database and logs success or errors.\"\"\"\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority\"\n    logger.debug(\"Connecting to MongoDB with URI: %s\", uri)\n    try:\n        # Create a new client and connect to the server\n        client = MongoClient(uri, tlsCAFile=ca)\n        logger.info(\"Before ping!\")\n        # Send a ping to confirm a successful connection",
+        "peekOfCode": "def initiate_mango_connection():\n    \"\"\"Connects to the MongoDB database and logs success or errors.\"\"\"\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority\"\n    logger.debug(\"Connecting to MongoDB with URI: %s\", uri)\n    try:\n        # Create a new client and connect to the server\n        client = MongoClient(uri, tlsCAFile=ca,connectTimeoutMS=8000, serverSelectionTimeoutMS=2000)\n        logger.info(\"Before ping!\")\n        # Send a ping to confirm a successful connection",
         "detail": "database",
         "documentation": {}
     },
@@ -337,7 +337,7 @@
         "kind": 5,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\ndef initiate_mango_connection():\n    \"\"\"Connects to the MongoDB database and logs success or errors.\"\"\"\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority\"\n    logger.debug(\"Connecting to MongoDB with URI: %s\", uri)\n    try:\n        # Create a new client and connect to the server\n        client = MongoClient(uri, tlsCAFile=ca)",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\ndef initiate_mango_connection():\n    \"\"\"Connects to the MongoDB database and logs success or errors.\"\"\"\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority\"\n    logger.debug(\"Connecting to MongoDB with URI: %s\", uri)\n    try:\n        # Create a new client and connect to the server\n        client = MongoClient(uri, tlsCAFile=ca,connectTimeoutMS=8000, serverSelectionTimeoutMS=2000)",
         "detail": "database",
         "documentation": {}
     },
