@@ -246,7 +246,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def verify_webhook():\n    mode = request.args.get('hub.mode')\n    token = request.args.get('hub.verify_token')\n    challenge = request.args.get('hub.challenge')\n    if mode == 'subscribe' and token == VERIFY_TOKEN:\n        return jsonify({\"hub.challenge\": challenge}), 200\n    else:\n        return \"Invalid verification token\", 403\ndef handle_webhook():\n    latest_activity_id = request.args.get('object_id')",
+        "peekOfCode": "def verify_webhook():\n    mode = request.args.get('hub.mode')\n    token = request.args.get('hub.verify_token')\n    challenge = request.args.get('hub.challenge')\n    if mode == 'subscribe' and token == VERIFY_TOKEN:\n        return jsonify({\"hub.challenge\": challenge}), 200\n    else:\n        return \"Invalid verification token\", 403\ndef handle_webhook():\n    latest_activity_id = request.json.get('object_id')",
         "detail": "app",
         "documentation": {}
     },
@@ -255,7 +255,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def handle_webhook():\n    latest_activity_id = request.args.get('object_id')\n    athlete_id = request.args.get('owner_id')\n    logger.info(f\"request inputs are {request.args}\")\n    print(f\"Webhook event received with activity:{latest_activity_id} for athlete ID: {athlete_id}\")\n    inputs={\n        \"activity_id\":latest_activity_id,\n        \"athlete_id\":athlete_id\n    }\n    logger.info(f\"Inputs were{inputs}\")",
+        "peekOfCode": "def handle_webhook():\n    latest_activity_id = request.json.get('object_id')\n    athlete_id = request.json.get('owner_id')\n    logger.info(f\"request inputs are {request.json}\")\n    print(f\"Webhook event received with activity:{latest_activity_id} for athlete ID: {athlete_id}\")\n    inputs={\n        \"activity_id\":latest_activity_id,\n        \"athlete_id\":athlete_id\n    }\n    logger.info(f\"Inputs were{inputs}\")",
         "detail": "app",
         "documentation": {}
     },
