@@ -102,6 +102,15 @@
         "documentation": {}
     },
     {
+        "label": "logging",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "logging",
+        "description": "logging",
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
         "label": "tabulate",
         "importPath": "tabulate",
         "description": "tabulate",
@@ -133,15 +142,6 @@
         "importPath": "time.",
         "description": "time.",
         "detail": "time.",
-        "documentation": {}
-    },
-    {
-        "label": "logging",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "logging",
-        "description": "logging",
-        "detail": "logging",
         "documentation": {}
     },
     {
@@ -283,7 +283,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def initiate_mango_connection():\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority\"\n    # Create a new client and connect to the server\n    client = MongoClient(uri,tlsCAFile=ca)\n    # Send a ping to confirm a successful connection\n    try:\n        client.admin.command('ping')\n        print(\"Pinged your deployment. You successfully connected to MongoDB!\")\n        return client",
+        "peekOfCode": "def initiate_mango_connection():\n    \"\"\"Connects to the MongoDB database and logs success or errors.\"\"\"\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority\"\n    logger.debug(\"Connecting to MongoDB with URI: %s\", uri)\n    try:\n        # Create a new client and connect to the server\n        client = MongoClient(uri, tlsCAFile=ca)\n        # Send a ping to confirm a successful connection\n        client.admin.command('ping')",
         "detail": "database",
         "documentation": {}
     },
@@ -292,7 +292,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def check_athlete_in_data(client, athlete_id):\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    # results = collection.find({\"key\": athlete_id})s\n    results = collection.find({})\n    value = None\n        # Get the value from the retrieved document\n    for result in results:\n        print(result)\n        if result.get(str(athlete_id)) is None:",
+        "peekOfCode": "def check_athlete_in_data(client, athlete_id):\n    \"\"\"Checks if an athlete ID exists in the database and logs results.\"\"\"\n    logger.debug(\"Checking for athlete ID %s in database\", athlete_id)\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    results = collection.find({\"athlete_id\": athlete_id})\n    if results.count() == 0:\n        logger.info(\"Athlete ID %s not found in collection\", athlete_id)\n        return None\n    for result in results:",
         "detail": "database",
         "documentation": {}
     },
@@ -301,7 +301,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def save_athlete_data(client, data):\n    athlete_id = data['athlete_id']\n    refresh_token = data['refresh_token']\n    athlete_name = data ['athlete_name']\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    tokens_data={}\n    tokens_data[str(athlete_id)] = {\n                \"refresh_token\": refresh_token,\n                \"athlete_name\": athlete_name",
+        "peekOfCode": "def save_athlete_data(client, data):\n    \"\"\"Saves athlete data to the database and logs success or errors.\"\"\"\n    athlete_id = data[\"athlete_id\"]\n    refresh_token = data[\"refresh_token\"]\n    athlete_name = data[\"athlete_name\"]\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    try:\n        collection.insert_one({\n            \"athlete_id\": athlete_id,",
         "detail": "database",
         "documentation": {}
     },
@@ -310,7 +310,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def close_client(client):\n    client.close()\ndef delete_all_data(client):\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    result = collection.delete_many({})\ndef test_saving():\n    client = initiate_mango_connection()\n    delete_all_data(client)\n    test_json = {",
+        "peekOfCode": "def close_client(client):\n    \"\"\"Closes the connection to the MongoDB client and logs it.\"\"\"\n    logger.info(\"Closing connection to MongoDB\")\n    client.close()\ndef delete_all_data(client):\n    \"\"\"Deletes all data from the collection and logs the action.\"\"\"\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    logger.info(\"Deleting all data from collection\")\n    result = collection.delete_many({})",
         "detail": "database",
         "documentation": {}
     },
@@ -319,7 +319,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def delete_all_data(client):\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    result = collection.delete_many({})\ndef test_saving():\n    client = initiate_mango_connection()\n    delete_all_data(client)\n    test_json = {\n    \"athlete_id\": \"64768690\",\n        \"refresh_token\": \"239efcb1a295abda6e7d930587d120817cb5997d\",",
+        "peekOfCode": "def delete_all_data(client):\n    \"\"\"Deletes all data from the collection and logs the action.\"\"\"\n    db = client[\"database-name\"]\n    collection = db[\"collection-name\"]\n    logger.info(\"Deleting all data from collection\")\n    result = collection.delete_many({})\n    logger.info(\"Deleted %d documents\", result.deleted_count)\ndef test_saving():\n    client = initiate_mango_connection()\n    delete_all_data(client)",
         "detail": "database",
         "documentation": {}
     },
@@ -329,6 +329,15 @@
         "importPath": "database",
         "description": "database",
         "peekOfCode": "def test_saving():\n    client = initiate_mango_connection()\n    delete_all_data(client)\n    test_json = {\n    \"athlete_id\": \"64768690\",\n        \"refresh_token\": \"239efcb1a295abda6e7d930587d120817cb5997d\",\n        \"athlete_name\": \"Omkar Jadhav\"\n    }\n    # message = save_athlete_data(client,test_json)\n    refresh_token=check_athlete_in_data(client,test_json[\"athlete_id\"])",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\ndef initiate_mango_connection():\n    \"\"\"Connects to the MongoDB database and logs success or errors.\"\"\"\n    ca = certifi.where()  # Load the updated CA bundle\n    uri = \"mongodb+srv://omkarjadhav00:mango@strava-refresh-tokens.c46zw8h.mongodb.net/?retryWrites=true&w=majority\"\n    logger.debug(\"Connecting to MongoDB with URI: %s\", uri)\n    try:\n        # Create a new client and connect to the server\n        client = MongoClient(uri, tlsCAFile=ca)",
         "detail": "database",
         "documentation": {}
     },
