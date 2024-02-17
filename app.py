@@ -3,6 +3,11 @@ from flask import Flask, request, url_for, jsonify, render_template
 import strava
 import json
 import database
+import logging
+
+# Configure logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)  # Adjust logging level as needed
 
 app = Flask(__name__)
 
@@ -85,12 +90,14 @@ def verify_webhook():
 def handle_webhook():
     latest_activity_id = request.args.get('object_id')
     athlete_id = request.args.get('owner_id')
+    logger.info(f"request inputs are {request.arg}")
     print(f"Webhook event received with activity:{latest_activity_id} for athlete ID: {athlete_id}")
     inputs={
         "activity_id":latest_activity_id,
         "athlete_id":athlete_id
     }
-
+    
+    logger.info(f"Inputs were{inputs}")
     strava.get_latest_activities(inputs)
     return jsonify({"message": "EVENT_RECEIVED"}), 200
 
