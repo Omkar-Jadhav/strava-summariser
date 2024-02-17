@@ -6,6 +6,9 @@ import utils
 import data_processing
 import json
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s %(levelname)s %(message)s')
+# Configure logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)  # Adjust logging level as needed
 
 # Replace these with your Strava API credentials
 CLIENT_ID = '114698'
@@ -14,11 +17,13 @@ CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'
 
 # Step 1: Get Access Token (you may do this once to obtain the token)
 def get_access_token(athlete_id):
-    
-    refresh_token = database.get_access_token_for_athlete(athlete_id)
+    client = database.initiate_mango_connection()
+    refresh_token = database.check_access_token(client,athlete_id)
+    logger.info(f'Refresh token{refresh_token} for athlete ID {athlete_id}')
     # Check if the athlete_id exists in the refresh_tokens
     if refresh_token is not None:
         # Retrieve the refresh_token for the athlete_id
+        logger.info('inside if refresh-token condition')
         REFRESH_TOKEN = refresh_token
         
         auth_url = 'https://www.strava.com/oauth/token'
@@ -29,11 +34,13 @@ def get_access_token(athlete_id):
             'refresh_token': REFRESH_TOKEN
         }
         response = requests.post(auth_url, data=payload)
+        logger.info(f"Access token is {response.json()['access_token']}")
+        logger.info(f"response is {response.json()}")
         return response.json()['access_token']
     else:
         # Handle the case where athlete_id is not found in the refresh_tokens
-        print("Athlete ID not found in refresh_tokens.json")
-        return "Athlete ID not found in refresh_tokens.json"
+        print("Athlete ID not found in data")
+        return "Athlete ID not found in data"
 
 def get_latest_activities(inputs):
     logging.info('Inside get_latest_activities')
