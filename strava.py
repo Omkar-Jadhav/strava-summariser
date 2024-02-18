@@ -91,14 +91,14 @@ def get_latest_activities(inputs):
         latest_activity_response = requests.get(latest_activity_url, headers=headers)
         latest_activity_data = latest_activity_response.json()
         update_message = ""
-        
+        url = 'https://strava-summariser.vercel.app'
         if latest_activity_response.status_code == 200:
              # Step 5: Update Activity Description Based on Type
             if latest_activity_data['type'] in ['Run', 'Yoga', 'Swim','Ride']:
                 activities_of_type = [activity for activity in activities if activity['type'] == latest_activity_data['type']]
                 result_table = getattr(data_processing, f"give_{latest_activity_data['type'].lower()}_summary")(activities_of_type)
-        
-            if result_table:
+
+            if result_table and url not in latest_activity_data['description']:
                 update_json = utils.update_description(activity_data=latest_activity_data, summary=result_table)
                 update_message = utils.update_activity(activity_url=latest_activity_url, update_json=update_json, headers=headers)  
                 print(update_message)
