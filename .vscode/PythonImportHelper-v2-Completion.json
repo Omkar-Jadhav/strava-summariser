@@ -431,6 +431,15 @@
         "documentation": {}
     },
     {
+        "label": "give_walk_summary",
+        "kind": 2,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "def give_walk_summary(walk_activities):\n  tot_distance_walked_month = 0\n  avg_distance_per_walk = 0\n  tot_elevation_gain = 0\n  avg_elevation_gain = 0\n  tot_moving_time = 0\n  avg_mov_speed = 0\n  tot_elapsed_time = 0\n  avg_elapsed_speed = 0\n  for activity in walk_activities:",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
         "label": "get_access_token",
         "kind": 2,
         "importPath": "strava",

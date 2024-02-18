@@ -211,7 +211,54 @@ def give_run_summary(run_activities):
         result_table += "\n\n------- Four-Week Rolling Trail Run Summary -------\n"
         result_table += tabulate(trail_runs_summary_data, tablefmt="plain")
 
-    result_table += "\n \nStats created using StravaAPI by Omkar Jadhav\n -- Subscribe on https://strava-summariser.vercel.app/ --"
+    result_table += "\n -- Subscribe on https://strava-summariser.vercel.app/ --\nStats created using StravaAPI by Omkar Jadhav"
     print(result_table)
 
     return result_table
+
+def give_walk_summary(walk_activities):
+  tot_distance_walked_month = 0
+  avg_distance_per_walk = 0
+  tot_elevation_gain = 0
+  avg_elevation_gain = 0
+  tot_moving_time = 0
+  avg_mov_speed = 0
+  tot_elapsed_time = 0
+  avg_elapsed_speed = 0
+
+  for activity in walk_activities:
+    tot_elapsed_time += activity['elapsed_time']
+    tot_moving_time += activity['moving_time']
+
+    # Calculate averages in meters or km based on preference
+    tot_distance_walked_month += round(activity['distance'] / 1000, 2)  # In km
+    avg_distance_per_walk = round(tot_distance_walked_month / len(walk_activities), 2)
+    tot_elevation_gain += round(int(activity['total_elevation_gain']), 2)
+    avg_elevation_gain = round(tot_elevation_gain / len(walk_activities), 2)
+    avg_mov_speed = calculate_speed(tot_moving_time, tot_distance_walked_month)
+    avg_elapsed_speed = calculate_speed(tot_elapsed_time, tot_distance_walked_month)
+
+  result_table = ""
+
+  # Overall walk summary
+  walk_summary_data = [
+    ["Total walks: ", f"{len(walk_activities)}"],
+    ["Total distance: ", f"{tot_distance_walked_month} Km"],
+    ["Average distance:", f"{avg_distance_per_walk} Km/walk"],
+    ["Average moving pace: ", f"{avg_mov_speed}"],
+    ["Total elevation gained: ", f"{tot_elevation_gain} m"],
+    ["Avg elevation gain: ", f"{avg_elevation_gain} m/walk"],
+    ["Total moving time: ", f"{convert_seconds_in_hhmmss(tot_moving_time)}"],
+    ["Total elapsed time: ", f"{convert_seconds_in_hhmmss(tot_elapsed_time)}"],
+    ["Avg moving pace: ", f"{avg_mov_speed}"]
+  ]
+
+  result_table += "\n------- Four-Week Rolling Walk Summary -------\n"
+  result_table += tabulate(walk_summary_data, tablefmt="plain")
+
+  result_table += "\n -- Subscribe on https://strava-summariser.vercel.app/ --\n"
+  result_table += "Stats created using StravaAPI by Omkar Jadhav"
+
+  print(result_table)
+
+  return result_table
