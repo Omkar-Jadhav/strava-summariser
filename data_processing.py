@@ -246,11 +246,9 @@ def give_walk_summary(walk_activities):
     ["Total distance: ", f"{tot_distance_walked_month} Km"],
     ["Average distance:", f"{avg_distance_per_walk} Km/walk"],
     ["Average moving pace: ", f"{avg_mov_speed}"],
-    ["Total elevation gained: ", f"{tot_elevation_gain} m"],
-    ["Avg elevation gain: ", f"{avg_elevation_gain} m/walk"],
     ["Total moving time: ", f"{convert_seconds_in_hhmmss(tot_moving_time)}"],
     ["Total elapsed time: ", f"{convert_seconds_in_hhmmss(tot_elapsed_time)}"],
-    ["Avg moving pace: ", f"{avg_mov_speed}"]
+ 
   ]
 
   result_table += "\n------- Four-Week Rolling Walk Summary -------\n"
