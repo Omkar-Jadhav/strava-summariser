@@ -1,7 +1,7 @@
 import certifi
 from pymongo.mongo_client import MongoClient
 import logging
-
+import os
 # Configure logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # Adjust logging level as needed
@@ -10,7 +10,7 @@ def initiate_mango_connection():
     """Connects to the MongoDB database and logs success or errors."""
 
     ca = certifi.where()  # Load the updated CA bundle
-    uri = "mongodb+srv://omkarjadhav00:mango@strava-token.6r1ebob.mongodb.net/?ssl=true&ssl_cert_reqs=CERT_NONE&retryWrites=true&w=majority"
+    uri = os.environ.get("mango_url")
 
     logger.debug("Connecting to MongoDB with URI: %s", uri)
 
