@@ -101,7 +101,7 @@ def get_latest_activities(inputs):
                 
             logger.info(f"description:{latest_activity_data['description']} \n  url: {url}" )
             
-            logger.info(f"latest activity: {latest_activity_data}")
+            # logger.info(f"latest activity: {latest_activity_data}")
             # if latest_activity_response['description'] is None:
             #     latest_activity_data['description'] =""
             if result_table and url not in latest_activity_data['description']:
