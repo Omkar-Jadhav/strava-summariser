@@ -98,16 +98,20 @@ def get_latest_activities(inputs):
             if latest_activity_data['type'] in ['Run', 'Yoga', 'Swim','Ride', 'Walk']:
                 activities_of_type = [activity for activity in activities if activity['type'] == latest_activity_data['type']]
                 result_table = getattr(data_processing, f"give_{latest_activity_data['type'].lower()}_summary")(activities_of_type)
-                
-            logger.info(f"description:{latest_activity_data['description']} \n  url: {url}" )
+                logger.info(f"description:{latest_activity_data['description']} \n  url: {url}" )
+                if latest_activity_data['description'] is not None:
+                    logger.info("inside if not None condition")
+                    if url not in latest_activity_data['description']:
+                        update_json = utils.update_description(activity_data=latest_activity_data, summary=result_table)
+                        update_message = utils.update_activity(activity_url=latest_activity_url, update_json=update_json, headers=headers)  
+                        print(update_message)
+                    
+            
             
             # logger.info(f"latest activity: {latest_activity_data}")
             # if latest_activity_response['description'] is None:
             #     latest_activity_data['description'] =""
-            if result_table and url not in latest_activity_data['description']:
-                update_json = utils.update_description(activity_data=latest_activity_data, summary=result_table)
-                update_message = utils.update_activity(activity_url=latest_activity_url, update_json=update_json, headers=headers)  
-                print(update_message)
+            
         else:
             print(f"Error: {latest_activity_response.status_code}, {latest_activity_response.text}")
     else:
