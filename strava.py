@@ -99,12 +99,13 @@ def get_latest_activities(inputs):
                 activities_of_type = [activity for activity in activities if activity['type'] == latest_activity_data['type']]
                 result_table = getattr(data_processing, f"give_{latest_activity_data['type'].lower()}_summary")(activities_of_type)
                 logger.info(f"description:{latest_activity_data['description']} \n  url: {url}" )
-                if latest_activity_data['description'] is not None:
+                if latest_activity_data['description'] is None:
+                    latest_activity_data['description'] = ""
                     logger.info("inside if not None condition")
-                    if url not in latest_activity_data['description']:
-                        update_json = utils.update_description(activity_data=latest_activity_data, summary=result_table)
-                        update_message = utils.update_activity(activity_url=latest_activity_url, update_json=update_json, headers=headers)  
-                        print(update_message)
+                if url not in latest_activity_data['description']:
+                    update_json = utils.update_description(activity_data=latest_activity_data, summary=result_table)
+                    update_message = utils.update_activity(activity_url=latest_activity_url, update_json=update_json, headers=headers)  
+                    print(update_message)
                     
             
             
