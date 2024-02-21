@@ -100,6 +100,8 @@ def get_latest_activities(inputs):
                 result_table = getattr(data_processing, f"give_{latest_activity_data['type'].lower()}_summary")(activities_of_type)
                 
             logger.info(f"description:{latest_activity_data['description']} \n  url: {url}" )
+            
+            logger.info(f"latest activity: {latest_activity_data}")
             # if latest_activity_response['description'] is None:
             #     latest_activity_data['description'] =""
             if result_table and url not in latest_activity_data['description']:
