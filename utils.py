@@ -19,6 +19,6 @@ def make_url_request(activity_url, headers):
             
 def update_description(activity_data, summary):
     description = activity_data['description']
-    updated_description = f"{description} \n {summary}"
+    updated_description = f"{description} {summary}"
     update_json = {"description": updated_description}
     return update_json

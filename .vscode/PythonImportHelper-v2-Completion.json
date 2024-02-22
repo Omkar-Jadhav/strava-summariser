@@ -516,7 +516,7 @@
         "kind": 2,
         "importPath": "utils",
         "description": "utils",
-        "peekOfCode": "def make_url_request(activity_url, headers):\n    activity_response = requests.get(activity_url, headers=headers)\n    if(activity_response.status_code == 200):\n        return activity_response\n    else:\n            print(f\"Error while getting activity: {activity_response.status_code}, Error description : {activity_response.text}\")\ndef update_description(activity_data, summary):\n    description = activity_data['description']\n    updated_description = f\"{description} \\n {summary}\"\n    update_json = {\"description\": updated_description}",
+        "peekOfCode": "def make_url_request(activity_url, headers):\n    activity_response = requests.get(activity_url, headers=headers)\n    if(activity_response.status_code == 200):\n        return activity_response\n    else:\n            print(f\"Error while getting activity: {activity_response.status_code}, Error description : {activity_response.text}\")\ndef update_description(activity_data, summary):\n    description = activity_data['description']\n    updated_description = f\"{description} {summary}\"\n    update_json = {\"description\": updated_description}",
         "detail": "utils",
         "documentation": {}
     },
@@ -525,7 +525,7 @@
         "kind": 2,
         "importPath": "utils",
         "description": "utils",
-        "peekOfCode": "def update_description(activity_data, summary):\n    description = activity_data['description']\n    updated_description = f\"{description} \\n {summary}\"\n    update_json = {\"description\": updated_description}\n    return update_json",
+        "peekOfCode": "def update_description(activity_data, summary):\n    description = activity_data['description']\n    updated_description = f\"{description} {summary}\"\n    update_json = {\"description\": updated_description}\n    return update_json",
         "detail": "utils",
         "documentation": {}
     }
