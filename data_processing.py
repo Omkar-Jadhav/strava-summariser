@@ -14,6 +14,28 @@ def calculate_speed_in_kmph(moving_time, distance):
     speed_kph = (distance / 1000) / (moving_time / 3600)
     return f"{speed_kph:.2f} km/hr"
 
+def give_WeightTraining_summary(WeightTraining_activities):
+    total_strength_training_time = 0
+    total_sessions = 0
+    for activity in WeightTraining_activities:
+        total_strength_training_time += activity["moving_time"]
+        total_sessions += 1
+    
+    avg_strength_training_session = convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))
+    total_strength_training_time = convert_seconds_in_hhmmss(total_strength_training_time)
+    
+    overall_strength_training_summary_data =[
+        ["Total strength_training sessions:", f"{total_sessions}"],
+        ["Avg strength_training session:", f"{avg_strength_training_session}"],
+        ["Total strength_training time:", f"{total_strength_training_time}"],
+        
+    ]
+    overall_strength_training_summary_table = tabulate(overall_strength_training_summary_data, tablefmt="plain")
+    result_table = f"\n------- Four-Week Rolling Overall strength_training Summary -------\n{overall_strength_training_summary_table}" +footer
+    
+    print(result_table)
+    return result_table
+
 def give_yoga_summary(yoga_activities):
     total_yoga_time = 0
     total_sessions = 0
@@ -31,7 +53,7 @@ def give_yoga_summary(yoga_activities):
         
     ]
     overall_yoga_summary_table = tabulate(overall_yoga_summary_data, tablefmt="plain")
-    result_table = f"------- Four-Week Rolling Overall Yoga Summary -------\n{overall_yoga_summary_table}" +footer
+    result_table = f"\n------- Four-Week Rolling Overall Yoga Summary -------\n{overall_yoga_summary_table}" +footer
     
     print(result_table)
     return result_table

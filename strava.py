@@ -95,7 +95,7 @@ def get_latest_activities(inputs):
         url = 'https://strava-summariser.vercel.app'
         if latest_activity_response.status_code == 200:
              # Step 5: Update Activity Description Based on Type
-            if latest_activity_data['type'] in ['Run', 'Yoga', 'Swim','Ride', 'Walk']:
+            if latest_activity_data['type'] in ['Run', 'Yoga', 'Swim','Ride', 'Walk', 'WeightTraining']:
                 activities_of_type = [activity for activity in activities if activity['type'] == latest_activity_data['type']]
                 result_table = getattr(data_processing, f"give_{latest_activity_data['type'].lower()}_summary")(activities_of_type)
                 logger.info(f"description:{latest_activity_data['description']} \n  url: {url}" )
