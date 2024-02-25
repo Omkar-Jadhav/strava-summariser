@@ -1,5 +1,5 @@
 from tabulate import tabulate
-footer = "\n \n -- Subscribe on https://strava-summariser.vercel.app/ --\nStats created using StravaAPI by Omkar Jadhav"
+footer = "\n \n Subscribe on https://strava-summariser.vercel.app/ \nStats created using StravaAPI by Omkar Jadhav"
 def convert_seconds_in_hhmmss(seconds):
     hours = int(seconds//3600)
     minutes = int((seconds%3600)//60)
@@ -58,20 +58,21 @@ def give_swim_summary(swim_activities):
     print(result_table)
     return result_table
 
-def give_ride_summar(ride_activities):
+def give_ride_summary(ride_activities):
     total_ride_time = 0
+    total_ride_time_hhmmss = 0
     total_ride_sessions = 0
     total_ride_distance = 0
     total_elevation_gain = 0
     
     for activity in ride_activities:
-        total_ride_time += activity['elapsed_time']
+        total_ride_time += activity['moving_time']
         total_ride_sessions += 1
         total_ride_distance += activity['distance']
         total_elevation_gain += activity['total_elevation_gain']
     
     avg_ride_time = convert_seconds_in_hhmmss(round(total_ride_time / total_ride_sessions, 2))
-    total_ride_time = convert_seconds_in_hhmmss(total_ride_time)
+    total_ride_time_hhmmss = convert_seconds_in_hhmmss(total_ride_time)
     avg_ride_distance = round(total_ride_distance / total_ride_sessions / 1000, 2)
     avg_elevation_gain = round(total_elevation_gain / total_ride_sessions, 2)
     avg_ride_speed = calculate_speed_in_kmph(total_ride_time, total_ride_distance)
@@ -79,7 +80,7 @@ def give_ride_summar(ride_activities):
     overall_ride_summary_data = [
         ["Total ride sessions:", f"{total_ride_sessions}"],
         ["Avg ride time:", f"{avg_ride_time}"],
-        ["Total ride time:", f"{total_ride_time}"],
+        ["Total ride time:", f"{total_ride_time_hhmmss}"],
         ["Total ride distance:", f"{total_ride_distance / 1000} Km"],
         ["Avg ride distance:", f"{avg_ride_distance} Km"],
         ["Total elevation gain:", f"{total_elevation_gain} m"],

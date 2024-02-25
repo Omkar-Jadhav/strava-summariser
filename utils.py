@@ -19,6 +19,9 @@ def make_url_request(activity_url, headers):
             
 def update_description(activity_data, summary):
     description = activity_data['description']
-    updated_description = f"{description} {summary}"
+    if description == "" or description is None:
+        updated_description = f"{summary}"
+    else:    
+        updated_description = f"{description} {summary}"
     update_json = {"description": updated_description}
     return update_json
