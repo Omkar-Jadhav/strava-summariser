@@ -1,5 +1,5 @@
 from tabulate import tabulate
-
+footer = "\n \n -- Subscribe on https://strava-summariser.vercel.app/ --\nStats created using StravaAPI by Omkar Jadhav"
 def convert_seconds_in_hhmmss(seconds):
     hours = int(seconds//3600)
     minutes = int((seconds%3600)//60)
@@ -31,7 +31,7 @@ def give_yoga_summary(yoga_activities):
         
     ]
     overall_yoga_summary_table = tabulate(overall_yoga_summary_data, tablefmt="plain")
-    result_table = f"\n------- Four-Week Rolling Overall Yoga Summary -------\n{overall_yoga_summary_table}\n\n \n -- Subscribe on https://strava-summariser.vercel.app/  \n Stats created using StravaAPI by Omkar Jadhav "
+    result_table = f"------- Four-Week Rolling Overall Yoga Summary -------\n{overall_yoga_summary_table}" +footer
     
     print(result_table)
     return result_table
@@ -53,7 +53,7 @@ def give_swim_summary(swim_activities):
         
     ]
     overall_swim_summary_table = tabulate(overall_swim_summary_data, tablefmt="plain")
-    result_table = f"\n------- Four-Week Rolling Swim Summary -------\n{overall_swim_summary_table}\n\n Subscribe on https://strava-summariser.vercel.app/ \n Stats created using StravaAPI by Omkar Jadhav "
+    result_table = f"\n------- Four-Week Rolling Swim Summary -------\n{overall_swim_summary_table}" + footer
     
     print(result_table)
     return result_table
@@ -88,7 +88,8 @@ def give_ride_summar(ride_activities):
     ]
 
     overall_ride_summary_table = tabulate(overall_ride_summary_data, tablefmt="plain")
-    result_table = f"\n------- Four-Week Rolling Ride Summary -------\n{overall_ride_summary_table}\n \n  Subscribe on https://strava-summariser.vercel.app/ \n  Stats created using StravaAPI by Omkar Jadhav \n "
+    result_table = f"\n------- Four-Week Rolling Ride Summary -------\n{overall_ride_summary_table}" + footer
+    
     
     print(result_table)
     return result_table
@@ -211,7 +212,7 @@ def give_run_summary(run_activities):
         result_table += "\n\n------- Four-Week Rolling Trail Run Summary -------\n"
         result_table += tabulate(trail_runs_summary_data, tablefmt="plain")
 
-    result_table += "\n -- Subscribe on https://strava-summariser.vercel.app/ --\nStats created using StravaAPI by Omkar Jadhav"
+    result_table += footer
     print(result_table)
 
     return result_table
@@ -254,8 +255,7 @@ def give_walk_summary(walk_activities):
   result_table += "\n------- Four-Week Rolling Walk Summary -------\n"
   result_table += tabulate(walk_summary_data, tablefmt="plain")
 
-  result_table += "\n Subscribe on https://strava-summariser.vercel.app/ \n"
-  result_table += "Stats created using StravaAPI by Omkar Jadhav"
+  result_table += footer
 
   print(result_table)
 

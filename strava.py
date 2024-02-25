@@ -52,10 +52,10 @@ def get_latest_activities(inputs):
     logging.info('Access token retrieved')
     
     # Step 2: Define API Endpoint and Parameters
-    activities_url = 'https://www.strava.com/api/v3/athlete/activities'
-    headers = {'Authorization': f'Bearer {access_token}'}
-    BEFORE = int(time.time()) - (7 * 24 * 60 * 60 * 30)
-    AFTER = int(time.time())
+    BEFORE = int(time.time()) 
+    AFTER = int(time.time())- (7 * 24 * 60 * 60 * 4)
+    activities_url = f"https://www.strava.com/api/v3/athlete/activities?before={BEFORE}&after={AFTER}"
+    headers = {'Authorization': f'Bearer {access_token}'}   
     PAGE = 1
     PER_PAGE = 10000
     parameters = {'page': PAGE, 'per_page': PER_PAGE}
