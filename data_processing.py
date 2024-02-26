@@ -14,7 +14,7 @@ def calculate_speed_in_kmph(moving_time, distance):
     speed_kph = (distance / 1000) / (moving_time / 3600)
     return f"{speed_kph:.2f} km/hr"
 
-def give_WeightTraining_summary(WeightTraining_activities):
+def give_weightTraining_summary(WeightTraining_activities):
     total_strength_training_time = 0
     total_sessions = 0
     for activity in WeightTraining_activities:
