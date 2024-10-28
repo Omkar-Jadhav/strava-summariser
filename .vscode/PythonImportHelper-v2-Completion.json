@@ -162,12 +162,53 @@
         "documentation": {}
     },
     {
+        "label": "make_url_request",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "update_activity",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "update_description",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
         "label": "data_processing",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "data_processing",
         "description": "data_processing",
         "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "other summary functions",
+        "importPath": "data_processing import give_run_summary. give_yoga_summary. give_swim_summary  #",
+        "description": "data_processing import give_run_summary. give_yoga_summary. give_swim_summary  #",
+        "isExtraImport": true,
+        "detail": "data_processing import give_run_summary. give_yoga_summary. give_swim_summary  #",
         "documentation": {}
     },
     {
@@ -372,7 +413,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)",
+        "peekOfCode": "def convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds // 3600)\n    minutes = int((seconds % 3600) // 60)\n    seconds = int(seconds % 60)\n    return f\"{hours:02}:{minutes:02}:{seconds:02}\"\ndef calculate_speed(moving_time, distance):\n    minutes, seconds = divmod(moving_time / distance, 60)\n    return f\"{int(minutes):02}:{int(seconds):02} min/Km\" if distance > 0 else \"00:00 min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):\n    return f\"{(distance / 1000) / (moving_time / 3600):.2f} km/hr\" if distance > 0 else \"0.00 km/hr\"",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -381,7 +422,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)\n    return f\"{speed_kph:.2f} km/hr\"\ndef give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:",
+        "peekOfCode": "def calculate_speed(moving_time, distance):\n    minutes, seconds = divmod(moving_time / distance, 60)\n    return f\"{int(minutes):02}:{int(seconds):02} min/Km\" if distance > 0 else \"00:00 min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):\n    return f\"{(distance / 1000) / (moving_time / 3600):.2f} km/hr\" if distance > 0 else \"0.00 km/hr\"\n# Core Summary Function\ndef generate_summary(activity_type, activities, time_key=\"moving_time\", distance_key=None, type_key=None, specific_type=None):\n    total_time = sum(activity[time_key] for activity in activities if not specific_type or activity.get(type_key) == specific_type)\n    total_sessions = len([activity for activity in activities if not specific_type or activity.get(type_key) == specific_type])\n    avg_time = convert_seconds_in_hhmmss(round(total_time / total_sessions, 2)) if total_sessions > 0 else \"00:00:00\"",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -390,43 +431,16 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)\n    return f\"{speed_kph:.2f} km/hr\"\ndef give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))",
+        "peekOfCode": "def calculate_speed_in_kmph(moving_time, distance):\n    return f\"{(distance / 1000) / (moving_time / 3600):.2f} km/hr\" if distance > 0 else \"0.00 km/hr\"\n# Core Summary Function\ndef generate_summary(activity_type, activities, time_key=\"moving_time\", distance_key=None, type_key=None, specific_type=None):\n    total_time = sum(activity[time_key] for activity in activities if not specific_type or activity.get(type_key) == specific_type)\n    total_sessions = len([activity for activity in activities if not specific_type or activity.get(type_key) == specific_type])\n    avg_time = convert_seconds_in_hhmmss(round(total_time / total_sessions, 2)) if total_sessions > 0 else \"00:00:00\"\n    total_time_hhmmss = convert_seconds_in_hhmmss(total_time)\n    summary_data = [\n        [f\"Total {activity_type} sessions:\", total_sessions],",
         "detail": "data_processing",
         "documentation": {}
     },
     {
-        "label": "give_weighttraining_summary",
+        "label": "generate_summary",
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))\n    total_strength_training_time = convert_seconds_in_hhmmss(total_strength_training_time)\n    overall_strength_training_summary_data =[\n        [\"Total strength_training sessions:\", f\"{total_sessions}\"],",
-        "detail": "data_processing",
-        "documentation": {}
-    },
-    {
-        "label": "give_yoga_summary",
-        "kind": 2,
-        "importPath": "data_processing",
-        "description": "data_processing",
-        "peekOfCode": "def give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))\n    total_yoga_time = convert_seconds_in_hhmmss(total_yoga_time)\n    overall_yoga_summary_data =[\n        [\"Total yoga sessions:\", f\"{total_sessions}\"],",
-        "detail": "data_processing",
-        "documentation": {}
-    },
-    {
-        "label": "give_swim_summary",
-        "kind": 2,
-        "importPath": "data_processing",
-        "description": "data_processing",
-        "peekOfCode": "def give_swim_summary(swim_activities):\n    total_swim_time = 0\n    total_swim_sessions = 0\n    for activity in swim_activities:\n        total_swim_time += activity[\"elapsed_time\"]\n        total_swim_sessions += 1\n    avg_swim_session = convert_seconds_in_hhmmss(round(total_swim_time/total_swim_sessions, 2))\n    total_swim_time = convert_seconds_in_hhmmss(total_swim_time)\n    overall_swim_summary_data =[\n        [\"Total swim sessions:\", f\"{total_swim_sessions}\"],",
-        "detail": "data_processing",
-        "documentation": {}
-    },
-    {
-        "label": "give_ride_summary",
-        "kind": 2,
-        "importPath": "data_processing",
-        "description": "data_processing",
-        "peekOfCode": "def give_ride_summary(ride_activities):\n    total_ride_time = 0\n    total_ride_time_hhmmss = 0\n    total_ride_sessions = 0\n    total_ride_distance = 0\n    total_elevation_gain = 0\n    for activity in ride_activities:\n        total_ride_time += activity['moving_time']\n        total_ride_sessions += 1\n        total_ride_distance += activity['distance']",
+        "peekOfCode": "def generate_summary(activity_type, activities, time_key=\"moving_time\", distance_key=None, type_key=None, specific_type=None):\n    total_time = sum(activity[time_key] for activity in activities if not specific_type or activity.get(type_key) == specific_type)\n    total_sessions = len([activity for activity in activities if not specific_type or activity.get(type_key) == specific_type])\n    avg_time = convert_seconds_in_hhmmss(round(total_time / total_sessions, 2)) if total_sessions > 0 else \"00:00:00\"\n    total_time_hhmmss = convert_seconds_in_hhmmss(total_time)\n    summary_data = [\n        [f\"Total {activity_type} sessions:\", total_sessions],\n        [f\"Avg {activity_type} session time:\", avg_time],\n        [f\"Total {activity_type} time:\", total_time_hhmmss]\n    ]",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -435,7 +449,43 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_run_summary(run_activities):\n    tot_distance_ran_year = 0\n    tot_distance_ran_month = 0\n    avg_distance_per_run = 0\n    avg_distance_per_week = 0\n    tot_elevation_gain = 0\n    avg_elevation_gain = 0\n    tot_elevation_gain_trail = 0\n    avg_elevation_gain_trail = 0\n    tot_trail_distance = 0",
+        "peekOfCode": "def give_run_summary(run_activities):\n    # Overall run summary\n    overall_summary = generate_summary(\"run\", run_activities, time_key=\"moving_time\", distance_key=\"distance\")\n    # Road and Trail runs summary if available\n    road_summary = generate_summary(\"road run\", run_activities, time_key=\"moving_time\", distance_key=\"distance\", type_key=\"sport_type\", specific_type=\"Run\")\n    trail_summary = generate_summary(\"trail run\", run_activities, time_key=\"moving_time\", distance_key=\"distance\", type_key=\"sport_type\", specific_type=\"TrailRun\")\n    return f\"{overall_summary}\\n\\n{road_summary}\\n\\n{trail_summary}\"\n# Example for other activity types without specific types\ndef give_weighttraining_summary(WeightTraining_activities):\n    return generate_summary(\"strength training\", WeightTraining_activities, time_key=\"moving_time\")",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "give_weighttraining_summary",
+        "kind": 2,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "def give_weighttraining_summary(WeightTraining_activities):\n    return generate_summary(\"strength training\", WeightTraining_activities, time_key=\"moving_time\")\ndef give_yoga_summary(yoga_activities):\n    return generate_summary(\"yoga\", yoga_activities, time_key=\"elapsed_time\")\ndef give_swim_summary(swim_activities):\n    return generate_summary(\"swim\", swim_activities, time_key=\"elapsed_time\")\ndef give_ride_summary(ride_activities):\n    return generate_summary(\"ride\", ride_activities, time_key=\"moving_time\", distance_key=\"distance\")\ndef give_walk_summary(walk_activities):\n    return generate_summary(\"walk\", walk_activities, time_key=\"moving_time\", distance_key=\"distance\")",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "give_yoga_summary",
+        "kind": 2,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "def give_yoga_summary(yoga_activities):\n    return generate_summary(\"yoga\", yoga_activities, time_key=\"elapsed_time\")\ndef give_swim_summary(swim_activities):\n    return generate_summary(\"swim\", swim_activities, time_key=\"elapsed_time\")\ndef give_ride_summary(ride_activities):\n    return generate_summary(\"ride\", ride_activities, time_key=\"moving_time\", distance_key=\"distance\")\ndef give_walk_summary(walk_activities):\n    return generate_summary(\"walk\", walk_activities, time_key=\"moving_time\", distance_key=\"distance\")",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "give_swim_summary",
+        "kind": 2,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "def give_swim_summary(swim_activities):\n    return generate_summary(\"swim\", swim_activities, time_key=\"elapsed_time\")\ndef give_ride_summary(ride_activities):\n    return generate_summary(\"ride\", ride_activities, time_key=\"moving_time\", distance_key=\"distance\")\ndef give_walk_summary(walk_activities):\n    return generate_summary(\"walk\", walk_activities, time_key=\"moving_time\", distance_key=\"distance\")",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "give_ride_summary",
+        "kind": 2,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "def give_ride_summary(ride_activities):\n    return generate_summary(\"ride\", ride_activities, time_key=\"moving_time\", distance_key=\"distance\")\ndef give_walk_summary(walk_activities):\n    return generate_summary(\"walk\", walk_activities, time_key=\"moving_time\", distance_key=\"distance\")",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -444,16 +494,16 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_walk_summary(walk_activities):\n  tot_distance_walked_month = 0\n  avg_distance_per_walk = 0\n  tot_elevation_gain = 0\n  avg_elevation_gain = 0\n  tot_moving_time = 0\n  avg_mov_speed = 0\n  tot_elapsed_time = 0\n  avg_elapsed_speed = 0\n  for activity in walk_activities:",
+        "peekOfCode": "def give_walk_summary(walk_activities):\n    return generate_summary(\"walk\", walk_activities, time_key=\"moving_time\", distance_key=\"distance\")",
         "detail": "data_processing",
         "documentation": {}
     },
     {
-        "label": "footer",
+        "label": "FOOTER",
         "kind": 5,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "footer = \"\\n \\n Subscribe on https://strava-summariser.vercel.app/ \\nStats created using StravaAPI by Omkar Jadhav\"\ndef convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):",
+        "peekOfCode": "FOOTER = \"\\n\\nSubscribe on https://strava-summariser.vercel.app/ \\nStats created using StravaAPI by Omkar Jadhav\"\n# Utility Functions\ndef convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds // 3600)\n    minutes = int((seconds % 3600) // 60)\n    seconds = int(seconds % 60)\n    return f\"{hours:02}:{minutes:02}:{seconds:02}\"\ndef calculate_speed(moving_time, distance):\n    minutes, seconds = divmod(moving_time / distance, 60)\n    return f\"{int(minutes):02}:{int(seconds):02} min/Km\" if distance > 0 else \"00:00 min/Km\"",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -471,7 +521,61 @@
         "kind": 2,
         "importPath": "strava",
         "description": "strava",
-        "peekOfCode": "def get_latest_activities(inputs):\n    logging.info('Inside get_latest_activities')\n    latest_activity_id = inputs.get('activity_id')\n    athlete_id = inputs.get('athlete_id')\n    # Step 1: Retrieve Access Token\n    access_token = get_access_token(athlete_id)\n    logging.info('Access token retrieved')\n    # Step 2: Define API Endpoint and Parameters\n    BEFORE = int(time.time()) \n    AFTER = int(time.time()) - (28 * 24 * 60 * 60)  # Exactly 4 weeks",
+        "peekOfCode": "def get_latest_activities(inputs):\n    \"\"\"Main function to retrieve and process latest activities.\"\"\"\n    logging.info('Inside get_latest_activities')\n    athlete_id = inputs.get('athlete_id')\n    # Step 1: Retrieve Access Token\n    access_token = get_access_token(athlete_id)\n    logging.info('Access token retrieved')\n    # Step 2: Fetch activities within date range\n    activities = fetch_activities(access_token)\n    if not activities:",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "get_access_token",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def get_access_token(athlete_id):\n    \"\"\"Retrieve the access token for the athlete.\"\"\"\n    # Replace this with actual token retrieval logic\n    return \"your_access_token\"\ndef fetch_activities(access_token):\n    \"\"\"Fetches activities within the last 4 weeks for the athlete.\"\"\"\n    activities_url = \"https://www.strava.com/api/v3/athlete/activities\"\n    headers = {'Authorization': f'Bearer {access_token}'}\n    before = int(time.time())\n    after = before - (28 * 24 * 60 * 60)",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_activities",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def fetch_activities(access_token):\n    \"\"\"Fetches activities within the last 4 weeks for the athlete.\"\"\"\n    activities_url = \"https://www.strava.com/api/v3/athlete/activities\"\n    headers = {'Authorization': f'Bearer {access_token}'}\n    before = int(time.time())\n    after = before - (28 * 24 * 60 * 60)\n    all_activities = []\n    page = 1\n    while True:\n        params = {'before': before, 'after': after, 'page': page, 'per_page': 200}",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "process_latest_activity",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def process_latest_activity(access_token, latest_activity, all_activities):\n    \"\"\"Processes the latest activity, updating type and description if necessary.\"\"\"\n    activity_url = f\"https://www.strava.com/api/v3/activities/{latest_activity['id']}\"\n    headers = {'Authorization': f'Bearer {access_token}'}\n    # Step 4: Update Activity Type if 'Workout'\n    latest_activity_data = fetch_activity_data(activity_url, headers)\n    if latest_activity_data and latest_activity_data['type'] == 'Workout':\n        update_activity_type_to_yoga(activity_url, latest_activity_data, headers)\n    # Step 5: Update Activity Description Based on Type\n    if latest_activity_data:",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_activity_data",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def fetch_activity_data(activity_url, headers):\n    \"\"\"Fetches activity data for a given activity URL.\"\"\"\n    response = make_url_request(activity_url=activity_url, headers=headers)\n    if response:\n        return response.json()\n    logging.error(f\"Error fetching activity data: {response.status_code}\")\n    return None\ndef update_activity_type_to_yoga(activity_url, activity_data, headers):\n    \"\"\"Updates the activity type to 'Yoga' if the current type is 'Workout'.\"\"\"\n    updated_name = activity_data['name'].rsplit(' ', 1)[0] + \" Yoga\"",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "update_activity_type_to_yoga",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def update_activity_type_to_yoga(activity_url, activity_data, headers):\n    \"\"\"Updates the activity type to 'Yoga' if the current type is 'Workout'.\"\"\"\n    updated_name = activity_data['name'].rsplit(' ', 1)[0] + \" Yoga\"\n    update_json = {'type': 'Yoga', 'sport_type': 'Yoga', 'name': updated_name}\n    update_message = update_activity(activity_url=activity_url, update_json=update_json, headers=headers)\n    print(update_message)\ndef update_activity_description(activity_url, latest_activity_data, all_activities, headers):\n    \"\"\"Updates the activity description with a summary if not already present.\"\"\"\n    url = 'https://strava-summariser.vercel.app'\n    summary_header = \"Four-Week Rolling\"",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "update_activity_description",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def update_activity_description(activity_url, latest_activity_data, all_activities, headers):\n    \"\"\"Updates the activity description with a summary if not already present.\"\"\"\n    url = 'https://strava-summariser.vercel.app'\n    summary_header = \"Four-Week Rolling\"\n    # Check if description already contains summary\n    if (latest_activity_data['description'] is None or \n        (summary_header not in latest_activity_data['description'] and url not in latest_activity_data['description'])):\n        activities_of_type = [activity for activity in all_activities if activity['type'] == latest_activity_data['type']]\n        result_table = getattr(data_processing, f\"give_{latest_activity_data['type'].lower()}_summary\")(activities_of_type)\n        update_json = update_description(activity_data=latest_activity_data, summary=result_table)",
         "detail": "strava",
         "documentation": {}
     },
