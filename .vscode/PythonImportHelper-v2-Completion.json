@@ -413,7 +413,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds // 3600)\n    minutes = int((seconds % 3600) // 60)\n    seconds = int(seconds % 60)\n    return f\"{hours:02}:{minutes:02}:{seconds:02}\"\ndef calculate_speed(moving_time, distance):\n    minutes, seconds = divmod(moving_time / distance, 60)\n    return f\"{int(minutes):02}:{int(seconds):02} min/Km\" if distance > 0 else \"00:00 min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):\n    return f\"{(distance / 1000) / (moving_time / 3600):.2f} km/hr\" if distance > 0 else \"0.00 km/hr\"",
+        "peekOfCode": "def convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -422,7 +422,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def calculate_speed(moving_time, distance):\n    minutes, seconds = divmod(moving_time / distance, 60)\n    return f\"{int(minutes):02}:{int(seconds):02} min/Km\" if distance > 0 else \"00:00 min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):\n    return f\"{(distance / 1000) / (moving_time / 3600):.2f} km/hr\" if distance > 0 else \"0.00 km/hr\"\n# Core Summary Function\ndef generate_summary(activity_type, activities, time_key=\"moving_time\", distance_key=None, type_key=None, specific_type=None):\n    total_time = sum(activity[time_key] for activity in activities if not specific_type or activity.get(type_key) == specific_type)\n    total_sessions = len([activity for activity in activities if not specific_type or activity.get(type_key) == specific_type])\n    avg_time = convert_seconds_in_hhmmss(round(total_time / total_sessions, 2)) if total_sessions > 0 else \"00:00:00\"",
+        "peekOfCode": "def calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)\n    return f\"{speed_kph:.2f} km/hr\"\ndef give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -431,25 +431,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def calculate_speed_in_kmph(moving_time, distance):\n    return f\"{(distance / 1000) / (moving_time / 3600):.2f} km/hr\" if distance > 0 else \"0.00 km/hr\"\n# Core Summary Function\ndef generate_summary(activity_type, activities, time_key=\"moving_time\", distance_key=None, type_key=None, specific_type=None):\n    total_time = sum(activity[time_key] for activity in activities if not specific_type or activity.get(type_key) == specific_type)\n    total_sessions = len([activity for activity in activities if not specific_type or activity.get(type_key) == specific_type])\n    avg_time = convert_seconds_in_hhmmss(round(total_time / total_sessions, 2)) if total_sessions > 0 else \"00:00:00\"\n    total_time_hhmmss = convert_seconds_in_hhmmss(total_time)\n    summary_data = [\n        [f\"Total {activity_type} sessions:\", total_sessions],",
-        "detail": "data_processing",
-        "documentation": {}
-    },
-    {
-        "label": "generate_summary",
-        "kind": 2,
-        "importPath": "data_processing",
-        "description": "data_processing",
-        "peekOfCode": "def generate_summary(activity_type, activities, time_key=\"moving_time\", distance_key=None, type_key=None, specific_type=None):\n    total_time = sum(activity[time_key] for activity in activities if not specific_type or activity.get(type_key) == specific_type)\n    total_sessions = len([activity for activity in activities if not specific_type or activity.get(type_key) == specific_type])\n    avg_time = convert_seconds_in_hhmmss(round(total_time / total_sessions, 2)) if total_sessions > 0 else \"00:00:00\"\n    total_time_hhmmss = convert_seconds_in_hhmmss(total_time)\n    summary_data = [\n        [f\"Total {activity_type} sessions:\", total_sessions],\n        [f\"Avg {activity_type} session time:\", avg_time],\n        [f\"Total {activity_type} time:\", total_time_hhmmss]\n    ]",
-        "detail": "data_processing",
-        "documentation": {}
-    },
-    {
-        "label": "give_run_summary",
-        "kind": 2,
-        "importPath": "data_processing",
-        "description": "data_processing",
-        "peekOfCode": "def give_run_summary(run_activities):\n    # Overall run summary\n    overall_summary = generate_summary(\"run\", run_activities, time_key=\"moving_time\", distance_key=\"distance\")\n    # Road and Trail runs summary if available\n    road_summary = generate_summary(\"road run\", run_activities, time_key=\"moving_time\", distance_key=\"distance\", type_key=\"sport_type\", specific_type=\"Run\")\n    trail_summary = generate_summary(\"trail run\", run_activities, time_key=\"moving_time\", distance_key=\"distance\", type_key=\"sport_type\", specific_type=\"TrailRun\")\n    return f\"{overall_summary}\\n\\n{road_summary}\\n\\n{trail_summary}\"\n# Example for other activity types without specific types\ndef give_weighttraining_summary(WeightTraining_activities):\n    return generate_summary(\"strength training\", WeightTraining_activities, time_key=\"moving_time\")",
+        "peekOfCode": "def calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)\n    return f\"{speed_kph:.2f} km/hr\"\ndef give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -458,7 +440,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_weighttraining_summary(WeightTraining_activities):\n    return generate_summary(\"strength training\", WeightTraining_activities, time_key=\"moving_time\")\ndef give_yoga_summary(yoga_activities):\n    return generate_summary(\"yoga\", yoga_activities, time_key=\"elapsed_time\")\ndef give_swim_summary(swim_activities):\n    return generate_summary(\"swim\", swim_activities, time_key=\"elapsed_time\")\ndef give_ride_summary(ride_activities):\n    return generate_summary(\"ride\", ride_activities, time_key=\"moving_time\", distance_key=\"distance\")\ndef give_walk_summary(walk_activities):\n    return generate_summary(\"walk\", walk_activities, time_key=\"moving_time\", distance_key=\"distance\")",
+        "peekOfCode": "def give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))\n    total_strength_training_time = convert_seconds_in_hhmmss(total_strength_training_time)\n    overall_strength_training_summary_data =[\n        [\"Total strength_training sessions:\", f\"{total_sessions}\"],",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -467,7 +449,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_yoga_summary(yoga_activities):\n    return generate_summary(\"yoga\", yoga_activities, time_key=\"elapsed_time\")\ndef give_swim_summary(swim_activities):\n    return generate_summary(\"swim\", swim_activities, time_key=\"elapsed_time\")\ndef give_ride_summary(ride_activities):\n    return generate_summary(\"ride\", ride_activities, time_key=\"moving_time\", distance_key=\"distance\")\ndef give_walk_summary(walk_activities):\n    return generate_summary(\"walk\", walk_activities, time_key=\"moving_time\", distance_key=\"distance\")",
+        "peekOfCode": "def give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))\n    total_yoga_time = convert_seconds_in_hhmmss(total_yoga_time)\n    overall_yoga_summary_data =[\n        [\"Total yoga sessions:\", f\"{total_sessions}\"],",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -476,7 +458,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_swim_summary(swim_activities):\n    return generate_summary(\"swim\", swim_activities, time_key=\"elapsed_time\")\ndef give_ride_summary(ride_activities):\n    return generate_summary(\"ride\", ride_activities, time_key=\"moving_time\", distance_key=\"distance\")\ndef give_walk_summary(walk_activities):\n    return generate_summary(\"walk\", walk_activities, time_key=\"moving_time\", distance_key=\"distance\")",
+        "peekOfCode": "def give_swim_summary(swim_activities):\n    total_swim_time = 0\n    total_swim_sessions = 0\n    for activity in swim_activities:\n        total_swim_time += activity[\"elapsed_time\"]\n        total_swim_sessions += 1\n    avg_swim_session = convert_seconds_in_hhmmss(round(total_swim_time/total_swim_sessions, 2))\n    total_swim_time = convert_seconds_in_hhmmss(total_swim_time)\n    overall_swim_summary_data =[\n        [\"Total swim sessions:\", f\"{total_swim_sessions}\"],",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -485,7 +467,16 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_ride_summary(ride_activities):\n    return generate_summary(\"ride\", ride_activities, time_key=\"moving_time\", distance_key=\"distance\")\ndef give_walk_summary(walk_activities):\n    return generate_summary(\"walk\", walk_activities, time_key=\"moving_time\", distance_key=\"distance\")",
+        "peekOfCode": "def give_ride_summary(ride_activities):\n    total_ride_time = 0\n    total_ride_time_hhmmss = 0\n    total_ride_sessions = 0\n    total_ride_distance = 0\n    total_elevation_gain = 0\n    for activity in ride_activities:\n        total_ride_time += activity['moving_time']\n        total_ride_sessions += 1\n        total_ride_distance += activity['distance']",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "give_run_summary",
+        "kind": 2,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "def give_run_summary(run_activities):\n    tot_distance_ran_year = 0\n    tot_distance_ran_month = 0\n    avg_distance_per_run = 0\n    avg_distance_per_week = 0\n    tot_elevation_gain = 0\n    avg_elevation_gain = 0\n    tot_elevation_gain_trail = 0\n    avg_elevation_gain_trail = 0\n    tot_trail_distance = 0",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -494,16 +485,16 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_walk_summary(walk_activities):\n    return generate_summary(\"walk\", walk_activities, time_key=\"moving_time\", distance_key=\"distance\")",
+        "peekOfCode": "def give_walk_summary(walk_activities):\n  tot_distance_walked_month = 0\n  avg_distance_per_walk = 0\n  tot_elevation_gain = 0\n  avg_elevation_gain = 0\n  tot_moving_time = 0\n  avg_mov_speed = 0\n  tot_elapsed_time = 0\n  avg_elapsed_speed = 0\n  for activity in walk_activities:",
         "detail": "data_processing",
         "documentation": {}
     },
     {
-        "label": "FOOTER",
+        "label": "footer",
         "kind": 5,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "FOOTER = \"\\n\\nSubscribe on https://strava-summariser.vercel.app/ \\nStats created using StravaAPI by Omkar Jadhav\"\n# Utility Functions\ndef convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds // 3600)\n    minutes = int((seconds % 3600) // 60)\n    seconds = int(seconds % 60)\n    return f\"{hours:02}:{minutes:02}:{seconds:02}\"\ndef calculate_speed(moving_time, distance):\n    minutes, seconds = divmod(moving_time / distance, 60)\n    return f\"{int(minutes):02}:{int(seconds):02} min/Km\" if distance > 0 else \"00:00 min/Km\"",
+        "peekOfCode": "footer = \"\\n \\n Subscribe on https://strava-summariser.vercel.app/ \\nStats created using StravaAPI by Omkar Jadhav\"\ndef convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):",
         "detail": "data_processing",
         "documentation": {}
     },
