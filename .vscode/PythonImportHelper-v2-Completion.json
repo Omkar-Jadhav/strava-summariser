@@ -119,6 +119,31 @@
         "documentation": {}
     },
     {
+        "label": "decimal",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "decimal",
+        "description": "decimal",
+        "detail": "decimal",
+        "documentation": {}
+    },
+    {
+        "label": "ROUND_HALF_UP",
+        "importPath": "decimal",
+        "description": "decimal",
+        "isExtraImport": true,
+        "detail": "decimal",
+        "documentation": {}
+    },
+    {
+        "label": "Decimal",
+        "importPath": "decimal",
+        "description": "decimal",
+        "isExtraImport": true,
+        "detail": "decimal",
+        "documentation": {}
+    },
+    {
         "label": "tabulate",
         "importPath": "tabulate",
         "description": "tabulate",
@@ -368,29 +393,101 @@
         "documentation": {}
     },
     {
-        "label": "convert_seconds_in_hhmmss",
-        "kind": 2,
+        "label": "TimeConverter",
+        "kind": 6,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)",
+        "peekOfCode": "class TimeConverter:\n    @staticmethod\n    def seconds_to_hhmmss(seconds):\n        hours = int(seconds//3600)\n        minutes = int((seconds%3600)//60)\n        seconds = int(seconds % 60)\n        return f\"{hours:02d}:{minutes:02d}:{seconds:02d}\"\nclass SpeedCalculator:\n    @staticmethod\n    def pace_per_km(moving_time, distance):",
         "detail": "data_processing",
         "documentation": {}
     },
     {
-        "label": "calculate_speed",
-        "kind": 2,
+        "label": "SpeedCalculator",
+        "kind": 6,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)\n    return f\"{speed_kph:.2f} km/hr\"\ndef give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:",
+        "peekOfCode": "class SpeedCalculator:\n    @staticmethod\n    def pace_per_km(moving_time, distance):\n        # Using Decimal for precise division\n        try:\n            pace = Decimal(str(moving_time)) / Decimal(str(distance))\n            mov_speed_min, mov_speed_sec = divmod(float(pace), 60)\n            return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\n        except (ZeroDivisionError, decimal.InvalidOperation):\n            return \"0:00 min/Km\"",
         "detail": "data_processing",
         "documentation": {}
     },
     {
-        "label": "calculate_speed_in_kmph",
-        "kind": 2,
+        "label": "ActivitySummaryBase",
+        "kind": 6,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)\n    return f\"{speed_kph:.2f} km/hr\"\ndef give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))",
+        "peekOfCode": "class ActivitySummaryBase:\n    def __init__(self):\n        self.footer = \"\\n \\n Subscribe on https://strava-summariser.vercel.app/ \\nStats created using StravaAPI by Omkar Jadhav\"\n    def create_summary_table(self, title, data):\n        table = tabulate(data, tablefmt=\"plain\")\n        return f\"\\n{title}\\n{table}{self.footer}\"\n    def format_with_precision(self, value, precision=2):\n        \"\"\"\n        Format a number with specified precision using Decimal for accurate rounding\n        \"\"\"",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "TimedActivitySummary",
+        "kind": 6,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "class TimedActivitySummary(ActivitySummaryBase):\n    def calculate_basic_stats(self, activities, time_field='moving_time'):\n        total_time = sum(activity[time_field] for activity in activities)\n        total_sessions = len(activities)\n        avg_session = total_time / total_sessions if total_sessions else 0\n        return {\n            'total_sessions': total_sessions,\n            'total_time': TimeConverter.seconds_to_hhmmss(total_time),\n            'avg_session': TimeConverter.seconds_to_hhmmss(round(avg_session, 2))\n        }",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "DistanceActivitySummary",
+        "kind": 6,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "class DistanceActivitySummary(ActivitySummaryBase):\n    def calculate_distance_stats(self, activities):\n        total_distance = Decimal('0')\n        total_elevation = Decimal('0')\n        total_sessions = len(activities)\n        # Calculate totals using Decimal\n        for activity in activities:\n            total_distance += Decimal(str(activity['distance'])) / Decimal('1000')\n            total_elevation += Decimal(str(activity['total_elevation_gain']))\n        # Calculate averages and format results",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "WeightTrainingSummary",
+        "kind": 6,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "class WeightTrainingSummary(TimedActivitySummary):\n    def generate_summary(self, activities):\n        stats = self.calculate_basic_stats(activities)\n        data = [\n            [\"Total strength_training sessions:\", f\"{stats['total_sessions']}\"],\n            [\"Avg strength_training session:\", f\"{stats['avg_session']}\"],\n            [\"Total strength_training time:\", f\"{stats['total_time']}\"],\n        ]\n        return self.create_summary_table(\"Four Week Overall strength training Summary\", data)\nclass YogaSummary(TimedActivitySummary):",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "YogaSummary",
+        "kind": 6,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "class YogaSummary(TimedActivitySummary):\n    def generate_summary(self, activities):\n        stats = self.calculate_basic_stats(activities, 'elapsed_time')\n        data = [\n            [\"Total yoga sessions:\", f\"{stats['total_sessions']}\"],\n            [\"Avg yoga session:\", f\"{stats['avg_session']}\"],\n            [\"Total yoga time:\", f\"{stats['total_time']}\"],\n        ]\n        return self.create_summary_table(\"Four-Week Rolling Overall Yoga Summary\", data)\nclass SwimSummary(TimedActivitySummary):",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "SwimSummary",
+        "kind": 6,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "class SwimSummary(TimedActivitySummary):\n    def generate_summary(self, activities):\n        stats = self.calculate_basic_stats(activities, 'elapsed_time')\n        data = [\n            [\"Total swim sessions:\", f\"{stats['total_sessions']}\"],\n            [\"Avg swim session:\", f\"{stats['avg_session']}\"],\n            [\"Total swim time:\", f\"{stats['total_time']}\"],\n        ]\n        return self.create_summary_table(\"Four-Week Rolling Swim Summary\", data)\nclass RideSummary(DistanceActivitySummary):",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "RideSummary",
+        "kind": 6,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "class RideSummary(DistanceActivitySummary):\n    def generate_summary(self, activities):\n        stats = self.calculate_distance_stats(activities)\n        total_time = sum(activity['moving_time'] for activity in activities)\n        total_distance = float(stats['total_distance'])\n        data = [\n            [\"Total ride sessions:\", f\"{stats['total_sessions']}\"],\n            [\"Avg ride time:\", f\"{stats['avg_session']}\"],\n            [\"Total ride time:\", f\"{stats['total_time']}\"],\n            [\"Total ride distance:\", f\"{stats['total_distance']} Km\"],",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "RunSummary",
+        "kind": 6,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "class RunSummary(DistanceActivitySummary):\n    def _split_activities_by_type(self, activities):\n        road_runs = [a for a in activities if a['sport_type'] == 'Run']\n        trail_runs = [a for a in activities if a['sport_type'] == 'TrailRun']\n        return road_runs, trail_runs\n    def generate_summary(self, activities):\n        overall_stats = self.calculate_distance_stats(activities)\n        road_runs, trail_runs = self._split_activities_by_type(activities)\n        total_moving_time = sum(a['moving_time'] for a in activities)\n        total_elapsed_time = sum(a['elapsed_time'] for a in activities)",
+        "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "WalkSummary",
+        "kind": 6,
+        "importPath": "data_processing",
+        "description": "data_processing",
+        "peekOfCode": "class WalkSummary(DistanceActivitySummary):\n    def generate_summary(self, activities):\n        stats = self.calculate_distance_stats(activities)\n        total_moving_time = sum(a['moving_time'] for a in activities)\n        total_elapsed_time = sum(a['elapsed_time'] for a in activities)\n        total_distance = float(stats['total_distance'])\n        data = [\n            [\"Total walks: \", f\"{stats['total_sessions']}\"],\n            [\"Total distance: \", f\"{stats['total_distance']} Km\"],\n            [\"Average distance:\", f\"{stats['avg_distance']} Km/walk\"],",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -399,7 +496,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))\n    total_strength_training_time = convert_seconds_in_hhmmss(total_strength_training_time)\n    overall_strength_training_summary_data =[\n        [\"Total strength_training sessions:\", f\"{total_sessions}\"],",
+        "peekOfCode": "def give_weighttraining_summary(activities):\n    return WeightTrainingSummary().generate_summary(activities)\ndef give_yoga_summary(activities):\n    return YogaSummary().generate_summary(activities)\ndef give_swim_summary(activities):\n    return SwimSummary().generate_summary(activities)\ndef give_ride_summary(activities):\n    return RideSummary().generate_summary(activities)\ndef give_run_summary(activities):\n    return RunSummary().generate_summary(activities)",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -408,7 +505,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))\n    total_yoga_time = convert_seconds_in_hhmmss(total_yoga_time)\n    overall_yoga_summary_data =[\n        [\"Total yoga sessions:\", f\"{total_sessions}\"],",
+        "peekOfCode": "def give_yoga_summary(activities):\n    return YogaSummary().generate_summary(activities)\ndef give_swim_summary(activities):\n    return SwimSummary().generate_summary(activities)\ndef give_ride_summary(activities):\n    return RideSummary().generate_summary(activities)\ndef give_run_summary(activities):\n    return RunSummary().generate_summary(activities)\ndef give_walk_summary(activities):\n    return WalkSummary().generate_summary(activities)",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -417,7 +514,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_swim_summary(swim_activities):\n    total_swim_time = 0\n    total_swim_sessions = 0\n    for activity in swim_activities:\n        total_swim_time += activity[\"elapsed_time\"]\n        total_swim_sessions += 1\n    avg_swim_session = convert_seconds_in_hhmmss(round(total_swim_time/total_swim_sessions, 2))\n    total_swim_time = convert_seconds_in_hhmmss(total_swim_time)\n    overall_swim_summary_data =[\n        [\"Total swim sessions:\", f\"{total_swim_sessions}\"],",
+        "peekOfCode": "def give_swim_summary(activities):\n    return SwimSummary().generate_summary(activities)\ndef give_ride_summary(activities):\n    return RideSummary().generate_summary(activities)\ndef give_run_summary(activities):\n    return RunSummary().generate_summary(activities)\ndef give_walk_summary(activities):\n    return WalkSummary().generate_summary(activities)",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -426,7 +523,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_ride_summary(ride_activities):\n    total_ride_time = 0\n    total_ride_time_hhmmss = 0\n    total_ride_sessions = 0\n    total_ride_distance = 0\n    total_elevation_gain = 0\n    for activity in ride_activities:\n        total_ride_time += activity['moving_time']\n        total_ride_sessions += 1\n        total_ride_distance += activity['distance']",
+        "peekOfCode": "def give_ride_summary(activities):\n    return RideSummary().generate_summary(activities)\ndef give_run_summary(activities):\n    return RunSummary().generate_summary(activities)\ndef give_walk_summary(activities):\n    return WalkSummary().generate_summary(activities)",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -435,7 +532,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_run_summary(run_activities):\n    tot_distance_ran_year = 0\n    tot_distance_ran_month = 0\n    avg_distance_per_run = 0\n    avg_distance_per_week = 0\n    tot_elevation_gain = 0\n    avg_elevation_gain = 0\n    tot_elevation_gain_trail = 0\n    avg_elevation_gain_trail = 0\n    tot_trail_distance = 0",
+        "peekOfCode": "def give_run_summary(activities):\n    return RunSummary().generate_summary(activities)\ndef give_walk_summary(activities):\n    return WalkSummary().generate_summary(activities)",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -444,16 +541,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_walk_summary(walk_activities):\n  tot_distance_walked_month = 0\n  avg_distance_per_walk = 0\n  tot_elevation_gain = 0\n  avg_elevation_gain = 0\n  tot_moving_time = 0\n  avg_mov_speed = 0\n  tot_elapsed_time = 0\n  avg_elapsed_speed = 0\n  for activity in walk_activities:",
-        "detail": "data_processing",
-        "documentation": {}
-    },
-    {
-        "label": "footer",
-        "kind": 5,
-        "importPath": "data_processing",
-        "description": "data_processing",
-        "peekOfCode": "footer = \"\\n \\n Subscribe on https://strava-summariser.vercel.app/ \\nStats created using StravaAPI by Omkar Jadhav\"\ndef convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):",
+        "peekOfCode": "def give_walk_summary(activities):\n    return WalkSummary().generate_summary(activities)",
         "detail": "data_processing",
         "documentation": {}
     },
