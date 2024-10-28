@@ -53,22 +53,40 @@ def get_latest_activities(inputs):
     
     # Step 2: Define API Endpoint and Parameters
     BEFORE = int(time.time()) 
-    AFTER = int(time.time())- (7 * 24 * 60 * 60 * 4)
-    activities_url = f"https://www.strava.com/api/v3/athlete/activities?before={BEFORE}&after={AFTER}"
+    AFTER = int(time.time()) - (28 * 24 * 60 * 60)  # Exactly 4 weeks
+    activities_url = "https://www.strava.com/api/v3/athlete/activities"
     headers = {'Authorization': f'Bearer {access_token}'}   
-    PAGE = 1
-    PER_PAGE = 10000
-    parameters = {'page': PAGE, 'per_page': PER_PAGE}
-
-    # Step 3: Make GET Request to Retrieve Activities
-    response = requests.get(activities_url, headers=headers)
     
-    if response.status_code == 200:
-        activities = response.json()
+    all_activities = []
+    page = 1
+    while True:
+        params = {
+            'before': BEFORE,
+            'after': AFTER,
+            'page': page,
+            'per_page': 200  # Strava's maximum allowed
+        }
+        
+        response = requests.get(activities_url, headers=headers, params=params)
+        if response.status_code == 200:
+            page_activities = response.json()
+            if not page_activities:  # No more activities to fetch
+                break
+                
+            all_activities.extend(page_activities)
+            page += 1
+            logging.info(f"Fetched page {page-1} with {len(page_activities)} activities")
+        else:
+            logging.error(f"Error fetching activities: {response.status_code}")
+            break
+    
+    logging.info(f"Total activities fetched: {len(all_activities)}")
+    
+    if all_activities:
         result_table = []
         
         # Step 4: Process Latest Activity
-        latest_activity_id = activities[0]['id']
+        latest_activity_id = all_activities[0]['id']
         latest_activity_url = f"https://www.strava.com/api/v3/activities/{latest_activity_id}"
         latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)
         
@@ -96,7 +114,7 @@ def get_latest_activities(inputs):
         if latest_activity_response.status_code == 200:
              # Step 5: Update Activity Description Based on Type
             if latest_activity_data['type'] in ['Run', 'Yoga', 'Swim','Ride', 'Walk', 'WeightTraining']:
-                activities_of_type = [activity for activity in activities if activity['type'] == latest_activity_data['type']]
+                activities_of_type = [activity for activity in all_activities if activity['type'] == latest_activity_data['type']]
                 result_table = getattr(data_processing, f"give_{latest_activity_data['type'].lower()}_summary")(activities_of_type)
                 logger.info(f"description:{latest_activity_data['description']} \n  url: {url}" )
                 if latest_activity_data['description'] is None:
@@ -106,14 +124,8 @@ def get_latest_activities(inputs):
                     update_json = utils.update_description(activity_data=latest_activity_data, summary=result_table)
                     update_message = utils.update_activity(activity_url=latest_activity_url, update_json=update_json, headers=headers)  
                     print(update_message)
-                    
-            
-            
-            # logger.info(f"latest activity: {latest_activity_data}")
-            # if latest_activity_response['description'] is None:
-            #     latest_activity_data['description'] =""
             
         else:
             print(f"Error: {latest_activity_response.status_code}, {latest_activity_response.text}")
     else:
-        print(f"Error: {response.status_code}, {response.text}")
+        print(f"Error: No activities found in the date range")

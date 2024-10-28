@@ -471,7 +471,7 @@
         "kind": 2,
         "importPath": "strava",
         "description": "strava",
-        "peekOfCode": "def get_latest_activities(inputs):\n    logging.info('Inside get_latest_activities')\n    latest_activity_id = inputs.get('activity_id')\n    athlete_id = inputs.get('athlete_id')\n    # Step 1: Retrieve Access Token\n    access_token = get_access_token(athlete_id)\n    logging.info('Access token retrieved')\n    # Step 2: Define API Endpoint and Parameters\n    BEFORE = int(time.time()) \n    AFTER = int(time.time())- (7 * 24 * 60 * 60 * 4)",
+        "peekOfCode": "def get_latest_activities(inputs):\n    logging.info('Inside get_latest_activities')\n    latest_activity_id = inputs.get('activity_id')\n    athlete_id = inputs.get('athlete_id')\n    # Step 1: Retrieve Access Token\n    access_token = get_access_token(athlete_id)\n    logging.info('Access token retrieved')\n    # Step 2: Define API Endpoint and Parameters\n    BEFORE = int(time.time()) \n    AFTER = int(time.time()) - (28 * 24 * 60 * 60)  # Exactly 4 weeks",
         "detail": "strava",
         "documentation": {}
     },
