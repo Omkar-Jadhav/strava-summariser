@@ -42,56 +42,37 @@ def get_access_token(athlete_id):
         # Handle the case where athlete_id is not found in the refresh_tokens
         print("Athlete ID not found in data")
         return "Athlete ID not found in data"
-import logging
-import time
-import requests
-from utils import make_url_request, update_activity, update_description
-from data_processing import give_run_summary, give_yoga_summary, give_swim_summary  # import other summary functions as needed
 
 def get_latest_activities(inputs):
-    """Main function to retrieve and process latest activities."""
     logging.info('Inside get_latest_activities')
+    latest_activity_id = inputs.get('activity_id')
     athlete_id = inputs.get('athlete_id')
-    
     # Step 1: Retrieve Access Token
     access_token = get_access_token(athlete_id)
     logging.info('Access token retrieved')
     
-    # Step 2: Fetch activities within date range
-    activities = fetch_activities(access_token)
-    if not activities:
-        logging.error("No activities found in the date range")
-        return
-    
-    logging.info(f"Total activities fetched: {len(activities)}")
-    
-    # Step 3: Process the latest activity
-    latest_activity = activities[0]
-    process_latest_activity(access_token, latest_activity, activities)
-
-def get_access_token(athlete_id):
-    """Retrieve the access token for the athlete."""
-    # Replace this with actual token retrieval logic
-    return "your_access_token"
-
-def fetch_activities(access_token):
-    """Fetches activities within the last 4 weeks for the athlete."""
+    # Step 2: Define API Endpoint and Parameters
+    BEFORE = int(time.time()) 
+    AFTER = int(time.time()) - (28 * 24 * 60 * 60)  # Exactly 4 weeks
     activities_url = "https://www.strava.com/api/v3/athlete/activities"
-    headers = {'Authorization': f'Bearer {access_token}'}
-    before = int(time.time())
-    after = before - (28 * 24 * 60 * 60)
+    headers = {'Authorization': f'Bearer {access_token}'}   
     
     all_activities = []
     page = 1
-    
     while True:
-        params = {'before': before, 'after': after, 'page': page, 'per_page': 200}
-        response = requests.get(activities_url, headers=headers, params=params)
+        params = {
+            'before': BEFORE,
+            'after': AFTER,
+            'page': page,
+            'per_page': 200  # Strava's maximum allowed
+        }
         
+        response = requests.get(activities_url, headers=headers, params=params)
         if response.status_code == 200:
             page_activities = response.json()
-            if not page_activities:
+            if not page_activities:  # No more activities to fetch
                 break
+                
             all_activities.extend(page_activities)
             page += 1
             logging.info(f"Fetched page {page-1} with {len(page_activities)} activities")
@@ -99,52 +80,59 @@ def fetch_activities(access_token):
             logging.error(f"Error fetching activities: {response.status_code}")
             break
     
-    return all_activities
-
-def process_latest_activity(access_token, latest_activity, all_activities):
-    """Processes the latest activity, updating type and description if necessary."""
-    activity_url = f"https://www.strava.com/api/v3/activities/{latest_activity['id']}"
-    headers = {'Authorization': f'Bearer {access_token}'}
+    logging.info(f"Total activities fetched: {len(all_activities)}")
     
-    # Step 4: Update Activity Type if 'Workout'
-    latest_activity_data = fetch_activity_data(activity_url, headers)
-    if latest_activity_data and latest_activity_data['type'] == 'Workout':
-        update_activity_type_to_yoga(activity_url, latest_activity_data, headers)
-    
-    # Step 5: Update Activity Description Based on Type
-    if latest_activity_data:
-        update_activity_description(activity_url, latest_activity_data, all_activities, headers)
-
-def fetch_activity_data(activity_url, headers):
-    """Fetches activity data for a given activity URL."""
-    response = make_url_request(activity_url=activity_url, headers=headers)
-    if response:
-        return response.json()
-    logging.error(f"Error fetching activity data: {response.status_code}")
-    return None
-
-def update_activity_type_to_yoga(activity_url, activity_data, headers):
-    """Updates the activity type to 'Yoga' if the current type is 'Workout'."""
-    updated_name = activity_data['name'].rsplit(' ', 1)[0] + " Yoga"
-    update_json = {'type': 'Yoga', 'sport_type': 'Yoga', 'name': updated_name}
-    
-    update_message = update_activity(activity_url=activity_url, update_json=update_json, headers=headers)
-    print(update_message)
-
-def update_activity_description(activity_url, latest_activity_data, all_activities, headers):
-    """Updates the activity description with a summary if not already present."""
-    url = 'https://strava-summariser.vercel.app'
-    summary_header = "Four-Week Rolling"
-    
-    # Check if description already contains summary
-    if (latest_activity_data['description'] is None or 
-        (summary_header not in latest_activity_data['description'] and url not in latest_activity_data['description'])):
+    if all_activities:
+        result_table = []
         
-        activities_of_type = [activity for activity in all_activities if activity['type'] == latest_activity_data['type']]
-        result_table = getattr(data_processing, f"give_{latest_activity_data['type'].lower()}_summary")(activities_of_type)
+        # Step 4: Process Latest Activity
+        latest_activity_id = all_activities[0]['id']
+        latest_activity_url = f"https://www.strava.com/api/v3/activities/{latest_activity_id}"
+        latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)
         
-        update_json = update_description(activity_data=latest_activity_data, summary=result_table)
-        update_message = update_activity(activity_url=activity_url, update_json=update_json, headers=headers)
-        print(update_message)
+        if latest_activity_response:
+            latest_activity_data = latest_activity_response.json()
+            
+            if latest_activity_data['type'] == 'Workout':
+                updated_name = latest_activity_data['name'].rsplit(' ', 1)[0] + " Yoga"
+                updated_activity_json = {'type': 'Yoga', 'sport_type': 'Yoga', 'name': updated_name}
+                
+                update_message = utils.update_activity(activity_url=latest_activity_url, update_json=updated_activity_json, headers=headers)
+                print(update_message)
+                
+            else:
+                print(f"Latest activity is not of type Workout.")
+        else:
+            print(f"Error while getting latest activity. Please check the logs for details.")
+        
+        # Step 5: Update Activity Description Based on Type
+        latest_activity_url = f"https://www.strava.com/api/v3/activities/{latest_activity_id}"
+        latest_activity_response = requests.get(latest_activity_url, headers=headers)
+        latest_activity_data = latest_activity_response.json()
+        update_message = ""
+        url = 'https://strava-summariser.vercel.app'
+        summary_header = "Four-Week Rolling"  # This is the common header text used in summaries
+        
+        if latest_activity_response.status_code == 200:
+            # Step 5: Update Activity Description Based on Type
+            if latest_activity_data['type'] in ['Run', 'Yoga', 'Swim','Ride', 'Walk', 'WeightTraining']:
+                # Initialize description if None
+                if latest_activity_data['description'] is None:
+                    latest_activity_data['description'] = ""
+                
+                # Check if summary already exists
+                if summary_header not in latest_activity_data['description'] and url not in latest_activity_data['description']:
+                    activities_of_type = [activity for activity in all_activities if activity['type'] == latest_activity_data['type']]
+                    result_table = getattr(data_processing, f"give_{latest_activity_data['type'].lower()}_summary")(activities_of_type)
+                    logger.info(f"description:{latest_activity_data['description']} \n  url: {url}" )
+                    
+                    update_json = utils.update_description(activity_data=latest_activity_data, summary=result_table)
+                    update_message = utils.update_activity(activity_url=latest_activity_url, update_json=update_json, headers=headers)  
+                    print(update_message)
+                else:
+                    logger.info("Summary already exists in description, skipping update")
+            
+        else:
+            print(f"Error: {latest_activity_response.status_code}, {latest_activity_response.text}")
     else:
-        logging.info("Summary already exists in description, skipping update")
+        print(f"Error: No activities found in the date range")
