@@ -1,5 +1,5 @@
 from tabulate import tabulate
-footer = "\n \n Subscribe on 'https://strava-summariser.vercel.app/' \nStats created using StravaAPI by Omkar Jadhav"
+footer = "\n \n Subscribe on https://strava-summariser.vercel.app/ \nStats created using StravaAPI by Omkar Jadhav"
 
 def convert_seconds_in_hhmmss(seconds):
     hours = int(seconds//3600)
