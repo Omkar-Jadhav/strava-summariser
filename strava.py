@@ -110,7 +110,7 @@ def get_latest_activities(inputs):
         latest_activity_response = requests.get(latest_activity_url, headers=headers)
         latest_activity_data = latest_activity_response.json()
         update_message = ""
-        url = 'https://strava-summariser.vercel.app'
+        url = "https://strava-summariser.vercel.app"
         summary_header = "Four-Week Rolling"  # This is the common header text used in summaries
         
         if latest_activity_response.status_code == 200:

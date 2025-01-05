@@ -1,5 +1,5 @@
 from tabulate import tabulate
-footer = "\n \n Subscribe on https://strava-summariser.vercel.app/ \nStats created using StravaAPI by Omkar Jadhav"
+footer = "\n \nSubscribe on strava-summariser \nStats created using StravaAPI by Omkar Jadhav"
 
 def convert_seconds_in_hhmmss(seconds):
     hours = int(seconds//3600)
@@ -132,6 +132,8 @@ def give_run_summary(run_activities):
     avg_trail_distance = 0
     avg_mov_speed_trail = 0
     avg_elapsed_speed_trail = 0
+    tot_elevation_gain_trail=0
+    avg_elevation_gain_trail=0
     
     tot_elapsed_time = 0
     tot_moving_time = 0
@@ -163,12 +165,14 @@ def give_run_summary(run_activities):
             trail_runs_available = True
             total_trail_runs_month += 1
             tot_trail_distance += activity['distance'] / 1000
+            tot_elevation_gain_trail += activity['total_elevation_gain']
     
     # Calculate Averages
     avg_distance_per_run = tot_distance_ran_month / total_runs_month if total_runs_month else 0
     avg_elevation_gain = tot_elevation_gain / total_runs_month if total_runs_month else 0
     avg_road_distance = tot_road_distance / total_road_runs_month if total_road_runs_month else 0
     avg_elevation_gain_road = tot_elevation_gain_road / total_road_runs_month if total_road_runs_month else 0
+    avg_elevation_gain_trail = tot_elevation_gain_trail / total_trail_runs_month if total_trail_runs_month else 0
     avg_trail_distance = tot_trail_distance / total_trail_runs_month if total_trail_runs_month else 0
     avg_mov_speed = calculate_speed(tot_moving_time, tot_distance_ran_month)
     avg_elapsed_speed = calculate_speed(tot_elapsed_time, tot_distance_ran_month)
@@ -184,6 +188,9 @@ def give_run_summary(run_activities):
     avg_elevation_gain = f"{avg_elevation_gain:.2f}"
     tot_elevation_gain_road = f"{tot_elevation_gain_road:.2f}"
     avg_elevation_gain_road = f"{avg_elevation_gain_road:.2f}"
+    
+    tot_elevation_gain_trail = f"{tot_elevation_gain_trail:.2f}"
+    avg_elevation_gain_trail = f"{avg_elevation_gain_trail:.2f}"
 
     # Overall summary
     overall_summary_data = [
@@ -220,8 +227,8 @@ def give_run_summary(run_activities):
             ["Total trail runs:", total_trail_runs_month],
             ["Total distance on trails:", f"{tot_trail_distance} Km"],
             ["Average distance on trails:", f"{avg_trail_distance} Km/run"],
-            ["Total elevation gain on trails:", f"{tot_elevation_gain} m"],
-            ["Average elevation gain on trails:", f"{avg_elevation_gain} m/run"],
+            ["Total elevation gain on trails:", f"{tot_elevation_gain_trail} m"],
+            ["Average elevation gain on trails:", f"{avg_elevation_gain_trail} m/run"],
             ["Average moving pace on trails:", avg_mov_speed]
         ]
         result_table += "\n\nFour-Week Rolling Trail Run Summary\n"
