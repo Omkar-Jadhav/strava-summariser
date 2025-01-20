@@ -2,8 +2,7 @@ uvicorn
 gunicorn
 fastapi
 Flask==3.0.1
-Werkzeug==3.0.1
+Werkzeug
 requests
 tabulate
-logging
 pymongo[srv]==3.11
