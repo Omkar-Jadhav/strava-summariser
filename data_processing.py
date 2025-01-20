@@ -1,5 +1,5 @@
 from tabulate import tabulate
-footer = "\n \nSubscribe on strava-summariser \nStats created using StravaAPI by Omkar Jadhav"
+footer = "\n \nSubscribe on strava-summariser \nStats generated using StravaAPI by Omkar Jadhav"
 
 def convert_seconds_in_hhmmss(seconds):
     hours = int(seconds//3600)
@@ -32,7 +32,7 @@ def give_weighttraining_summary(WeightTraining_activities):
         
     ]
     overall_strength_training_summary_table = tabulate(overall_strength_training_summary_data, tablefmt="plain")
-    result_table = f"\n Four Week Overall strength training Summary \n{overall_strength_training_summary_table}" +footer
+    result_table = f"\n Four Week strength training Summary \n{overall_strength_training_summary_table}" +footer
     
     print(result_table)
     return result_table
@@ -54,7 +54,7 @@ def give_yoga_summary(yoga_activities):
         
     ]
     overall_yoga_summary_table = tabulate(overall_yoga_summary_data, tablefmt="plain")
-    result_table = f"\n Four-Week Rolling Overall Yoga Summary \n{overall_yoga_summary_table}" +footer
+    result_table = f"\n Four-Week Rolling Yoga Summary \n{overall_yoga_summary_table}" +footer
     
     print(result_table)
     return result_table
@@ -199,28 +199,19 @@ def give_run_summary(run_activities):
         ["Average distance:", f"{avg_distance_per_run} Km/run"],
         ["Average pace:", avg_mov_speed],
         ["Total elevation gain:", f"{tot_elevation_gain} m"],
-        ["Average elevation gain:", f"{avg_elevation_gain} m/run"],
         ["Total moving time:", moving_time_hhmm],
         ["Total elapsed time:", elapsed_time_hhmm],
-        ["Average elapsed speed:", avg_elapsed_speed]
     ]
     
-    result_table = "\nFour-Week Rolling Overall Run Summary\n"
-    result_table += tabulate(overall_summary_data, tablefmt="plain")
-
-    # Road runs summary
     if road_runs_available:
         road_runs_summary_data = [
             ["Total road runs:", total_road_runs_month],
             ["Total distance on road:", f"{tot_road_distance} Km"],
             ["Average distance on road:", f"{avg_road_distance} Km/run"],
             ["Total elevation gain on road:", f"{tot_elevation_gain_road} m"],
-            ["Average elevation gain on road:", f"{avg_elevation_gain_road} m/run"],
             ["Average moving pace on roads:", avg_mov_speed]
         ]
-        result_table += "\n\nFour-Week Rolling Road Run Summary\n"
-        result_table += tabulate(road_runs_summary_data, tablefmt="plain")
-
+        
     # Trail runs summary
     if trail_runs_available:
         trail_runs_summary_data = [
@@ -231,12 +222,41 @@ def give_run_summary(run_activities):
             ["Average elevation gain on trails:", f"{avg_elevation_gain_trail} m/run"],
             ["Average moving pace on trails:", avg_mov_speed]
         ]
-        result_table += "\n\nFour-Week Rolling Trail Run Summary\n"
+    
+    if not trail_runs_available or not road_runs_available:        
+        result_table = "\n\nFour-Week Rolling Run Summary\n"
+        # result_table += tabulate(overall_summary_data, tablefmt="plain")r
+        formatted_table = format_as_simple_markdown_table(overall_summary_data)
+        result_table += formatted_table
+    
+    if trail_runs_available and road_runs_available:
+        result_table = "\nFour-Week Rolling Run Summary\n"
+        result_table += tabulate(overall_summary_data[0:3], tablefmt="plain")    
+        result_table = "\nRoad Runs:\n"
+        result_table += tabulate(road_runs_summary_data, tablefmt="plain")
+        result_table = "\nTrail Runs:\n"
         result_table += tabulate(trail_runs_summary_data, tablefmt="plain")
-
+    
+    result_table += footer
+        
     print(result_table)
 
     return result_table
+
+
+def format_as_simple_markdown_table(data):
+     # Find the maximum length of the labels (left column)
+    max_label_length = max(len(label) for label, _ in data)
+
+    # Create each row, aligning the values to the right of the longest label
+    formatted_lines = [
+        f"{label.ljust(max_label_length)}: {value}"
+        for label, value in data  
+    ]
+
+    # Join all lines together with newline characters
+    return "\n".join(formatted_lines)
+
 
 def give_walk_summary(walk_activities):
   tot_distance_walked_month = 0
