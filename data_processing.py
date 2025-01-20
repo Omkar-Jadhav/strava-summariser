@@ -232,9 +232,9 @@ def give_run_summary(run_activities):
     if trail_runs_available and road_runs_available:
         result_table = "\nFour-Week Rolling Run Summary\n"
         result_table += tabulate(overall_summary_data[0:3], tablefmt="plain")    
-        result_table = "\nRoad Runs:\n"
+        result_table += "\nRoad Runs:\n"
         result_table += tabulate(road_runs_summary_data, tablefmt="plain")
-        result_table = "\nTrail Runs:\n"
+        result_table += "\nTrail Runs:\n"
         result_table += tabulate(trail_runs_summary_data, tablefmt="plain")
     
     result_table += footer
