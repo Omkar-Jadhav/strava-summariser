@@ -75,14 +75,6 @@
         "documentation": {}
     },
     {
-        "label": "get_access_token",
-        "importPath": "strava",
-        "description": "strava",
-        "isExtraImport": true,
-        "detail": "strava",
-        "documentation": {}
-    },
-    {
         "label": "json",
         "kind": 6,
         "isExtraImport": true,
@@ -143,11 +135,77 @@
         "documentation": {}
     },
     {
+        "label": "utils",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "utils",
+        "description": "utils",
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "convert_seconds_in_hhmmss",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_speed_in_kmph",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_speed",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_pace_minKm",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_speed",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
         "label": "app",
         "importPath": "wsgi",
         "description": "wsgi",
         "isExtraImport": true,
         "detail": "wsgi",
+        "documentation": {}
+    },
+    {
+        "label": "ai",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "ai",
+        "description": "ai",
+        "detail": "ai",
+        "documentation": {}
+    },
+    {
+        "label": "get_insights_by_llm",
+        "importPath": "ai",
+        "description": "ai",
+        "isExtraImport": true,
+        "detail": "ai",
         "documentation": {}
     },
     {
@@ -169,21 +227,39 @@
         "documentation": {}
     },
     {
-        "label": "utils",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "utils",
-        "description": "utils",
-        "detail": "utils",
-        "documentation": {}
-    },
-    {
         "label": "data_processing",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "data_processing",
         "description": "data_processing",
         "detail": "data_processing",
+        "documentation": {}
+    },
+    {
+        "label": "workout_classifier",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "workout_classifier",
+        "description": "workout_classifier",
+        "detail": "workout_classifier",
+        "documentation": {}
+    },
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib.pyplot",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib.pyplot",
+        "description": "matplotlib.pyplot",
+        "detail": "matplotlib.pyplot",
         "documentation": {}
     },
     {
@@ -195,20 +271,20 @@
         "documentation": {}
     },
     {
-        "label": "client",
-        "kind": 5,
+        "label": "get_insights_by_llm",
+        "kind": 2,
         "importPath": "ai",
         "description": "ai",
-        "peekOfCode": "client = Groq(api_key=os.environ.get(\"GROQ_API_KEY\"),)\ncompletion = client.chat.completions.create(\n    model=\"llama-3.3-70b-versatile\",\n    messages=[\n        {\n            \"role\": \"system\",\n            \"content\": \"You are a helpful running coach who always encourages the athlete and give insights on data.\"\n        },\n        {\n            \"role\": \"user\",",
+        "peekOfCode": "def get_insights_by_llm(avg_stats, past_runs):\n    inp_message = f\"\"\"Act as a helpful running coach. \nPresent insights and key data points from the athlete's past 4 weeks of running activity in under 100 words. Sugggest a general focus for upcoming week, and suggested acticvities for next 2 days. \nAvoid mentioning obvious statistics from summary. Do not use first person voice.\nEncourage, motivate, and applaud the athlete. \nThe workout history includes various runs like long runs, tempo runs, easy runs, recovery runs, intervals, and trail run, with additional details for some activities such as lap times, average pace, and total elevation gain. Look out for any recent hard workouts or races while suggesting. Workouts are numbered by a descending order of date.\nIf past runs are not available, suggest a general focus for the upcoming week and activities for the next 2 days.\nHere is the athlete's workout history.\n4 week rolling summary: {avg_stats}\nPrevious 4 weeks running history: {past_runs}\"\"\"",
         "detail": "ai",
         "documentation": {}
     },
     {
-        "label": "completion",
+        "label": "client",
         "kind": 5,
         "importPath": "ai",
         "description": "ai",
-        "peekOfCode": "completion = client.chat.completions.create(\n    model=\"llama-3.3-70b-versatile\",\n    messages=[\n        {\n            \"role\": \"system\",\n            \"content\": \"You are a helpful running coach who always encourages the athlete and give insights on data.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"This is the average running data of the athlete over past 4 weeks.\\nFour-Week Rolling Run Summary\\nTotal runs: : 26\\nTotal distance: : 289.85 Km\\nAverage distance: : 11.15 Km/run\\nAverage pace: : 05:50 min/Km\\nTotal elevation gain:: 1271.30 m\\nTotal moving time: : 28:15:34\\nTotal elapsed time: : 28:44:13\\nThe stats for this activity was -\\ntotal distance - 42.6Km\\navg pace - 5:20 min/km\\ntotal time - 3hr 48min\\n\\nProvide insights and data points from it, do not mention the obvious statistics. Encourage the athlete. Suggest a general focus for upcoming week.\\n\"",
+        "peekOfCode": "client = Groq(api_key=os.environ.get(\"GROQ_API_KEY\"),)\ndef get_insights_by_llm(avg_stats, past_runs):\n    inp_message = f\"\"\"Act as a helpful running coach. \nPresent insights and key data points from the athlete's past 4 weeks of running activity in under 100 words. Sugggest a general focus for upcoming week, and suggested acticvities for next 2 days. \nAvoid mentioning obvious statistics from summary. Do not use first person voice.\nEncourage, motivate, and applaud the athlete. \nThe workout history includes various runs like long runs, tempo runs, easy runs, recovery runs, intervals, and trail run, with additional details for some activities such as lap times, average pace, and total elevation gain. Look out for any recent hard workouts or races while suggesting. Workouts are numbered by a descending order of date.\nIf past runs are not available, suggest a general focus for the upcoming week and activities for the next 2 days.\nHere is the athlete's workout history.\n4 week rolling summary: {avg_stats}",
         "detail": "ai",
         "documentation": {}
     },
@@ -402,38 +478,11 @@
         "documentation": {}
     },
     {
-        "label": "convert_seconds_in_hhmmss",
-        "kind": 2,
-        "importPath": "data_processing",
-        "description": "data_processing",
-        "peekOfCode": "def convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)",
-        "detail": "data_processing",
-        "documentation": {}
-    },
-    {
-        "label": "calculate_speed",
-        "kind": 2,
-        "importPath": "data_processing",
-        "description": "data_processing",
-        "peekOfCode": "def calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)\n    return f\"{speed_kph:.2f} km/hr\"\ndef give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:",
-        "detail": "data_processing",
-        "documentation": {}
-    },
-    {
-        "label": "calculate_speed_in_kmph",
-        "kind": 2,
-        "importPath": "data_processing",
-        "description": "data_processing",
-        "peekOfCode": "def calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)\n    return f\"{speed_kph:.2f} km/hr\"\ndef give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))",
-        "detail": "data_processing",
-        "documentation": {}
-    },
-    {
         "label": "give_weighttraining_summary",
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))\n    total_strength_training_time = convert_seconds_in_hhmmss(total_strength_training_time)\n    overall_strength_training_summary_data =[\n        [\"Total strength_training sessions:\", f\"{total_sessions}\"],",
+        "peekOfCode": "def give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = utils.convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))\n    total_strength_training_time = utils.convert_seconds_in_hhmmss(total_strength_training_time)\n    overall_strength_training_summary_data =[\n        [\"Total strength training sessions:\", f\"{total_sessions}\"],",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -442,7 +491,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))\n    total_yoga_time = convert_seconds_in_hhmmss(total_yoga_time)\n    overall_yoga_summary_data =[\n        [\"Total yoga sessions:\", f\"{total_sessions}\"],",
+        "peekOfCode": "def give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = utils.convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))\n    total_yoga_time = utils.convert_seconds_in_hhmmss(total_yoga_time)\n    overall_yoga_summary_data =[\n        [\"Total yoga sessions:\", f\"{total_sessions}\"],",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -451,7 +500,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_swim_summary(swim_activities):\n    total_swim_time = 0\n    total_swim_sessions = 0\n    for activity in swim_activities:\n        total_swim_time += activity[\"elapsed_time\"]\n        total_swim_sessions += 1\n    avg_swim_session = convert_seconds_in_hhmmss(round(total_swim_time/total_swim_sessions, 2))\n    total_swim_time = convert_seconds_in_hhmmss(total_swim_time)\n    overall_swim_summary_data =[\n        [\"Total swim sessions:\", f\"{total_swim_sessions}\"],",
+        "peekOfCode": "def give_swim_summary(swim_activities):\n    total_swim_time = 0\n    total_swim_sessions = 0\n    for activity in swim_activities:\n        total_swim_time += activity[\"elapsed_time\"]\n        total_swim_sessions += 1\n    avg_swim_session = utils.convert_seconds_in_hhmmss(round(total_swim_time/total_swim_sessions, 2))\n    total_swim_time = utils.convert_seconds_in_hhmmss(total_swim_time)\n    total_swim_time = convert_seconds_in_hhmmss(total_swim_time)\n    overall_swim_summary_data =[",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -496,7 +545,7 @@
         "kind": 5,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "footer = \"\\n \\nSubscribe on strava-summariser \\nStats generated using StravaAPI by Omkar Jadhav\"\ndef convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):",
+        "peekOfCode": "footer = \"\\n \\nSubscribe on strava-summariser \\nStats generated using StravaAPI by Omkar Jadhav\"\ndef give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = utils.convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))\n    total_strength_training_time = utils.convert_seconds_in_hhmmss(total_strength_training_time)\n    overall_strength_training_summary_data =[",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -515,6 +564,15 @@
         "importPath": "strava",
         "description": "strava",
         "peekOfCode": "def get_latest_activities(inputs):\n    logging.info('Inside get_latest_activities')\n    latest_activity_id = inputs.get('activity_id')\n    athlete_id = inputs.get('athlete_id')\n    # Step 1: Retrieve Access Token\n    access_token = get_access_token(athlete_id)\n    logging.info('Access token retrieved')\n    # Step 2: Define API Endpoint and Parameters\n    BEFORE = int(time.time()) \n    AFTER = int(time.time()) - (28 * 24 * 60 * 60)  # Exactly 4 weeks",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_complete_activity_detail",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def fetch_complete_activity_detail(activty_id, headers):\n    \"\"\"Fetch complete activity details.\"\"\"\n    activity_url = f\"https://www.strava.com/api/v3/activities/{activty_id}\"\n    response = requests.get(activity_url, headers)\n    if response.status_code == 200:\n        return response.json()\n    return None",
         "detail": "strava",
         "documentation": {}
     },
@@ -568,7 +626,7 @@
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "athlete_id = 64768690\n# access_token = get_access_token(athlete_id)\naccess_token= 'ee4c34e6f38a30c8842e61e67c78d8e272258c58'\nheaders = {'Authorization': f'Bearer {access_token}'}   \nactivity_id =13269448320\nlatest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\nlatest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\nif latest_activity_response:\n    latest_activity_data = latest_activity_response.json()",
+        "peekOfCode": "athlete_id = 64768690\n# access_token = get_access_token(athlete_id)\naccess_token= 'ee4c34e6f38a30c8842e61e67c78d8e272258c58'\nheaders = {'Authorization': f'Bearer {access_token}'}   \nactivity_id =13410739586\nlatest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()",
         "detail": "test_strava_activity",
         "documentation": {}
     },
@@ -577,7 +635,7 @@
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "headers = {'Authorization': f'Bearer {access_token}'}   \nactivity_id =13269448320\nlatest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\nlatest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\nif latest_activity_response:\n    latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\n# athlete_id = '64768690'\ninputs={",
+        "peekOfCode": "headers = {'Authorization': f'Bearer {access_token}'}   \nactivity_id =13410739586\nlatest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 64768690\ninputs={",
         "detail": "test_strava_activity",
         "documentation": {}
     },
@@ -586,16 +644,16 @@
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "latest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\nlatest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\nif latest_activity_response:\n    latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\n# athlete_id = '64768690'\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id",
+        "peekOfCode": "latest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 64768690\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id",
         "detail": "test_strava_activity",
         "documentation": {}
     },
     {
-        "label": "latest_activity_response",
+        "label": "athlete_id",
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\nif latest_activity_response:\n    latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\n# athlete_id = '64768690'\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id\n    }\nstrava.get_latest_activities(inputs)",
+        "peekOfCode": "athlete_id = 64768690\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id\n    }\nstrava.get_latest_activities(inputs)\n# print(latest_activity_data)",
         "detail": "test_strava_activity",
         "documentation": {}
     },
@@ -622,8 +680,116 @@
         "kind": 2,
         "importPath": "utils",
         "description": "utils",
-        "peekOfCode": "def update_description(activity_data, summary):\n    description = activity_data['description']\n    if description == \"\" or description is None:\n        updated_description = f\"{summary}\"\n    else:    \n        updated_description = f\"{description} {summary}\"\n    update_json = {\"description\": updated_description}\n    return update_json",
+        "peekOfCode": "def update_description(activity_data, summary):\n    description = activity_data['description']\n    if description == \"\" or description is None:\n        updated_description = f\"{summary}\"\n    else:    \n        updated_description = f\"{description} {summary}\"\n    update_json = {\"description\": updated_description}\n    return update_json\ndef convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)",
         "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "convert_seconds_in_hhmmss",
+        "kind": 2,
+        "importPath": "utils",
+        "description": "utils",
+        "peekOfCode": "def convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)",
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_speed",
+        "kind": 2,
+        "importPath": "utils",
+        "description": "utils",
+        "peekOfCode": "def calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return f\"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km\"\ndef calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)\n    return f\"{speed_kph:.2f} km/hr\"\ndef calculate_pace_minKm(moving_time, distance):\n    pace_seconds_per_km = moving_time / (distance / 1000)\n    pace_minutes = int(pace_seconds_per_km // 60)\n    pace_seconds = int(pace_seconds_per_km % 60)",
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_speed_in_kmph",
+        "kind": 2,
+        "importPath": "utils",
+        "description": "utils",
+        "peekOfCode": "def calculate_speed_in_kmph(moving_time, distance):\n    speed_kph = (distance / 1000) / (moving_time / 3600)\n    return f\"{speed_kph:.2f} km/hr\"\ndef calculate_pace_minKm(moving_time, distance):\n    pace_seconds_per_km = moving_time / (distance / 1000)\n    pace_minutes = int(pace_seconds_per_km // 60)\n    pace_seconds = int(pace_seconds_per_km % 60)\n    return f\"{pace_minutes:02d}:{pace_seconds:02d} min/Km\"",
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_pace_minKm",
+        "kind": 2,
+        "importPath": "utils",
+        "description": "utils",
+        "peekOfCode": "def calculate_pace_minKm(moving_time, distance):\n    pace_seconds_per_km = moving_time / (distance / 1000)\n    pace_minutes = int(pace_seconds_per_km // 60)\n    pace_seconds = int(pace_seconds_per_km % 60)\n    return f\"{pace_minutes:02d}:{pace_seconds:02d} min/Km\"",
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "compute_statistics",
+        "kind": 2,
+        "importPath": "workout_classifier",
+        "description": "workout_classifier",
+        "peekOfCode": "def compute_statistics(activities):\n    \"\"\"Compute mean and standard deviation for distance, pace, and heart rate.\"\"\"\n    distances = [activity.get('distance', 0) / 1000 for activity in activities]  # km\n    avg_speeds = [activity.get('average_speed', 0) * 3.6 for activity in activities]  # km/h\n    avg_hrs = [activity.get('average_heartrate', 0) for activity in activities]\n    stats = {\n        'distance_mean': np.mean(distances),\n        'distance_std': np.std(distances),\n        'speed_mean': np.mean(avg_speeds),\n        'speed_std': np.std(avg_speeds),",
+        "detail": "workout_classifier",
+        "documentation": {}
+    },
+    {
+        "label": "classify_workout",
+        "kind": 2,
+        "importPath": "workout_classifier",
+        "description": "workout_classifier",
+        "peekOfCode": "def classify_workout(activity, stats, headers):\n    \"\"\"Classify the workout based on dynamic metrics.\"\"\"\n    distance = activity.get('distance', 0) / 1000  # km\n    avg_speed = activity.get('average_speed', 0) * 3.6  # km/h\n    avg_hr = activity.get('average_heartrate', 0)\n    max_hr = activity.get('max_heartrate', 0)\n    if activity[\"workout_type\"] == 1:\n        return \"Race\"+ f\"\\n{get_race_details(activity)}\"\n    if activity['sport_type'] == 'TrailRun':\n        return \"Trail Run\"+ f\"\\n{get_trail_run_details(activity)}\"",
+        "detail": "workout_classifier",
+        "documentation": {}
+    },
+    {
+        "label": "get_interval_run_details",
+        "kind": 2,
+        "importPath": "workout_classifier",
+        "description": "workout_classifier",
+        "peekOfCode": "def get_interval_run_details(laps):\n    \"\"\"Get interval run details.\"\"\"\n    lap_speeds = [round(((1000/lap['average_speed'])/60),2) for lap in laps] # Avg speed in m/s converting it to min/Km\n    lap_distances = [lap['distance']/1000 for lap in laps]\n    lap_details =[f\"Lap {i+1}: {lap_distances[i]:.2f} km at {lap_speeds[i]} min/Km\" for i in range(len(lap_speeds))]    \n    return lap_details\ndef get_long_run_details(activity):\n    avg_pace = calculate_pace_minKm(activity['moving_time'], activity['distance'])\n    return f\"{activity['distance']/1000:.2f} km at Avg pace: {avg_pace} min/Km\"\ndef get_trail_run_details(activity):",
+        "detail": "workout_classifier",
+        "documentation": {}
+    },
+    {
+        "label": "get_long_run_details",
+        "kind": 2,
+        "importPath": "workout_classifier",
+        "description": "workout_classifier",
+        "peekOfCode": "def get_long_run_details(activity):\n    avg_pace = calculate_pace_minKm(activity['moving_time'], activity['distance'])\n    return f\"{activity['distance']/1000:.2f} km at Avg pace: {avg_pace} min/Km\"\ndef get_trail_run_details(activity):\n    return f\"{activity['distance']/1000:.2f} km with total elevation gain of {activity['total_elevation_gain']} m\"\ndef get_race_details(activity):\n    return f\"{activity['distance']/1000:.2f} km at Avg pace: {calculate_pace_minKm(activity['moving_time'], activity['distance'])} min/Km and total elevation gain of {activity['total_elevation_gain']} m\"\ndef get_run_type(activities, headers):\n    \"\"\"Classify the workout based on dynamic metrics.\"\"\"\n    stats = compute_statistics(activities)",
+        "detail": "workout_classifier",
+        "documentation": {}
+    },
+    {
+        "label": "get_trail_run_details",
+        "kind": 2,
+        "importPath": "workout_classifier",
+        "description": "workout_classifier",
+        "peekOfCode": "def get_trail_run_details(activity):\n    return f\"{activity['distance']/1000:.2f} km with total elevation gain of {activity['total_elevation_gain']} m\"\ndef get_race_details(activity):\n    return f\"{activity['distance']/1000:.2f} km at Avg pace: {calculate_pace_minKm(activity['moving_time'], activity['distance'])} min/Km and total elevation gain of {activity['total_elevation_gain']} m\"\ndef get_run_type(activities, headers):\n    \"\"\"Classify the workout based on dynamic metrics.\"\"\"\n    stats = compute_statistics(activities)\n    run_types = []\n    for activity in activities:\n        run_types.append(classify_workout(activity, stats, headers))",
+        "detail": "workout_classifier",
+        "documentation": {}
+    },
+    {
+        "label": "get_race_details",
+        "kind": 2,
+        "importPath": "workout_classifier",
+        "description": "workout_classifier",
+        "peekOfCode": "def get_race_details(activity):\n    return f\"{activity['distance']/1000:.2f} km at Avg pace: {calculate_pace_minKm(activity['moving_time'], activity['distance'])} min/Km and total elevation gain of {activity['total_elevation_gain']} m\"\ndef get_run_type(activities, headers):\n    \"\"\"Classify the workout based on dynamic metrics.\"\"\"\n    stats = compute_statistics(activities)\n    run_types = []\n    for activity in activities:\n        run_types.append(classify_workout(activity, stats, headers))\n    return run_types\ndef fetch_complete_activity_detail(activty_id, headers):",
+        "detail": "workout_classifier",
+        "documentation": {}
+    },
+    {
+        "label": "get_run_type",
+        "kind": 2,
+        "importPath": "workout_classifier",
+        "description": "workout_classifier",
+        "peekOfCode": "def get_run_type(activities, headers):\n    \"\"\"Classify the workout based on dynamic metrics.\"\"\"\n    stats = compute_statistics(activities)\n    run_types = []\n    for activity in activities:\n        run_types.append(classify_workout(activity, stats, headers))\n    return run_types\ndef fetch_complete_activity_detail(activty_id, headers):\n    \"\"\"Fetch complete activity details.\"\"\"\n    activity_url = f\"https://www.strava.com/api/v3/activities/{activty_id}\"",
+        "detail": "workout_classifier",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_complete_activity_detail",
+        "kind": 2,
+        "importPath": "workout_classifier",
+        "description": "workout_classifier",
+        "peekOfCode": "def fetch_complete_activity_detail(activty_id, headers):\n    \"\"\"Fetch complete activity details.\"\"\"\n    activity_url = f\"https://www.strava.com/api/v3/activities/{activty_id}\"\n    response = requests.get(activity_url,headers= headers)\n    if response.status_code == 200:\n        return response.json()\n    return None",
+        "detail": "workout_classifier",
         "documentation": {}
     }
 ]

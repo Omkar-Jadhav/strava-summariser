@@ -1,3 +1,4 @@
+import ai
 import database
 import requests
 import time, datetime
@@ -5,6 +6,9 @@ import logging
 import utils
 import data_processing
 import json
+import workout_classifier
+from ai import get_insights_by_llm
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s %(levelname)s %(message)s')
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -81,7 +85,7 @@ def get_latest_activities(inputs):
             break
     
     logging.info(f"Total activities fetched: {len(all_activities)}")
-    
+    out_message=""
     if all_activities:
         result_table = []
         
@@ -122,11 +126,20 @@ def get_latest_activities(inputs):
                 
                 # Check if summary already exists
                 if summary_header not in latest_activity_data['description'] and url not in latest_activity_data['description']:
+                # if True:
                     activities_of_type = [activity for activity in all_activities if activity['type'] == latest_activity_data['type']]
                     result_table = getattr(data_processing, f"give_{latest_activity_data['type'].lower()}_summary")(activities_of_type)
                     logger.info(f"description:{latest_activity_data['description']} \n  url: {url}" )
                     
-                    update_json = utils.update_description(activity_data=latest_activity_data, summary=result_table)
+                    if latest_activity_data['has_heartrate']:
+                        run_types = workout_classifier.get_run_type(activities_of_type, headers)
+                        past_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(run_types)])
+                        insights = ai.get_insights_by_llm(result_table, past_runs_details)
+                        out_message = "Last 4 weeks summarised -\n"+insights+'\n'
+                    
+                    out_message+=result_table
+                    
+                    update_json = utils.update_description(activity_data=latest_activity_data, summary=out_message)
                     update_message = utils.update_activity(activity_url=latest_activity_url, update_json=update_json, headers=headers)  
                     print(update_message)
                 else:
@@ -136,3 +149,12 @@ def get_latest_activities(inputs):
             print(f"Error: {latest_activity_response.status_code}, {latest_activity_response.text}")
     else:
         print(f"Error: No activities found in the date range")
+        
+        
+def fetch_complete_activity_detail(activty_id, headers):
+    """Fetch complete activity details."""
+    activity_url = f"https://www.strava.com/api/v3/activities/{activty_id}"
+    response = requests.get(activity_url, headers)
+    if response.status_code == 200:
+        return response.json()
+    return None

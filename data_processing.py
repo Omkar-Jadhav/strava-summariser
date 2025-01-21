@@ -1,19 +1,7 @@
 from tabulate import tabulate
+import utils
+from utils import convert_seconds_in_hhmmss, calculate_speed_in_kmph, calculate_speed
 footer = "\n \nSubscribe on strava-summariser \nStats generated using StravaAPI by Omkar Jadhav"
-
-def convert_seconds_in_hhmmss(seconds):
-    hours = int(seconds//3600)
-    minutes = int((seconds%3600)//60)
-    seconds = int(seconds % 60)
-    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)
-
-def calculate_speed(moving_time, distance):
-    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))
-    return f"{int(mov_speed_min):02d}:{int(mov_speed_sec):02d} min/Km"
-
-def calculate_speed_in_kmph(moving_time, distance):
-    speed_kph = (distance / 1000) / (moving_time / 3600)
-    return f"{speed_kph:.2f} km/hr"
 
 def give_weighttraining_summary(WeightTraining_activities):
     total_strength_training_time = 0
@@ -22,13 +10,13 @@ def give_weighttraining_summary(WeightTraining_activities):
         total_strength_training_time += activity["moving_time"]
         total_sessions += 1
     
-    avg_strength_training_session = convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))
-    total_strength_training_time = convert_seconds_in_hhmmss(total_strength_training_time)
+    avg_strength_training_session = utils.convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))
+    total_strength_training_time = utils.convert_seconds_in_hhmmss(total_strength_training_time)
     
     overall_strength_training_summary_data =[
-        ["Total strength_training sessions:", f"{total_sessions}"],
-        ["Avg strength_training session:", f"{avg_strength_training_session}"],
-        ["Total strength_training time:", f"{total_strength_training_time}"],
+        ["Total strength training sessions:", f"{total_sessions}"],
+        ["Avg strength training session:", f"{avg_strength_training_session}"],
+        ["Total strength training time:", f"{total_strength_training_time}"],
         
     ]
     overall_strength_training_summary_table = tabulate(overall_strength_training_summary_data, tablefmt="plain")
@@ -44,8 +32,8 @@ def give_yoga_summary(yoga_activities):
         total_yoga_time += activity["elapsed_time"]
         total_sessions += 1
     
-    avg_yoga_session = convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))
-    total_yoga_time = convert_seconds_in_hhmmss(total_yoga_time)
+    avg_yoga_session = utils.convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))
+    total_yoga_time = utils.convert_seconds_in_hhmmss(total_yoga_time)
     
     overall_yoga_summary_data =[
         ["Total yoga sessions:", f"{total_sessions}"],
@@ -65,8 +53,8 @@ def give_swim_summary(swim_activities):
     for activity in swim_activities:
         total_swim_time += activity["elapsed_time"]
         total_swim_sessions += 1
-    
-    avg_swim_session = convert_seconds_in_hhmmss(round(total_swim_time/total_swim_sessions, 2))
+    avg_swim_session = utils.convert_seconds_in_hhmmss(round(total_swim_time/total_swim_sessions, 2))
+    total_swim_time = utils.convert_seconds_in_hhmmss(total_swim_time)
     total_swim_time = convert_seconds_in_hhmmss(total_swim_time)
     
     overall_swim_summary_data =[
@@ -93,11 +81,11 @@ def give_ride_summary(ride_activities):
         total_ride_sessions += 1
         total_ride_distance += activity['distance']
         total_elevation_gain += activity['total_elevation_gain']
-    
-    avg_ride_time = convert_seconds_in_hhmmss(round(total_ride_time / total_ride_sessions, 2))
-    total_ride_time_hhmmss = convert_seconds_in_hhmmss(total_ride_time)
+    avg_ride_time = utils.convert_seconds_in_hhmmss(round(total_ride_time / total_ride_sessions, 2))
+    total_ride_time_hhmmss = utils.convert_seconds_in_hhmmss(total_ride_time)
     avg_ride_distance = round(total_ride_distance / total_ride_sessions / 1000, 2)
     avg_elevation_gain = round(total_elevation_gain / total_ride_sessions, 2)
+    avg_ride_speed = utils.calculate_speed_in_kmph(total_ride_time, total_ride_distance)
     avg_ride_speed = calculate_speed_in_kmph(total_ride_time, total_ride_distance)
     
     overall_ride_summary_data = [
@@ -137,6 +125,8 @@ def give_run_summary(run_activities):
     
     tot_elapsed_time = 0
     tot_moving_time = 0
+    tot_moving_time_road = 0
+    tot_moving_time_trail = 0
     
     road_runs_available = False
     trail_runs_available = False
@@ -144,8 +134,8 @@ def give_run_summary(run_activities):
     for activity in run_activities:
         tot_elapsed_time += activity['elapsed_time']
         tot_moving_time += activity['moving_time']
-        
-        moving_time_hhmm = convert_seconds_in_hhmmss(tot_moving_time)
+        moving_time_hhmm = utils.convert_seconds_in_hhmmss(tot_moving_time)
+        elapsed_time_hhmm = utils.convert_seconds_in_hhmmss(tot_elapsed_time)
         elapsed_time_hhmm = convert_seconds_in_hhmmss(tot_elapsed_time)
         
         # For All runs 
@@ -159,6 +149,7 @@ def give_run_summary(run_activities):
             total_road_runs_month += 1
             tot_road_distance += activity['distance'] / 1000
             tot_elevation_gain_road += activity['total_elevation_gain']
+            tot_moving_time_road+= activity['moving_time']
         
         # For Trail runs
         elif activity['sport_type'] == 'TrailRun':
@@ -166,6 +157,7 @@ def give_run_summary(run_activities):
             total_trail_runs_month += 1
             tot_trail_distance += activity['distance'] / 1000
             tot_elevation_gain_trail += activity['total_elevation_gain']
+            tot_moving_time_trail += activity['moving_time']
     
     # Calculate Averages
     avg_distance_per_run = tot_distance_ran_month / total_runs_month if total_runs_month else 0
@@ -173,10 +165,9 @@ def give_run_summary(run_activities):
     avg_road_distance = tot_road_distance / total_road_runs_month if total_road_runs_month else 0
     avg_elevation_gain_road = tot_elevation_gain_road / total_road_runs_month if total_road_runs_month else 0
     avg_elevation_gain_trail = tot_elevation_gain_trail / total_trail_runs_month if total_trail_runs_month else 0
-    avg_trail_distance = tot_trail_distance / total_trail_runs_month if total_trail_runs_month else 0
-    avg_mov_speed = calculate_speed(tot_moving_time, tot_distance_ran_month)
-    avg_elapsed_speed = calculate_speed(tot_elapsed_time, tot_distance_ran_month)
-
+    avg_mov_speed = utils.calculate_speed(tot_moving_time, tot_distance_ran_month)
+    avg_mov_speed_road = utils.calculate_speed(tot_moving_time_road, tot_road_distance)
+    avg_mov_speed_trail = utils.calculate_speed(tot_moving_time_trail, tot_trail_distance)
     # Formatting with two decimal places
     tot_distance_ran_month = f"{tot_distance_ran_month:.2f}"
     avg_distance_per_run = f"{avg_distance_per_run:.2f}"
@@ -209,7 +200,7 @@ def give_run_summary(run_activities):
             ["Total distance on road:", f"{tot_road_distance} Km"],
             ["Average distance on road:", f"{avg_road_distance} Km/run"],
             ["Total elevation gain on road:", f"{tot_elevation_gain_road} m"],
-            ["Average moving pace on roads:", avg_mov_speed]
+            ["Average moving pace on roads:", avg_mov_speed_road]
         ]
         
     # Trail runs summary
@@ -220,7 +211,7 @@ def give_run_summary(run_activities):
             ["Average distance on trails:", f"{avg_trail_distance} Km/run"],
             ["Total elevation gain on trails:", f"{tot_elevation_gain_trail} m"],
             ["Average elevation gain on trails:", f"{avg_elevation_gain_trail} m/run"],
-            ["Average moving pace on trails:", avg_mov_speed]
+            ["Average moving pace on trails:", avg_mov_speed_trail]
         ]
     
     if not trail_runs_available or not road_runs_available:        
@@ -232,9 +223,9 @@ def give_run_summary(run_activities):
     if trail_runs_available and road_runs_available:
         result_table = "\nFour-Week Rolling Run Summary\n"
         result_table += tabulate(overall_summary_data[0:3], tablefmt="plain")    
-        result_table += "\nRoad Runs:\n"
+        result_table += "\n\nRoad Runs:\n"
         result_table += tabulate(road_runs_summary_data, tablefmt="plain")
-        result_table += "\nTrail Runs:\n"
+        result_table += "\n\nTrail Runs:\n"
         result_table += tabulate(trail_runs_summary_data, tablefmt="plain")
     
     result_table += footer
@@ -276,8 +267,8 @@ def give_walk_summary(walk_activities):
     tot_distance_walked_month += round(activity['distance'] / 1000, 2)  # In km
     avg_distance_per_walk = round(tot_distance_walked_month / len(walk_activities), 2)
     tot_elevation_gain += round(int(activity['total_elevation_gain']), 2)
-    avg_elevation_gain = round(tot_elevation_gain / len(walk_activities), 2)
-    avg_mov_speed = calculate_speed(tot_moving_time, tot_distance_walked_month)
+    avg_mov_speed = utils.calculate_speed(tot_moving_time, tot_distance_walked_month)
+    avg_elapsed_speed = utils.calculate_speed(tot_elapsed_time, tot_distance_walked_month)
     avg_elapsed_speed = calculate_speed(tot_elapsed_time, tot_distance_walked_month)
 
   result_table = ""
