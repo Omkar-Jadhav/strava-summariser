@@ -101,5 +101,5 @@ def handle_webhook():
     strava.get_latest_activities(inputs)
     return jsonify({"message": "EVENT_RECEIVED"}), 200
 
-if __name__ == "__main__":
-    app.run(debug=True, port=int(os.getenv("PORT", 80)))
+# if __name__ == "__main__":
+#     app.run(debug=True, port=int(os.getenv("PORT", 80)))
