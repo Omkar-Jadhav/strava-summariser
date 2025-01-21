@@ -132,11 +132,11 @@ def get_latest_activities(inputs):
                     result_table = getattr(data_processing, f"give_{latest_activity_data['type'].lower()}_summary")(activities_of_type)
                     logger.info(f"description:{latest_activity_data['description']} \n  url: {url}" )
                     
-
-                    run_types = workout_classifier.get_run_type(activities_of_type, headers)
-                    past_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(run_types)])
-                    insights = ai.get_insights_by_llm(result_table, past_runs_details)
-                    out_message = "Last 4 weeks summarised -\n"+insights+'\n'
+                    if latest_activity_data['type'] == 'Run':
+                        run_types = workout_classifier.get_run_type(activities_of_type, headers)
+                        past_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(run_types)])
+                        insights = ai.get_insights_by_llm(result_table, past_runs_details)
+                        out_message = "Last 4 weeks summarised -\n"+insights+'\n'
                     out_message+=result_table
                     
                     update_json = utils.update_description(activity_data=latest_activity_data, summary=out_message)
