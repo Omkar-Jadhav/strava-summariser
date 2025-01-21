@@ -73,6 +73,13 @@
       background-color: #218838;
     }
 
+    .created-by {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 50px;
+      color: #6c757d;
+    }
+
     @media (max-width: 768px) {
       .stats-list {
         flex-direction: column;
@@ -83,9 +90,9 @@
 <body>
   <div class="container">
     <section class="hero">
-      <img class="icon" src="templates\logo\logo.png" alt="logo" style="width: 200px; height: 200px;">
+      <a href="https://ibb.co/X8W2mJv"><img src="https://i.ibb.co/gVrjsgB/logo.png" alt="logo" border="0"  width="200" height="200"></a>
       <h1>Unlock Personalized Insights with Strava Summarizer</h1>
-      <p>Effortlessly gain in-depth insights into your Strava activity. We automatically summarize your rides, runs, swims, and yoga sessions in convenient 4-week rolling periods, helping you track progress, identify trends, and stay motivated to achieve your fitness goals!</p>
+      <p>Effortlessly gain in-depth insights into your Strava activity. We automatically summarize and provide insights for your rides, runs, swims, and yoga sessions in convenient 4-week rolling periods, helping you track progress, identify trends, and stay motivated to achieve your fitness goals!</p>
       <ul class="stats-list">
         <li>
           <i class="fa fa-chart-line"></i><span>Track distance, pace, duration, and more.</span>
@@ -99,6 +106,10 @@
       </ul>
       <button id="authorize-button" onclick="authorize()">Connect Your Strava Profile</button>
     </section>
+  </div>
+
+  <div class="created-by">
+    <p>Created with ❤️ by <strong>Omkar Jadhav</strong>. A fellow ultra runner with love for running and logging everything on strava!</p>
   </div>
 
   <script>
