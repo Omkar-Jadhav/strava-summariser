@@ -7,3 +7,4 @@ requests
 tabulate
 pymongo[srv]==3.11
 groq==0.15.0
+numpy
