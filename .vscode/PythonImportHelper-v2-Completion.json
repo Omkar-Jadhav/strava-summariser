@@ -254,15 +254,6 @@
         "documentation": {}
     },
     {
-        "label": "matplotlib.pyplot",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "matplotlib.pyplot",
-        "description": "matplotlib.pyplot",
-        "detail": "matplotlib.pyplot",
-        "documentation": {}
-    },
-    {
         "label": "app",
         "importPath": "app",
         "description": "app",
@@ -789,6 +780,15 @@
         "importPath": "workout_classifier",
         "description": "workout_classifier",
         "peekOfCode": "def fetch_complete_activity_detail(activty_id, headers):\n    \"\"\"Fetch complete activity details.\"\"\"\n    activity_url = f\"https://www.strava.com/api/v3/activities/{activty_id}\"\n    response = requests.get(activity_url,headers= headers)\n    if response.status_code == 200:\n        return response.json()\n    return None",
+        "detail": "workout_classifier",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "workout_classifier",
+        "description": "workout_classifier",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\ndef compute_statistics(activities):\n    \"\"\"Compute mean and standard deviation for distance, pace, and heart rate.\"\"\"\n    distances = [activity.get('distance', 0) / 1000 for activity in activities]  # km\n    avg_speeds = [activity.get('average_speed', 0) * 3.6 for activity in activities]  # km/h\n    avg_hrs = [activity.get('average_heartrate', 0) for activity in activities]\n    stats = {\n        'distance_mean': np.mean(distances),\n        'distance_std': np.std(distances),",
         "detail": "workout_classifier",
         "documentation": {}
     }

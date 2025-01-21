@@ -1,10 +1,10 @@
 import logging
 import numpy as np
 import requests
-import matplotlib.pyplot as plt
 from utils import calculate_pace_minKm, calculate_speed
 import utils
-
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)  # Adjust logging level as needed
 
 def compute_statistics(activities):
     """Compute mean and standard deviation for distance, pace, and heart rate."""
@@ -55,7 +55,7 @@ def classify_workout(activity, stats, headers):
         laps = activity_complete.get('laps', [])
         pace_changes = [lap['average_speed'] for lap in laps]
         if len(pace_changes) >= 3 and (max(pace_changes) / min(pace_changes)) > 1.5:
-            logging.info(f"Activity {activity['id']} is classified as Intervals")
+            logger.info(f"Activity {activity['id']} is classified as Intervals")
             
             return "Intervals\n" + "\n".join(get_interval_run_details(laps))
         
