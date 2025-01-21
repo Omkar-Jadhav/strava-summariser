@@ -96,16 +96,17 @@ def get_latest_activities(inputs):
         
         if latest_activity_response:
             latest_activity_data = latest_activity_response.json()
-            
-            if latest_activity_data['type'] == 'Workout':
-                updated_name = latest_activity_data['name'].rsplit(' ', 1)[0] + " Yoga"
-                updated_activity_json = {'type': 'Yoga', 'sport_type': 'Yoga', 'name': updated_name}
-                
-                update_message = utils.update_activity(activity_url=latest_activity_url, update_json=updated_activity_json, headers=headers)
-                print(update_message)
-                
-            else:
-                print(f"Latest activity is not of type Workout.")
+            if athlete_id==64768690:
+                if latest_activity_data['type'] == 'Workout':
+                    # updated_name = latest_activity_data['name'].rsplit(' ', 1)[0] + " Yoga"
+                    updated_name = "Daily Sadhna"
+                    updated_activity_json = {'type': 'Yoga', 'sport_type': 'Yoga', 'name': updated_name}
+                    
+                    update_message = utils.update_activity(activity_url=latest_activity_url, update_json=updated_activity_json, headers=headers)
+                    print(update_message)
+                    
+                else:
+                    print(f"Latest activity is not of type Workout.")
         else:
             print(f"Error while getting latest activity. Please check the logs for details.")
         
