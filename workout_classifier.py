@@ -35,19 +35,19 @@ def classify_workout(activity, stats, headers):
     if activity['sport_type'] == 'TrailRun':
         return "Trail Run"+ f"\n{get_trail_run_details(activity)}"
     
-    if distance > stats['distance_mean'] + stats['distance_std'] and avg_hr <= stats['hr_mean']+0.6*stats['hr_std']:
+    if distance > stats['distance_mean'] + stats['distance_std'] and (avg_hr ==0 or avg_hr <= stats['hr_mean']+0.6*stats['hr_std']):
         return "Long Run" + f"\n{get_long_run_details(activity)}"
     
-    if stats['distance_mean'] - stats['distance_std'] <= distance <= stats['distance_mean'] + stats['distance_std'] and avg_hr >= stats['hr_mean']+0.7*stats['hr_std']:
+    if stats['distance_mean'] - stats['distance_std'] <= distance <= stats['distance_mean'] + stats['distance_std'] and (avg_hr ==0 or avg_hr >= stats['hr_mean']+0.7*stats['hr_std']):
         return "Tempo Workout"
     
-    if distance < stats['distance_mean'] and avg_hr <= stats['hr_mean']+0.4*stats['hr_std'] and max_hr <= stats['hr_mean']+1.1*stats['hr_std']:
+    if distance < stats['distance_mean'] and (avg_hr ==0 or avg_hr <= stats['hr_mean']+0.4*stats['hr_std']) and (max_hr ==0 or max_hr <= stats['hr_mean']+1.1*stats['hr_std']):
         return "Easy Run"
     
-    if distance < stats['distance_mean'] - stats['distance_std'] and avg_hr <= stats['hr_mean']+0.25*stats['hr_std']:
+    if distance < stats['distance_mean'] - stats['distance_std'] and (avg_hr ==0 or avg_hr <= stats['hr_mean']+0.25*stats['hr_std']):
         return "Recovery Run"
     
-    if activity['type'] == 'Run' and avg_hr >= stats['hr_mean']+0.8*stats['hr_std'] and avg_speed >= stats['speed_mean']+0.8*stats['speed_std']:
+    if activity['type'] == 'Run' and (avg_hr ==0 or avg_hr >= stats['hr_mean']+0.8*stats['hr_std']) and avg_speed >= stats['speed_mean']+0.8*stats['speed_std']:
         return "Threshold Run"
     
     activity_complete = fetch_complete_activity_detail(activity['id'], headers)
