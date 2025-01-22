@@ -36,16 +36,22 @@ def convert_seconds_in_hhmmss(seconds):
 def calculate_speed(moving_time, distance):
     if distance == 0:
         return "00:00 min/Km"
-    mov_speed_min, mov_speed_sec = map(int, divmod(moving_time / distance, 60))
+    else:
+        mov_speed_min, mov_speed_sec = map(int, divmod(moving_time / distance, 60))
+        return f"{mov_speed_min:02d}:{mov_speed_sec:02d} min/Km"
 def calculate_speed_in_kmph(moving_time, distance):
     if moving_time == 0:
         return "0.00 km/hr"
-    speed_kph = (distance / 1000) / (moving_time / 3600)
+    else:
+        speed_kph = (distance / 1000) / (moving_time / 3600)
+        return f"{speed_kph:.2f} km/hr"
+    
 def calculate_pace_minKm(moving_time, distance):
     if distance == 0:
         return "00:00 min/Km"
-    pace_seconds_per_km = moving_time / (distance / 1000)
-    pace_minutes = int(pace_seconds_per_km // 60)
-    pace_seconds = int(pace_seconds_per_km % 60)
-    return f"{pace_minutes:02d}:{pace_seconds:02d} min/Km"
+    else:
+        pace_seconds_per_km = moving_time / (distance / 1000)
+        pace_minutes = int(pace_seconds_per_km // 60)
+        pace_seconds = int(pace_seconds_per_km % 60)
+        return f"{pace_minutes:02d}:{pace_seconds:02d} min/Km"
    
