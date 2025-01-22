@@ -24,7 +24,7 @@ def give_weighttraining_summary(WeightTraining_activities):
     # ]
     # overall_strength_training_summary_table = tabulate(overall_strength_training_summary_data, tablefmt="plain")
     overall_strength_training_summary_table = f"{total_sessions} 🏋️‍♂️ Sessions |  {avg_strength_training_session}  Avg ⌚ |  {total_strength_training_time} Total"
-    result_table = f"\n Four Week strength training Summary \n{overall_strength_training_summary_table}" +footer
+    result_table = f"\n Four-Week strength training Summary \n{overall_strength_training_summary_table}" +footer
     
     print(result_table)
     return result_table
@@ -47,7 +47,7 @@ def give_yoga_summary(yoga_activities):
     # ]
     # overall_yoga_summary_table = tabulate(overall_yoga_summary_data, tablefmt="plain")
     
-    overall_yoga_summary_table =f"{total_sessions} 🧘‍♂️ Sessions |  {avg_yoga_session} Avg ⌚ |  {total_yoga_time} Total",
+    overall_yoga_summary_table =f"{total_sessions} 🧘‍♂️ Sessions |  {avg_yoga_session} Avg ⌚ |  {total_yoga_time} Total"
     result_table = f"\n Four-Week Rolling Yoga Summary \n{overall_yoga_summary_table}" +footer
     
     print(result_table)
