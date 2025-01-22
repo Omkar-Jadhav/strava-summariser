@@ -266,7 +266,7 @@
         "kind": 2,
         "importPath": "ai",
         "description": "ai",
-        "peekOfCode": "def get_insights_by_llm(avg_stats, past_runs):\n    inp_message = f\"\"\"Act as a helpful running coach. \nPresent insights and key data points from the athlete's past 4 weeks of running activity in under 100 words. Sugggest a general focus for upcoming week, and suggested acticvities for next 2 days. \nAvoid mentioning obvious statistics from summary. Do not use first person voice.\nEncourage, motivate, and applaud the athlete. \nThe workout history includes various runs like long runs, tempo runs, easy runs, recovery runs, intervals, and trail run, with additional details for some activities such as lap times, average pace, and total elevation gain. Look out for any recent hard workouts or races while suggesting upcoming weeks focus. Workouts are numbered by a descending order of date.  \nIf past runs are not available, then only suggest a general focus for the upcoming week and activities for the next 2 days.\nHere is the athlete's workout history.\n4 week rolling summary: {avg_stats}\nPrevious 4 weeks running history: {past_runs}\"\"\"",
+        "peekOfCode": "def get_insights_by_llm(avg_stats, past_runs):\n    inp_message = f\"\"\"Act as a helpful running coach. \nPresent insights and key data points from the athlete's past 4 weeks of running activity in under 100 words. Sugggest a general focus for upcoming week, and suggested acticvities for next 2 days. \nAvoid mentioning obvious statistics from summary. Do not use first person voice.\nEncourage, motivate, and applaud the athlete. \nThe workout history includes various runs like long runs, tempo runs, easy runs, recovery runs, intervals, and trail run, with additional details for some activities such as lap times, average pace, and total elevation gain. Look out for any recent hard workouts or races while suggesting upcoming weeks focus. Workouts are numbered by a descending order of date.  \nIf past runs are not available, then only suggest a general focus for the upcoming week and activities for the next 2 days. Use at most 3/4 emojis to make the message more engaging only if necessary.\nHere is the athlete's workout history.\n4 week rolling summary: {avg_stats}\nPrevious 4 weeks running history: {past_runs}\"\"\"",
         "detail": "ai",
         "documentation": {}
     },
@@ -275,7 +275,7 @@
         "kind": 5,
         "importPath": "ai",
         "description": "ai",
-        "peekOfCode": "client = Groq(api_key=os.environ.get(\"GROQ_API_KEY\"),)\ndef get_insights_by_llm(avg_stats, past_runs):\n    inp_message = f\"\"\"Act as a helpful running coach. \nPresent insights and key data points from the athlete's past 4 weeks of running activity in under 100 words. Sugggest a general focus for upcoming week, and suggested acticvities for next 2 days. \nAvoid mentioning obvious statistics from summary. Do not use first person voice.\nEncourage, motivate, and applaud the athlete. \nThe workout history includes various runs like long runs, tempo runs, easy runs, recovery runs, intervals, and trail run, with additional details for some activities such as lap times, average pace, and total elevation gain. Look out for any recent hard workouts or races while suggesting upcoming weeks focus. Workouts are numbered by a descending order of date.  \nIf past runs are not available, then only suggest a general focus for the upcoming week and activities for the next 2 days.\nHere is the athlete's workout history.\n4 week rolling summary: {avg_stats}",
+        "peekOfCode": "client = Groq(api_key=os.environ.get(\"GROQ_API_KEY\"),)\ndef get_insights_by_llm(avg_stats, past_runs):\n    inp_message = f\"\"\"Act as a helpful running coach. \nPresent insights and key data points from the athlete's past 4 weeks of running activity in under 100 words. Sugggest a general focus for upcoming week, and suggested acticvities for next 2 days. \nAvoid mentioning obvious statistics from summary. Do not use first person voice.\nEncourage, motivate, and applaud the athlete. \nThe workout history includes various runs like long runs, tempo runs, easy runs, recovery runs, intervals, and trail run, with additional details for some activities such as lap times, average pace, and total elevation gain. Look out for any recent hard workouts or races while suggesting upcoming weeks focus. Workouts are numbered by a descending order of date.  \nIf past runs are not available, then only suggest a general focus for the upcoming week and activities for the next 2 days. Use at most 3/4 emojis to make the message more engaging only if necessary.\nHere is the athlete's workout history.\n4 week rolling summary: {avg_stats}",
         "detail": "ai",
         "documentation": {}
     },
@@ -473,7 +473,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = utils.convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))\n    total_strength_training_time = utils.convert_seconds_in_hhmmss(total_strength_training_time)\n    overall_strength_training_summary_data =[\n        [\"Total strength training sessions:\", f\"{total_sessions}\"],",
+        "peekOfCode": "def give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = utils.convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))\n    total_strength_training_time = utils.convert_seconds_in_hhmmss(total_strength_training_time)\n    # overall_strength_training_summary_data =[[f\"{total_sessions}   |  {avg_strength_training_session}   |  {total_strength_training_time}\"],\n    # ]",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -482,7 +482,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = utils.convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))\n    total_yoga_time = utils.convert_seconds_in_hhmmss(total_yoga_time)\n    overall_yoga_summary_data =[\n        [\"Total yoga sessions:\", f\"{total_sessions}\"],",
+        "peekOfCode": "def give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = utils.convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))\n    total_yoga_time = utils.convert_seconds_in_hhmmss(total_yoga_time)\n    # overall_yoga_summary_data =[\n    #     [\"Total yoga sessions:\", f\"{total_sessions}\"],",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -491,7 +491,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_swim_summary(swim_activities):\n    total_swim_time = 0\n    total_swim_sessions = 0\n    for activity in swim_activities:\n        total_swim_time += activity[\"elapsed_time\"]\n        total_swim_sessions += 1\n    avg_swim_session = utils.convert_seconds_in_hhmmss(round(total_swim_time/total_swim_sessions, 2))\n    total_swim_time = utils.convert_seconds_in_hhmmss(total_swim_time)\n    total_swim_time = convert_seconds_in_hhmmss(total_swim_time)\n    overall_swim_summary_data =[",
+        "peekOfCode": "def give_swim_summary(swim_activities):\n    total_swim_time = 0\n    total_swim_sessions = 0\n    for activity in swim_activities:\n        total_swim_time += activity[\"elapsed_time\"]\n        total_swim_sessions += 1\n    avg_swim_session = utils.convert_seconds_in_hhmmss(round(total_swim_time/total_swim_sessions, 2))\n    total_swim_time = utils.convert_seconds_in_hhmmss(total_swim_time)\n    total_swim_time = convert_seconds_in_hhmmss(total_swim_time)\n    # overall_swim_summary_data =[",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -527,7 +527,7 @@
         "kind": 2,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "def give_walk_summary(walk_activities):\n  tot_distance_walked_month = 0\n  avg_distance_per_walk = 0\n  tot_elevation_gain = 0\n  avg_elevation_gain = 0\n  tot_moving_time = 0\n  avg_mov_speed = 0\n  tot_elapsed_time = 0\n  avg_elapsed_speed = 0\n  for activity in walk_activities:",
+        "peekOfCode": "def give_walk_summary(walk_activities):\n    tot_distance_walked_month = 0\n    avg_distance_per_walk = 0\n    tot_elevation_gain = 0\n    avg_elevation_gain = 0\n    tot_moving_time = 0\n    avg_mov_speed = 0\n    tot_elapsed_time = 0\n    avg_elapsed_speed = 0\n    for activity in walk_activities:",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -536,7 +536,7 @@
         "kind": 5,
         "importPath": "data_processing",
         "description": "data_processing",
-        "peekOfCode": "footer = \"\\n \\nSubscribe on strava-summariser \\nStats generated using StravaAPI by Omkar Jadhav\"\ndef give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = utils.convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))\n    total_strength_training_time = utils.convert_seconds_in_hhmmss(total_strength_training_time)\n    overall_strength_training_summary_data =[",
+        "peekOfCode": "footer = \"\\n \\nSubscribe on strava-summariser \\nStats generated using StravaAPI by Omkar Jadhav\"\ndef give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = utils.convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))\n    total_strength_training_time = utils.convert_seconds_in_hhmmss(total_strength_training_time)\n    # overall_strength_training_summary_data =[[f\"{total_sessions}   |  {avg_strength_training_session}   |  {total_strength_training_time}\"],",
         "detail": "data_processing",
         "documentation": {}
     },
@@ -617,7 +617,7 @@
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "headers = {'Authorization': f'Bearer {access_token}'}   \nactivity_id =13419468810\nlatest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 119005540\ninputs={",
+        "peekOfCode": "headers = {'Authorization': f'Bearer {access_token}'}   \nactivity_id =13419824885\nlatest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 64768690\ninputs={",
         "detail": "test_strava_activity",
         "documentation": {}
     },
@@ -626,7 +626,7 @@
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "latest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 119005540\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id",
+        "peekOfCode": "latest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 64768690\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id",
         "detail": "test_strava_activity",
         "documentation": {}
     },
@@ -635,7 +635,7 @@
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "athlete_id = 119005540\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id\n    }\nstrava.get_latest_activities(inputs)\n# print(latest_activity_data)",
+        "peekOfCode": "athlete_id = 64768690\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id\n    }\nstrava.get_latest_activities(inputs)\n# print(latest_activity_data)",
         "detail": "test_strava_activity",
         "documentation": {}
     },

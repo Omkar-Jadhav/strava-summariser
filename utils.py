@@ -39,6 +39,7 @@ def calculate_speed(moving_time, distance):
     else:
         mov_speed_min, mov_speed_sec = map(int, divmod(moving_time / distance, 60))
         return f"{mov_speed_min:02d}:{mov_speed_sec:02d} min/Km"
+    
 def calculate_speed_in_kmph(moving_time, distance):
     if moving_time == 0:
         return "0.00 km/hr"

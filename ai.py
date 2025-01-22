@@ -9,7 +9,7 @@ Present insights and key data points from the athlete's past 4 weeks of running 
 Avoid mentioning obvious statistics from summary. Do not use first person voice.
 Encourage, motivate, and applaud the athlete. 
 The workout history includes various runs like long runs, tempo runs, easy runs, recovery runs, intervals, and trail run, with additional details for some activities such as lap times, average pace, and total elevation gain. Look out for any recent hard workouts or races while suggesting upcoming weeks focus. Workouts are numbered by a descending order of date.  
-If past runs are not available, then only suggest a general focus for the upcoming week and activities for the next 2 days.
+If past runs are not available, then only suggest a general focus for the upcoming week and activities for the next 2 days. Use at most 3/4 emojis to make the message more engaging only if necessary.
 Here is the athlete's workout history.
 4 week rolling summary: {avg_stats}
 Previous 4 weeks running history: {past_runs}"""
