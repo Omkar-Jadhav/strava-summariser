@@ -197,7 +197,7 @@ def give_run_summary(run_activities):
     avg_elevation_gain_trail = f"{avg_elevation_gain_trail:.2f}"
 
     # Overall summary
-    overall_summary_data = [[f"""{total_runs_month} runs | {tot_distance_ran_month} Km 🛣️ | {tot_elevation_gain} m ↗️| {moving_time_hhmm} ⌚| """],
+    overall_summary_data = [[f"""{total_runs_month} runs 🏃 | {tot_distance_ran_month} Km 🛣️ | {tot_elevation_gain} m ↗️| {moving_time_hhmm} ⌚| """],
                             [f"{avg_mov_speed} Avg pace  | {avg_distance_per_run} Km/run"]
     ]
     
@@ -227,7 +227,7 @@ def give_run_summary(run_activities):
     # Trail runs summary
     if trail_runs_available:
         trail_runs_summary_data = [
-            [f"{total_trail_runs_month} trail runs | {tot_trail_distance} Km | {tot_elevation_gain_trail} m ⛰️| {utils.convert_seconds_in_hhmmss(tot_moving_time_trail)} ⌚| "],
+            [f"{total_trail_runs_month} trail runs 🧗| {tot_trail_distance} Km | {tot_elevation_gain_trail} m ⛰️| {utils.convert_seconds_in_hhmmss(tot_moving_time_trail)} ⌚| "],
             [f"{avg_mov_speed_trail} Avg Pace     | {avg_trail_distance} Km/run🥾"]
         ]
         # trail_runs_summary_data = [
