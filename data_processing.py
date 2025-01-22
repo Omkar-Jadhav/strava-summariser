@@ -93,9 +93,9 @@ def give_ride_summary(ride_activities):
         ["Avg ride time:", f"{avg_ride_time}"],
         ["Total ride time:", f"{total_ride_time_hhmmss}"],
         ["Total ride distance:", f"{total_ride_distance / 1000} Km"],
-        ["Avg ride distance:", f"{avg_ride_distance} Km"],
-        ["Total elevation gain:", f"{total_elevation_gain} m"],
-        ["Avg elevation gain:", f"{avg_elevation_gain} m/ride"],
+        ["Avg ride distance:", f"{avg_ride_distance:.2f} Km"],
+        ["Total elevation gain:", f"{total_elevation_gain:.2f} m"],
+        ["Avg elevation gain:", f"{avg_elevation_gain:.2f} m/ride"],
         ["Avg ride speed:", f"{avg_ride_speed}"]
     ]
 

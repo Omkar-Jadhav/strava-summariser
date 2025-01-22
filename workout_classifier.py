@@ -38,14 +38,29 @@ def classify_workout(activity, stats, headers):
     if distance > stats['distance_mean'] + stats['distance_std'] and (avg_hr ==0 or avg_hr <= stats['hr_mean']+0.6*stats['hr_std']):
         return "Long Run" + f"\n{get_long_run_details(activity)}"
     
-    if stats['distance_mean'] - stats['distance_std'] <= distance <= stats['distance_mean'] + stats['distance_std'] and (avg_hr ==0 or avg_hr >= stats['hr_mean']+0.7*stats['hr_std']):
-        return "Tempo Workout"
+    if stats['distance_mean'] - stats['distance_std'] <= distance <= stats['distance_mean'] + stats['distance_std']:
+        if avg_hr == 0:
+            if avg_speed >= stats['speed_mean'] + 0.25 * stats['speed_std']:
+                return "Tempo Workout"
+        else:
+            if avg_hr >= stats['hr_mean'] + 0.7 * stats['hr_std'] and avg_speed >= stats['speed_mean'] + 0.25 * stats['speed_std']:
+                return "Tempo Workout"
     
-    if distance < stats['distance_mean'] and (avg_hr ==0 or avg_hr <= stats['hr_mean']+0.4*stats['hr_std']) and (max_hr ==0 or max_hr <= stats['hr_mean']+1.1*stats['hr_std']):
-        return "Easy Run"
+    if distance < stats['distance_mean']:
+        if avg_hr == 0:
+            if stats['speed_mean'] - 0.5*stats['speed_std'] < avg_speed <= stats['speed_mean'] + 0.5*stats['speed_std']:
+                return "Easy Run"
+        else:
+            if (avg_hr <= stats['hr_mean']+0.4*stats['hr_std']) and (max_hr <= stats['hr_mean']+1.1*stats['hr_std']):
+                return "Easy Run"
     
-    if distance < stats['distance_mean'] - stats['distance_std'] and (avg_hr ==0 or avg_hr <= stats['hr_mean']+0.25*stats['hr_std']):
-        return "Recovery Run"
+    if distance < stats['distance_mean']:
+        if avg_hr == 0:
+            if avg_speed < stats['speed_mean'] - 0.2 * stats['speed_std']:
+                return "Recovery Run"   
+        else:
+            if avg_hr <= stats['hr_mean']+0.25*stats['hr_std'] and avg_speed < stats['speed_mean'] - 0.2 * stats['speed_std']:
+                return "Recovery Run"
     
     if activity['type'] == 'Run' and (avg_hr ==0 or avg_hr >= stats['hr_mean']+0.8*stats['hr_std']) and avg_speed >= stats['speed_mean']+0.8*stats['speed_std']:
         return "Threshold Run"
@@ -78,6 +93,10 @@ def get_trail_run_details(activity):
 
 def get_race_details(activity):
     return f"{activity['distance']/1000:.2f} km at Avg pace: {calculate_pace_minKm(activity['moving_time'], activity['distance'])} min/Km and total elevation gain of {activity['total_elevation_gain']} m"
+
+def get_run_descriptions(activity):   
+    """Get run descriptions."""
+    pass
     
 def get_run_type(activities, headers):
     """Classify the workout based on dynamic metrics."""
