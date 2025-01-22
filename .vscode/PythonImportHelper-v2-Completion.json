@@ -176,14 +176,6 @@
         "documentation": {}
     },
     {
-        "label": "calculate_speed",
-        "importPath": "utils",
-        "description": "utils",
-        "isExtraImport": true,
-        "detail": "utils",
-        "documentation": {}
-    },
-    {
         "label": "app",
         "importPath": "wsgi",
         "description": "wsgi",
@@ -245,12 +237,28 @@
         "documentation": {}
     },
     {
+        "label": "get_run_type",
+        "importPath": "workout_classifier",
+        "description": "workout_classifier",
+        "isExtraImport": true,
+        "detail": "workout_classifier",
+        "documentation": {}
+    },
+    {
         "label": "numpy",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "numpy",
         "description": "numpy",
         "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "defaultdict",
+        "importPath": "collections",
+        "description": "collections",
+        "isExtraImport": true,
+        "detail": "collections",
         "documentation": {}
     },
     {
@@ -617,7 +625,7 @@
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "headers = {'Authorization': f'Bearer {access_token}'}   \nactivity_id =13422380665\nlatest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 64768690\ninputs={",
+        "peekOfCode": "headers = {'Authorization': f'Bearer {access_token}'}   \nactivity_id =13419824885\nlatest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 64768690\ninputs={",
         "detail": "test_strava_activity",
         "documentation": {}
     },
@@ -703,65 +711,11 @@
         "documentation": {}
     },
     {
-        "label": "compute_statistics",
-        "kind": 2,
+        "label": "WorkoutClassifier",
+        "kind": 6,
         "importPath": "workout_classifier",
         "description": "workout_classifier",
-        "peekOfCode": "def compute_statistics(activities):\n    \"\"\"Compute mean and standard deviation for distance, pace, and heart rate.\"\"\"\n    distances = [activity.get('distance', 0) / 1000 for activity in activities]  # km\n    avg_speeds = [activity.get('average_speed', 0) * 3.6 for activity in activities]  # km/h\n    avg_hrs = [activity.get('average_heartrate', 0) for activity in activities]\n    stats = {\n        'distance_mean': np.mean(distances),\n        'distance_std': np.std(distances),\n        'speed_mean': np.mean(avg_speeds),\n        'speed_std': np.std(avg_speeds),",
-        "detail": "workout_classifier",
-        "documentation": {}
-    },
-    {
-        "label": "classify_workout",
-        "kind": 2,
-        "importPath": "workout_classifier",
-        "description": "workout_classifier",
-        "peekOfCode": "def classify_workout(activity, stats, headers):\n    \"\"\"Classify the workout based on dynamic metrics.\"\"\"\n    distance = activity.get('distance', 0) / 1000  # km\n    avg_speed = activity.get('average_speed', 0) * 3.6  # km/h\n    avg_hr = activity.get('average_heartrate', 0)\n    max_hr = activity.get('max_heartrate', 0)\n    if activity[\"workout_type\"] == 1:\n        return \"Race\"+ f\"\\n{get_race_details(activity)}\"\n    if activity['sport_type'] == 'TrailRun':\n        return \"Trail Run\"+ f\"\\n{get_trail_run_details(activity)}\"",
-        "detail": "workout_classifier",
-        "documentation": {}
-    },
-    {
-        "label": "get_interval_run_details",
-        "kind": 2,
-        "importPath": "workout_classifier",
-        "description": "workout_classifier",
-        "peekOfCode": "def get_interval_run_details(laps):\n    \"\"\"Get interval run details.\"\"\"\n    lap_speeds = [round(((1000/lap['average_speed'])/60),2) for lap in laps] # Avg speed in m/s converting it to min/Km\n    lap_distances = [lap['distance']/1000 for lap in laps]\n    lap_details =[f\"Lap {i+1}: {lap_distances[i]:.2f} km at {lap_speeds[i]} min/Km\" for i in range(len(lap_speeds))]    \n    return lap_details\ndef get_long_run_details(activity):\n    avg_pace = calculate_pace_minKm(activity['moving_time'], activity['distance'])\n    return f\"{activity['distance']/1000:.2f} km at Avg pace: {avg_pace} min/Km\"\ndef get_trail_run_details(activity):",
-        "detail": "workout_classifier",
-        "documentation": {}
-    },
-    {
-        "label": "get_long_run_details",
-        "kind": 2,
-        "importPath": "workout_classifier",
-        "description": "workout_classifier",
-        "peekOfCode": "def get_long_run_details(activity):\n    avg_pace = calculate_pace_minKm(activity['moving_time'], activity['distance'])\n    return f\"{activity['distance']/1000:.2f} km at Avg pace: {avg_pace} min/Km\"\ndef get_trail_run_details(activity):\n    return f\"{activity['distance']/1000:.2f} km with total elevation gain of {activity['total_elevation_gain']} m\"\ndef get_race_details(activity):\n    return f\"{activity['distance']/1000:.2f} km at Avg pace: {calculate_pace_minKm(activity['moving_time'], activity['distance'])} min/Km and total elevation gain of {activity['total_elevation_gain']} m\"\ndef get_run_descriptions(activity):   \n    \"\"\"Get run descriptions.\"\"\"\n    pass",
-        "detail": "workout_classifier",
-        "documentation": {}
-    },
-    {
-        "label": "get_trail_run_details",
-        "kind": 2,
-        "importPath": "workout_classifier",
-        "description": "workout_classifier",
-        "peekOfCode": "def get_trail_run_details(activity):\n    return f\"{activity['distance']/1000:.2f} km with total elevation gain of {activity['total_elevation_gain']} m\"\ndef get_race_details(activity):\n    return f\"{activity['distance']/1000:.2f} km at Avg pace: {calculate_pace_minKm(activity['moving_time'], activity['distance'])} min/Km and total elevation gain of {activity['total_elevation_gain']} m\"\ndef get_run_descriptions(activity):   \n    \"\"\"Get run descriptions.\"\"\"\n    pass\ndef get_run_type(activities, headers):\n    \"\"\"Classify the workout based on dynamic metrics.\"\"\"\n    stats = compute_statistics(activities)",
-        "detail": "workout_classifier",
-        "documentation": {}
-    },
-    {
-        "label": "get_race_details",
-        "kind": 2,
-        "importPath": "workout_classifier",
-        "description": "workout_classifier",
-        "peekOfCode": "def get_race_details(activity):\n    return f\"{activity['distance']/1000:.2f} km at Avg pace: {calculate_pace_minKm(activity['moving_time'], activity['distance'])} min/Km and total elevation gain of {activity['total_elevation_gain']} m\"\ndef get_run_descriptions(activity):   \n    \"\"\"Get run descriptions.\"\"\"\n    pass\ndef get_run_type(activities, headers):\n    \"\"\"Classify the workout based on dynamic metrics.\"\"\"\n    stats = compute_statistics(activities)\n    run_types = []\n    for activity in activities:",
-        "detail": "workout_classifier",
-        "documentation": {}
-    },
-    {
-        "label": "get_run_descriptions",
-        "kind": 2,
-        "importPath": "workout_classifier",
-        "description": "workout_classifier",
-        "peekOfCode": "def get_run_descriptions(activity):   \n    \"\"\"Get run descriptions.\"\"\"\n    pass\ndef get_run_type(activities, headers):\n    \"\"\"Classify the workout based on dynamic metrics.\"\"\"\n    stats = compute_statistics(activities)\n    run_types = []\n    for activity in activities:\n        run_types.append(classify_workout(activity, stats, headers))\n    return run_types",
+        "peekOfCode": "class WorkoutClassifier:\n    def __init__(self, activities, headers):\n        self.activities = activities if activities else []\n        self.headers = headers if headers else {}\n        self._validate_inputs()\n        # Initialize components with error handling\n        try:\n            self.stats = self._calculate_statistical_baselines()\n            self.sport_profiles = self._create_sport_profiles()\n            self.athlete_baselines = self._calculate_athlete_baselines()",
         "detail": "workout_classifier",
         "documentation": {}
     },
@@ -770,16 +724,7 @@
         "kind": 2,
         "importPath": "workout_classifier",
         "description": "workout_classifier",
-        "peekOfCode": "def get_run_type(activities, headers):\n    \"\"\"Classify the workout based on dynamic metrics.\"\"\"\n    stats = compute_statistics(activities)\n    run_types = []\n    for activity in activities:\n        run_types.append(classify_workout(activity, stats, headers))\n    return run_types\ndef fetch_complete_activity_detail(activty_id, headers):\n    \"\"\"Fetch complete activity details.\"\"\"\n    activity_url = f\"https://www.strava.com/api/v3/activities/{activty_id}\"",
-        "detail": "workout_classifier",
-        "documentation": {}
-    },
-    {
-        "label": "fetch_complete_activity_detail",
-        "kind": 2,
-        "importPath": "workout_classifier",
-        "description": "workout_classifier",
-        "peekOfCode": "def fetch_complete_activity_detail(activty_id, headers):\n    \"\"\"Fetch complete activity details.\"\"\"\n    activity_url = f\"https://www.strava.com/api/v3/activities/{activty_id}\"\n    response = requests.get(activity_url,headers= headers)\n    if response.status_code == 200:\n        return response.json()\n    return None",
+        "peekOfCode": "def get_run_type(activities, headers):\n    \"\"\"Public API with complete validation\"\"\"\n    try:\n        if not activities or not headers:\n            logger.error(\"Invalid input: empty activities or headers\")\n            return []\n        if not isinstance(activities, list) or not isinstance(headers, dict):\n            logger.error(\"Invalid input types\")\n            return []\n        classifier = WorkoutClassifier(activities, headers)",
         "detail": "workout_classifier",
         "documentation": {}
     },
@@ -788,7 +733,7 @@
         "kind": 5,
         "importPath": "workout_classifier",
         "description": "workout_classifier",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\ndef compute_statistics(activities):\n    \"\"\"Compute mean and standard deviation for distance, pace, and heart rate.\"\"\"\n    distances = [activity.get('distance', 0) / 1000 for activity in activities]  # km\n    avg_speeds = [activity.get('average_speed', 0) * 3.6 for activity in activities]  # km/h\n    avg_hrs = [activity.get('average_heartrate', 0) for activity in activities]\n    stats = {\n        'distance_mean': np.mean(distances),\n        'distance_std': np.std(distances),",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)\nclass WorkoutClassifier:\n    def __init__(self, activities, headers):\n        self.activities = activities if activities else []\n        self.headers = headers if headers else {}\n        self._validate_inputs()\n        # Initialize components with error handling\n        try:\n            self.stats = self._calculate_statistical_baselines()",
         "detail": "workout_classifier",
         "documentation": {}
     }

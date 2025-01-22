@@ -8,6 +8,7 @@ import data_processing
 import json
 import workout_classifier
 from ai import get_insights_by_llm
+from workout_classifier import get_run_type 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s %(levelname)s %(message)s')
 # Configure logging
