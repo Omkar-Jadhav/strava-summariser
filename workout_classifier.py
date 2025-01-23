@@ -220,7 +220,7 @@ class WorkoutClassifier:
             return "Variable Pace Run"
         
         interval_candidates = []
-        for data_type in ['laps', 'segment_efforts']:
+        for data_type in ['laps']:
             for item in detailed_activity.get(data_type, []):
                 if 'average_speed' in item:  # Explicit check
                     interval_candidates.append(item)

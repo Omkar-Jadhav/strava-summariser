@@ -24,7 +24,7 @@ def give_weighttraining_summary(WeightTraining_activities):
     # ]
     # overall_strength_training_summary_table = tabulate(overall_strength_training_summary_data, tablefmt="plain")
     overall_strength_training_summary_table = f"{total_sessions} 🏋️‍♂️ Sessions |  {avg_strength_training_session}  Avg ⌚ |  {total_strength_training_time} Total"
-    result_table = f"\n Four-Week strength training Summary \n{overall_strength_training_summary_table}" +footer
+    result_table = f"\n Four-Week Rolling strength training Summary \n{overall_strength_training_summary_table}" +footer
     
     print(result_table)
     return result_table
@@ -198,7 +198,7 @@ def give_run_summary(run_activities):
 
     # Overall summary
     overall_summary_data = [[f"""{total_runs_month} runs 🏃 | {tot_distance_ran_month} Km 🛣️ | {tot_elevation_gain} m ↗️| {moving_time_hhmm} ⌚| """],
-                            [f"{avg_mov_speed} Avg pace  | {avg_distance_per_run} Km/run"]
+                            [f"{avg_mov_speed} Avg pace ⏱️ | {avg_distance_per_run} Km/run"]
     ]
     
     # overall_summary_data = [
@@ -214,7 +214,7 @@ def give_run_summary(run_activities):
     if road_runs_available:
         road_runs_summary_data = [
             [f"{total_road_runs_month} road runs | {tot_road_distance} Km | {tot_elevation_gain_road} m ↗️| {utils.convert_seconds_in_hhmmss(tot_moving_time_road)} ⌚| "],
-            [f"{avg_mov_speed_road} Avg Pace   🏃‍♂️‍➡️| {avg_road_distance} Km/run 👟"]
+            [f"{avg_mov_speed_road} Avg Pace  ⏱️| {avg_road_distance} Km/run 👟"]
         ]
         # road_runs_summary_data = [
         #     ["Total road runs:", total_road_runs_month],
@@ -228,7 +228,7 @@ def give_run_summary(run_activities):
     if trail_runs_available:
         trail_runs_summary_data = [
             [f"{total_trail_runs_month} trail runs 🧗| {tot_trail_distance} Km | {tot_elevation_gain_trail} m ⛰️| {utils.convert_seconds_in_hhmmss(tot_moving_time_trail)} ⌚| "],
-            [f"{avg_mov_speed_trail} Avg Pace     | {avg_trail_distance} Km/run🥾"]
+            [f"{avg_mov_speed_trail} Avg Pace  ⏱️  | {avg_trail_distance} Km/run🥾"]
         ]
         # trail_runs_summary_data = [
         #     ["Total trail runs:", total_trail_runs_month],
@@ -242,7 +242,7 @@ def give_run_summary(run_activities):
     if not trail_runs_available or not road_runs_available:        
         result_table = "\n\nFour-Week Rolling Run Summary\n"
         # result_table += tabulate(overall_summary_data, tablefmt="plain")r
-        formatted_table = format_as_simple_markdown_table(overall_summary_data)
+        formatted_table = tabulate(overall_summary_data, tablefmt="plain")
         result_table += formatted_table
     
     if trail_runs_available and road_runs_available:
@@ -259,21 +259,6 @@ def give_run_summary(run_activities):
     print(result_table)
 
     return result_table
-
-
-def format_as_simple_markdown_table(data):
-     # Find the maximum length of the labels (left column)
-    max_label_length = max(len(label) for label, _ in data)
-
-    # Create each row, aligning the values to the right of the longest label
-    formatted_lines = [
-        f"{label.ljust(max_label_length)}: {value}"
-        for label, value in data  
-    ]
-
-    # Join all lines together with newline characters
-    return "\n".join(formatted_lines)
-
 
 def give_walk_summary(walk_activities):
     tot_distance_walked_month = 0
@@ -309,8 +294,8 @@ def give_walk_summary(walk_activities):
 #   ]
 
     walk_summary_data = [
-        [f"{len(walk_activities)} Walks 🚶 |", f"{tot_distance_walked_month} Km 🛣️  |", f"{convert_seconds_in_hhmmss(tot_moving_time)} ⌚|"],
-        [f"{avg_mov_speed} Avg Pace |",  f"{avg_distance_per_walk}Km/walk👟"]
+        [f"{len(walk_activities)} Walks 🚶 |", f"{tot_distance_walked_month:.2f} Km 🛣️  |", f"{convert_seconds_in_hhmmss(tot_moving_time)} ⌚|"],
+        [f"{avg_mov_speed} Avg Pace |",  f"{avg_distance_per_walk:.2f}Km/walk👟"]
     ]
     result_table += "\nFour-Week Rolling Walk Summary \n"
     result_table += tabulate(walk_summary_data, tablefmt="plain")
