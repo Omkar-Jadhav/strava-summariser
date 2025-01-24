@@ -33,6 +33,32 @@ def convert_seconds_in_hhmmss(seconds):
     seconds = int(seconds % 60)
     return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)
 
+def convert_speed_to_pace(speed_m_per_s):
+    if speed_m_per_s <= 0:
+        return "Speed must be greater than 0"
+
+    # Convert speed to pace in min/km
+    pace_min_per_km = (1000 / speed_m_per_s) / 60
+    minutes = int(pace_min_per_km)  # Whole minutes
+    seconds = int((pace_min_per_km - minutes) * 60)  # Remaining seconds
+
+    return f"{minutes}:{seconds:02d} min/km"
+
+def pace_to_speed(pace_str):
+    """
+    Convert a pace string in the format 'mm:ss min/km' to speed in m/s.
+    """
+    # Split the string into minutes and seconds
+    pace_str = pace_str.replace(" min/km", "")
+    minutes, seconds = map(int, pace_str.split(":"))
+    
+    # Convert pace (min/km) to total seconds per kilometer
+    total_seconds_per_km = minutes * 60 + seconds
+    
+    # Convert to speed in m/s (meters per second)
+    speed_m_per_s = 1000 / total_seconds_per_km
+    return speed_m_per_s
+
 def calculate_speed(moving_time, distance):
     if distance == 0:
         return "00:00 min/Km"

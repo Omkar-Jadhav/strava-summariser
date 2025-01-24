@@ -7,7 +7,9 @@ import utils
 import data_processing
 import json
 import workout_classifier
+import workout_classifier_testing
 from ai import get_insights_by_llm
+from datetime import datetime
 from workout_classifier import get_run_type 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s %(levelname)s %(message)s')
@@ -127,18 +129,25 @@ def get_latest_activities(inputs):
                     latest_activity_data['description'] = ""
                 
                 # Check if summary already exists
-                if summary_header not in latest_activity_data['description'] and url not in latest_activity_data['description']:
-                # if True:
+                # if summary_header not in latest_activity_data['description'] and url not in latest_activity_data['description']:
+                if True:
                     activities_of_type = [activity for activity in all_activities if activity['type'] == latest_activity_data['type']]
                     result_table = getattr(data_processing, f"give_{latest_activity_data['type'].lower()}_summary")(activities_of_type)
                     logger.info(f"description:{latest_activity_data['description']} \n  url: {url}" )
-                    out_message+=result_table
+                    
+                    today = datetime.now().strftime("%B %d, %Y")
+                    
+                    # athlete_goal = f"Run a marathon under 3 hours 10 minutes on March 16th, 2025 today is {today}"
+                    athlete_goal = f"Run a 100km trail ultra marathon with 3380m elevation gain on March 16th, 2025 today is {today}"
+                    
                     if latest_activity_data['type'] == 'Run':
-                        run_types = workout_classifier.get_run_type(activities_of_type, headers)
+                        run_types, athlete_baseline_stats = workout_classifier_testing.get_run_type(activities_of_type, headers)
                         past_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(run_types)])
-                        insights = ai.get_insights_by_llm(result_table, past_runs_details)
-                        out_message = "\nLast 4 weeks by strava-summariser :\n"+insights+'\n'
-                   
+                        # insights = ai.get_insights_by_llm(result_table, past_runs_details)
+                        # out_message = "\nLast 4 weeks by strava-summariser :\n"+insights+'\n'
+                        inp_message = format_prompt_for_llm(result_table, past_runs_details, athlete_baseline_stats, athlete_goal)
+                        workout_plan, reasoning = ai.get_response_from_deepseek(inp_message)
+                    out_message+=result_table
                     
                     update_json = utils.update_description(activity_data=latest_activity_data, summary=out_message)
                     update_message = utils.update_activity(activity_url=latest_activity_url, update_json=update_json, headers=headers)  
@@ -150,7 +159,20 @@ def get_latest_activities(inputs):
             print(f"Error: {latest_activity_response.status_code}, {latest_activity_response.text}")
     else:
         print(f"Error: No activities found in the date range")
-        
+    
+def format_prompt_for_llm(result_table, past_runs_details, athlete_baseline, athlete_goal):
+    athlete_baseline['speed_mean']=utils.convert_speed_to_pace(athlete_baseline['speed_mean'])
+    athlete_baseline['speed_std']=utils.convert_speed_to_pace(athlete_baseline['speed_std'])
+    prompt =f""" You are a professional running coach who generates the workout plans according to athlete goals, current conditions and recent runs.
+    The athlete's goal is to {athlete_goal}. The athlete's baseline stats are as follows: {", ".join(f"{key}={value}" for key, value in athlete_baseline.items() if key != "speed_std")}.
+    The athlete's recent runs are as follows: {past_runs_details}
+    Athletes recent runs summary is: {result_table}
+    First Mention an birds eye view of how the plan will look like upto the marathon.
+    Generate a complete workout plan for the athlete for the next week. Include the type of runs, distance, pace, and any other relevant details.
+    Keep a holistic nature while developing the plan considering strenghts and weaknesses of the athlete to keep him injury free including strength training, mobility workouts. Mention type of workouts to be done in strength training and mobility workouts.
+    """
+    
+    return prompt
         
 def fetch_complete_activity_detail(activty_id, headers):
     """Fetch complete activity details."""

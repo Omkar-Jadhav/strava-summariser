@@ -17,6 +17,14 @@
         "documentation": {}
     },
     {
+        "label": "OpenAI",
+        "importPath": "openai",
+        "description": "openai",
+        "isExtraImport": true,
+        "detail": "openai",
+        "documentation": {}
+    },
+    {
         "label": "flask",
         "kind": 6,
         "isExtraImport": true,
@@ -176,6 +184,14 @@
         "documentation": {}
     },
     {
+        "label": "calculate_pace_minKm",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
         "label": "app",
         "importPath": "wsgi",
         "description": "wsgi",
@@ -189,6 +205,14 @@
         "isExtraImport": true,
         "importPath": "ai",
         "description": "ai",
+        "detail": "ai",
+        "documentation": {}
+    },
+    {
+        "label": "get_insights_by_llm",
+        "importPath": "ai",
+        "description": "ai",
+        "isExtraImport": true,
         "detail": "ai",
         "documentation": {}
     },
@@ -245,12 +269,62 @@
         "documentation": {}
     },
     {
+        "label": "get_run_type",
+        "importPath": "workout_classifier",
+        "description": "workout_classifier",
+        "isExtraImport": true,
+        "detail": "workout_classifier",
+        "documentation": {}
+    },
+    {
+        "label": "workout_classifier_testing",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "workout_classifier_testing",
+        "description": "workout_classifier_testing",
+        "detail": "workout_classifier_testing",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "strava_v2_testing",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "strava_v2_testing",
+        "description": "strava_v2_testing",
+        "detail": "strava_v2_testing",
+        "documentation": {}
+    },
+    {
         "label": "numpy",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "numpy",
         "description": "numpy",
         "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "defaultdict",
+        "importPath": "collections",
+        "description": "collections",
+        "isExtraImport": true,
+        "detail": "collections",
         "documentation": {}
     },
     {
@@ -274,7 +348,16 @@
         "kind": 2,
         "importPath": "ai",
         "description": "ai",
-        "peekOfCode": "def get_insights_by_llm(avg_stats, past_runs):\n    inp_message = f\"\"\"Act as a helpful running coach. \nPresent insights and key data points from the athlete's past 4 weeks of running activity in under 100 words. Sugggest a general focus for upcoming week, and suggested acticvities for next 2 days. \nAvoid mentioning obvious statistics from summary. Do not use first person voice.\nEncourage, motivate, and applaud the athlete. \nThe workout history includes various runs like long runs, tempo runs, easy runs, recovery runs, intervals, and trail run, with additional details for some activities such as lap times, average pace, and total elevation gain. Look out for hard workouts/intervals/long runs or races in last 5 workouts while suggesting upcoming weeks focus. Workouts are numbered by a descending order of date. Take a comprehensive approah in suggesting the workouts considering the athlete's past runs.  \nIf past runs are not available, then only suggest a general focus for the upcoming week and activities for the next 2 days. Use at most 3/4 emojis to make the message more engaging only if necessary.\nHere is the athlete's workout history.\n4 week rolling summary: {avg_stats}\nPrevious 4 weeks running history: {past_runs}\"\"\"",
+        "peekOfCode": "def get_insights_by_llm(avg_stats, past_runs):\n    inp_message = f\"\"\"Act as a helpful running coach. \nPresent insights and key data points from the athlete's past 4 weeks of running activity in under 100 words. Sugggest a general focus for upcoming week, and suggested acticvities for next 2 days. \nAvoid mentioning obvious statistics from summary. Do not use first person voice.\nEncourage, motivate, and applaud the athlete. \nThe workout history includes various runs like long runs, tempo runs, easy runs, recovery runs, intervals, and trail run, with additional details for some activities such as lap times, average pace, and total elevation gain. Based on the recent workouts/intervals/long runs or races in last 5 workouts suggest upcoming weeks focus. Workouts are numbered by a descending order of date. Take a comprehensive approah in suggesting the workouts considering the athlete's past runs where depending on recent workouts you should suggest easy runs/ tempo runs/ intervals/ long runs/ hill workouts or a recovery run.  \nIf past runs are not available, then only suggest a general focus for the upcoming week and activities for the next 2 days. Use at most 3/4 emojis to make the message more engaging only if necessary.\nHere is the athlete's workout history.\n4 week rolling summary: {avg_stats}\nPrevious 4 weeks running history: {past_runs}\"\"\"",
+        "detail": "ai",
+        "documentation": {}
+    },
+    {
+        "label": "get_response_from_deepseek",
+        "kind": 2,
+        "importPath": "ai",
+        "description": "ai",
+        "peekOfCode": "def get_response_from_deepseek(inp_message):\n    client = OpenAI(api_key=os.environ.get(\"DEEPSEEK_API_KEY\"), base_url=\"https://api.deepseek.com\")\n    messages = [{\"role\": \"user\", \"content\": f\"{inp_message}\"}]\n    response = client.chat.completions.create(\n        model=\"deepseek-reasoner\",\n        messages=messages\n    )\n    return response.choices[0].message.content, response.choices[0].message.reasoning_content",
         "detail": "ai",
         "documentation": {}
     },
@@ -283,7 +366,7 @@
         "kind": 5,
         "importPath": "ai",
         "description": "ai",
-        "peekOfCode": "client = Groq(api_key=os.environ.get(\"GROQ_API_KEY\"),)\ndef get_insights_by_llm(avg_stats, past_runs):\n    inp_message = f\"\"\"Act as a helpful running coach. \nPresent insights and key data points from the athlete's past 4 weeks of running activity in under 100 words. Sugggest a general focus for upcoming week, and suggested acticvities for next 2 days. \nAvoid mentioning obvious statistics from summary. Do not use first person voice.\nEncourage, motivate, and applaud the athlete. \nThe workout history includes various runs like long runs, tempo runs, easy runs, recovery runs, intervals, and trail run, with additional details for some activities such as lap times, average pace, and total elevation gain. Look out for hard workouts/intervals/long runs or races in last 5 workouts while suggesting upcoming weeks focus. Workouts are numbered by a descending order of date. Take a comprehensive approah in suggesting the workouts considering the athlete's past runs.  \nIf past runs are not available, then only suggest a general focus for the upcoming week and activities for the next 2 days. Use at most 3/4 emojis to make the message more engaging only if necessary.\nHere is the athlete's workout history.\n4 week rolling summary: {avg_stats}",
+        "peekOfCode": "client = Groq(api_key=os.environ.get(\"GROQ_API_KEY\"),)\ndef get_insights_by_llm(avg_stats, past_runs):\n    inp_message = f\"\"\"Act as a helpful running coach. \nPresent insights and key data points from the athlete's past 4 weeks of running activity in under 100 words. Sugggest a general focus for upcoming week, and suggested acticvities for next 2 days. \nAvoid mentioning obvious statistics from summary. Do not use first person voice.\nEncourage, motivate, and applaud the athlete. \nThe workout history includes various runs like long runs, tempo runs, easy runs, recovery runs, intervals, and trail run, with additional details for some activities such as lap times, average pace, and total elevation gain. Based on the recent workouts/intervals/long runs or races in last 5 workouts suggest upcoming weeks focus. Workouts are numbered by a descending order of date. Take a comprehensive approah in suggesting the workouts considering the athlete's past runs where depending on recent workouts you should suggest easy runs/ tempo runs/ intervals/ long runs/ hill workouts or a recovery run.  \nIf past runs are not available, then only suggest a general focus for the upcoming week and activities for the next 2 days. Use at most 3/4 emojis to make the message more engaging only if necessary.\nHere is the athlete's workout history.\n4 week rolling summary: {avg_stats}",
         "detail": "ai",
         "documentation": {}
     },
@@ -594,6 +677,69 @@
         "documentation": {}
     },
     {
+        "label": "get_access_token",
+        "kind": 2,
+        "importPath": "strava_v2_testing",
+        "description": "strava_v2_testing",
+        "peekOfCode": "def get_access_token(athlete_id):\n    client = database.initiate_mango_connection()\n    refresh_token = database.check_athlete_in_data(client,athlete_id)\n    database.close_client(client)\n    logger.info(f'Refresh token{refresh_token} for athlete ID {athlete_id}')\n    # Check if the athlete_id exists in the refresh_tokens\n    if refresh_token is not None:\n        # Retrieve the refresh_token for the athlete_id\n        logger.info('inside if refresh-token condition')\n        REFRESH_TOKEN = refresh_token",
+        "detail": "strava_v2_testing",
+        "documentation": {}
+    },
+    {
+        "label": "get_latest_activities",
+        "kind": 2,
+        "importPath": "strava_v2_testing",
+        "description": "strava_v2_testing",
+        "peekOfCode": "def get_latest_activities(inputs):\n    logging.info('Inside get_latest_activities')\n    latest_activity_id = inputs.get('activity_id')\n    athlete_id = inputs.get('athlete_id')\n    # Step 1: Retrieve Access Token\n    access_token = get_access_token(athlete_id)\n    logging.info('Access token retrieved')\n    # Step 2: Define API Endpoint and Parameters\n    BEFORE = int(time.time()) \n    AFTER = int(time.time()) - (28 * 24 * 60 * 60)  # Exactly 4 weeks",
+        "detail": "strava_v2_testing",
+        "documentation": {}
+    },
+    {
+        "label": "format_prompt_for_llm",
+        "kind": 2,
+        "importPath": "strava_v2_testing",
+        "description": "strava_v2_testing",
+        "peekOfCode": "def format_prompt_for_llm(result_table, past_runs_details, athlete_baseline, athlete_goal):\n    athlete_baseline['speed_mean']=utils.convert_speed_to_pace(athlete_baseline['speed_mean'])\n    athlete_baseline['speed_std']=utils.convert_speed_to_pace(athlete_baseline['speed_std'])\n    prompt =f\"\"\" You are a professional running coach who generates the workout plans according to athlete goals, current conditions and recent runs.\n    The athlete's goal is to {athlete_goal}. The athlete's baseline stats are as follows: {\", \".join(f\"{key}={value}\" for key, value in athlete_baseline.items() if key != \"speed_std\")}.\n    The athlete's recent runs are as follows: {past_runs_details}\n    Athletes recent runs summary is: {result_table}\n    First Mention an birds eye view of how the plan will look like upto the marathon.\n    Generate a complete workout plan for the athlete for the next week. Include the type of runs, distance, pace, and any other relevant details.\n    Keep a holistic nature while developing the plan considering strenghts and weaknesses of the athlete to keep him injury free including strength training, mobility workouts. Mention type of workouts to be done in strength training and mobility workouts.",
+        "detail": "strava_v2_testing",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_complete_activity_detail",
+        "kind": 2,
+        "importPath": "strava_v2_testing",
+        "description": "strava_v2_testing",
+        "peekOfCode": "def fetch_complete_activity_detail(activty_id, headers):\n    \"\"\"Fetch complete activity details.\"\"\"\n    activity_url = f\"https://www.strava.com/api/v3/activities/{activty_id}\"\n    response = requests.get(activity_url, headers)\n    if response.status_code == 200:\n        return response.json()\n    return None",
+        "detail": "strava_v2_testing",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "strava_v2_testing",
+        "description": "strava_v2_testing",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\n# Replace these with your Strava API credentials\nCLIENT_ID = '114698'\nCLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\n# REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token(athlete_id):\n    client = database.initiate_mango_connection()\n    refresh_token = database.check_athlete_in_data(client,athlete_id)",
+        "detail": "strava_v2_testing",
+        "documentation": {}
+    },
+    {
+        "label": "CLIENT_ID",
+        "kind": 5,
+        "importPath": "strava_v2_testing",
+        "description": "strava_v2_testing",
+        "peekOfCode": "CLIENT_ID = '114698'\nCLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\n# REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token(athlete_id):\n    client = database.initiate_mango_connection()\n    refresh_token = database.check_athlete_in_data(client,athlete_id)\n    database.close_client(client)\n    logger.info(f'Refresh token{refresh_token} for athlete ID {athlete_id}')\n    # Check if the athlete_id exists in the refresh_tokens",
+        "detail": "strava_v2_testing",
+        "documentation": {}
+    },
+    {
+        "label": "CLIENT_SECRET",
+        "kind": 5,
+        "importPath": "strava_v2_testing",
+        "description": "strava_v2_testing",
+        "peekOfCode": "CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\n# REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token(athlete_id):\n    client = database.initiate_mango_connection()\n    refresh_token = database.check_athlete_in_data(client,athlete_id)\n    database.close_client(client)\n    logger.info(f'Refresh token{refresh_token} for athlete ID {athlete_id}')\n    # Check if the athlete_id exists in the refresh_tokens\n    if refresh_token is not None:",
+        "detail": "strava_v2_testing",
+        "documentation": {}
+    },
+    {
         "label": "uri",
         "kind": 5,
         "importPath": "test",
@@ -616,7 +762,7 @@
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "headers = {'Authorization': f'Bearer {access_token}'}   \nactivity_id =13428140527\nlatest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 16076791 #64768690\ninputs={",
+        "peekOfCode": "headers = {'Authorization': f'Bearer {access_token}'}   \nactivity_id =13419646099\nlatest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 115832357\ninputs={",
         "detail": "test_strava_activity",
         "documentation": {}
     },
@@ -625,7 +771,7 @@
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "latest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 16076791 #64768690\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id",
+        "peekOfCode": "latest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 115832357\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id",
         "detail": "test_strava_activity",
         "documentation": {}
     },
@@ -634,7 +780,7 @@
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "athlete_id = 16076791 #64768690\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id\n    }\nstrava.get_latest_activities(inputs)\n# print(latest_activity_data)",
+        "peekOfCode": "athlete_id = 115832357\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id\n    }\nstrava.get_latest_activities(inputs)\n# print(latest_activity_data)",
         "detail": "test_strava_activity",
         "documentation": {}
     },
@@ -670,7 +816,25 @@
         "kind": 2,
         "importPath": "utils",
         "description": "utils",
-        "peekOfCode": "def convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    if distance == 0:\n        return \"00:00 min/Km\"\n    else:\n        mov_speed_min, mov_speed_sec = map(int, divmod(moving_time / distance, 60))",
+        "peekOfCode": "def convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef convert_speed_to_pace(speed_m_per_s):\n    if speed_m_per_s <= 0:\n        return \"Speed must be greater than 0\"\n    # Convert speed to pace in min/km\n    pace_min_per_km = (1000 / speed_m_per_s) / 60",
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "convert_speed_to_pace",
+        "kind": 2,
+        "importPath": "utils",
+        "description": "utils",
+        "peekOfCode": "def convert_speed_to_pace(speed_m_per_s):\n    if speed_m_per_s <= 0:\n        return \"Speed must be greater than 0\"\n    # Convert speed to pace in min/km\n    pace_min_per_km = (1000 / speed_m_per_s) / 60\n    minutes = int(pace_min_per_km)  # Whole minutes\n    seconds = int((pace_min_per_km - minutes) * 60)  # Remaining seconds\n    return f\"{minutes}:{seconds:02d} min/km\"\ndef pace_to_speed(pace_str):\n    \"\"\"",
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "pace_to_speed",
+        "kind": 2,
+        "importPath": "utils",
+        "description": "utils",
+        "peekOfCode": "def pace_to_speed(pace_str):\n    \"\"\"\n    Convert a pace string in the format 'mm:ss min/km' to speed in m/s.\n    \"\"\"\n    # Split the string into minutes and seconds\n    pace_str = pace_str.replace(\" min/km\", \"\")\n    minutes, seconds = map(int, pace_str.split(\":\"))\n    # Convert pace (min/km) to total seconds per kilometer\n    total_seconds_per_km = minutes * 60 + seconds\n    # Convert to speed in m/s (meters per second)",
         "detail": "utils",
         "documentation": {}
     },
@@ -726,6 +890,33 @@
         "description": "workout_classifier",
         "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)\nclass WorkoutClassifier:\n    def __init__(self, activities, headers):\n        self.activities = activities if activities else []\n        self.headers = headers if headers else {}\n        self._validate_inputs()\n        # Initialize components with error handling\n        try:\n            self.stats = self._calculate_statistical_baselines()",
         "detail": "workout_classifier",
+        "documentation": {}
+    },
+    {
+        "label": "WorkoutClassifier",
+        "kind": 6,
+        "importPath": "workout_classifier_testing",
+        "description": "workout_classifier_testing",
+        "peekOfCode": "class WorkoutClassifier:\n    def __init__(self, activities, headers):\n        self.activities = activities if activities else []\n        self.headers = headers if headers else {}\n        self._validate_inputs()\n        # Initialize components with error handling\n        try:\n            self.stats = self._calculate_statistical_baselines()\n            self.sport_profiles = self._create_sport_profiles()\n            self.athlete_baselines = self._calculate_athlete_baselines()",
+        "detail": "workout_classifier_testing",
+        "documentation": {}
+    },
+    {
+        "label": "get_run_type",
+        "kind": 2,
+        "importPath": "workout_classifier_testing",
+        "description": "workout_classifier_testing",
+        "peekOfCode": "def get_run_type(activities, headers):\n    \"\"\"Public API with complete validation\"\"\"\n    try:\n        if not activities or not headers:\n            logger.error(\"Invalid input: empty activities or headers\")\n            return []\n        if not isinstance(activities, list) or not isinstance(headers, dict):\n            logger.error(\"Invalid input types\")\n            return []\n        latest_activity = activities[0]",
+        "detail": "workout_classifier_testing",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "workout_classifier_testing",
+        "description": "workout_classifier_testing",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)\nclass WorkoutClassifier:\n    def __init__(self, activities, headers):\n        self.activities = activities if activities else []\n        self.headers = headers if headers else {}\n        self._validate_inputs()\n        # Initialize components with error handling\n        try:\n            self.stats = self._calculate_statistical_baselines()",
+        "detail": "workout_classifier_testing",
         "documentation": {}
     }
 ]
