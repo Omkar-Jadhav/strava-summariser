@@ -1,3 +1,4 @@
+import os
 import ai
 import database
 import requests
@@ -16,9 +17,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # Adjust logging level as needed
 
 # Replace these with your Strava API credentials
-CLIENT_ID = '114698'
-CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'
-# REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'
+CLIENT_ID = os.environ.get('CLIENT_ID')
+CLIENT_SECRET =  os.environ.get('CLIENT_SECRET')
 
 # Step 1: Get Access Token (you may do this once to obtain the token)
 def get_access_token(athlete_id):

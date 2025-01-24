@@ -11,15 +11,15 @@ import workout_classifier_testing
 from ai import get_insights_by_llm
 from datetime import datetime
 from workout_classifier import get_run_type 
-
+import os
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s %(levelname)s %(message)s')
 # Configure logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # Adjust logging level as needed
 
 # Replace these with your Strava API credentials
-CLIENT_ID = '114698'
-CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'
+CLIENT_ID = os.environ.get('CLIENT_ID')
+CLIENT_SECRET =  os.environ.get('CLIENT_SECRET')
 # REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'
 
 # Step 1: Get Access Token (you may do this once to obtain the token)
