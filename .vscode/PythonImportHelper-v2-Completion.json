@@ -614,15 +614,6 @@
         "documentation": {}
     },
     {
-        "label": "footer",
-        "kind": 5,
-        "importPath": "data_processing",
-        "description": "data_processing",
-        "peekOfCode": "footer = \"\\n \\nSubscribe on strava-summariser \\nStats generated using StravaAPI by Omkar Jadhav\"\ndef give_weighttraining_summary(WeightTraining_activities):\n    total_strength_training_time = 0\n    total_sessions = 0\n    for activity in WeightTraining_activities:\n        total_strength_training_time += activity[\"moving_time\"]\n        total_sessions += 1\n    avg_strength_training_session = utils.convert_seconds_in_hhmmss(round(total_strength_training_time/total_sessions, 2))\n    total_strength_training_time = utils.convert_seconds_in_hhmmss(total_strength_training_time)\n    # overall_strength_training_summary_data =[[f\"{total_sessions}   |  {avg_strength_training_session}   |  {total_strength_training_time}\"],",
-        "detail": "data_processing",
-        "documentation": {}
-    },
-    {
         "label": "get_access_token",
         "kind": 2,
         "importPath": "strava",
@@ -762,7 +753,7 @@
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "headers = {'Authorization': f'Bearer {access_token}'}   \nactivity_id =13419646099\nlatest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 115832357\ninputs={",
+        "peekOfCode": "headers = {'Authorization': f'Bearer {access_token}'}   \nactivity_id =115832357\nlatest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 64768690\ninputs={",
         "detail": "test_strava_activity",
         "documentation": {}
     },
@@ -771,7 +762,7 @@
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "latest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 115832357\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id",
+        "peekOfCode": "latest_activity_url = f\"https://www.strava.com/api/v3/activities/{activity_id}\"\n# latest_activity_url = f\"https://www.strava.com/api/v3/recent_run_totals\"\n# latest_activity_response = utils.make_url_request(activity_url=latest_activity_url, headers=headers)\n# if latest_activity_response:\n#     latest_activity_data = latest_activity_response.json()\n# latest_activity_id = latest_activity_data.id\nathlete_id = 64768690\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id",
         "detail": "test_strava_activity",
         "documentation": {}
     },
@@ -780,7 +771,7 @@
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "athlete_id = 115832357\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id\n    }\nstrava.get_latest_activities(inputs)\n# print(latest_activity_data)",
+        "peekOfCode": "athlete_id = 64768690\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id\n    }\nstrava.get_latest_activities(inputs)\n# print(latest_activity_data)",
         "detail": "test_strava_activity",
         "documentation": {}
     },

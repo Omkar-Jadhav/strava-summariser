@@ -1,8 +1,7 @@
 from tabulate import tabulate
 import utils
 from utils import convert_seconds_in_hhmmss, calculate_speed_in_kmph, calculate_speed
-footer = "\n \nSubscribe on strava-summariser \nStats generated using StravaAPI by Omkar Jadhav"
-
+footer =""
 def give_weighttraining_summary(WeightTraining_activities):
     total_strength_training_time = 0
     total_sessions = 0
