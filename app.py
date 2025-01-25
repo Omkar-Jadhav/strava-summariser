@@ -3,11 +3,14 @@ import os
 import secrets
 from flask import Flask, make_response, redirect, request, session, url_for, jsonify, render_template
 import requests
+import ai
 import strava
 import json
 import database
 import logging
 from test_strava_activity import athlete_id
+import workout_classifier_testing
+import strava_v2_testing
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -49,22 +52,19 @@ def connect_strava():
         session['athlete_id'] = athlete_id
         session['athlete_name'] = athlete_name
         
-        if datetime.now() > expires_at:
-            # Refresh access token silently
-            new_token = requests.post(
-                'https://www.strava.com/oauth/token',
-                data={
-                    'client_id': STRAVA_CLIENT_ID,
-                    'client_secret': STRAVA_CLIENT_SECRET,
-                    'grant_type': 'refresh_token',
-                    'refresh_token': refresh_token
-                }
-            ).json()
+        
+        # Refresh access token silently
+        access_token = requests.post(
+            'https://www.strava.com/oauth/token',
+            data={
+                'client_id': STRAVA_CLIENT_ID,
+                'client_secret': STRAVA_CLIENT_SECRET,
+                'grant_type': 'refresh_token',
+                'refresh_token': refresh_token
+            }
+        ).json()
 
-            # Update tokens
-            refresh_token = new_token['refresh_token']
-            expires_at = datetime.fromtimestamp(new_token['expires_at'])
-            database.update_tokens(client, session_token, expires_at, refresh_token)  
+        database.update_tokens(client, session_token)  
 
         database.close_client(client)
         if previous_workout_plan=='':
@@ -88,13 +88,13 @@ def training_qna():
 @app.route("/training_dashboard")
 def training_dashboard():  
      # Retrieve athlete_id from session
-    athlete_id = session.get('athlete_id')
-    athlete_name = session.get('athlete_name')
-    if not athlete_id:
-        return redirect('/connectStrava')  # Redirect if no session
+    # athlete_id = session.get('athlete_id')
+    # athlete_name = session.get('athlete_name')
+    # if not athlete_id:
+    #     return redirect('/connectStrava')  # Redirect if no session
     
     # Render the template with athlete_id
-    return render_template('training_dashboard.html', athlete_id=athlete_id, athlete_name=athlete_name)
+    return render_template('training_dashboard.html', athlete_name = "Omkar Jadhav",athlete_id = 64768690)
 
 @app.route('/strava-callback')
 def strava_callback():
@@ -132,7 +132,7 @@ def strava_callback():
                 "previous_workout_plan": ''
             }
             
-            response = make_response(redirect('/training_qna', athelete_id=athlete_id))
+            response = make_response(redirect('/training_qna'))
             response.set_cookie(
                 'session_token',
                 session_token,
@@ -164,16 +164,47 @@ def exchange_code_for_token(code):
     return response.json()
 
 
-@app.route("generatePlan", methods=['POST'])
+@app.route("/generatePlan", methods=['POST'])
 def generate_plan():
     form_data = request.json
+    athlete_id = form_data.get('athlete_id', '')
     month_1_activities, month_2_activities, month_3_activities = strava.get_activities_for_period(12, athlete_id, sport_type='Run')
     all_activities_3_mnths = month_1_activities + month_2_activities + month_3_activities
-    top_3_long_runs = strava.get_top_three_longest_runs(all_activities_3_mnths)
-    races=strava.get_races(all_activities_3_mnths)
-
-    athlete_goal_prompt = generate_goal_prompt(form_data, top_3_long_runs, races)
     
+    top_3_long_runs = strava.get_top_three_longest_runs(all_activities_3_mnths)
+    races=strava.get_race_details(all_activities_3_mnths)
+    
+    access_token = strava.get_access_token(athlete_id)
+    headers = {'Authorization': f'Bearer {access_token}'} 
+    past_month_activity_dtls, athlete_baseline_stats = workout_classifier_testing.get_run_type(month_1_activities, month_1_activities[0],headers)
+    
+    m2_m3_dtls, _ = workout_classifier_testing.get_run_type(month_2_activities+month_3_activities, month_1_activities[0], headers)
+    
+    activities_3_mnths_dtls = past_month_activity_dtls+m2_m3_dtls
+    past_3m_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(activities_3_mnths_dtls)])
+    
+    past_3m_summarised = ai.analyse_past_3m_runs(past_3m_runs_details, athlete_baseline_stats)
+    athlete_goals = generate_goal_prompt(form_data, top_3_long_runs, races)
+    goal_summary_prompt = get_goal_summary_prompt(athlete_goals)
+    goal_summary = ai.get_response_from_groq(athlete_goals)
+    past_month_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_month_activity_dtls)])
+    
+    
+    prompt_for_plan = strava_v2_testing.format_prompt_for_llm(athlete_goals,athlete_baseline_stats,  past_3m_summarised, past_month_runs_details)
+    
+    # next_week_workout_plan, reason= ai.get_response_from_deepseek(prompt_for_plan)
+    next_week_workout_plan = ai.get_response_from_groq(prompt_for_plan)
+    
+    return jsonify({"next_week_workout_plan": next_week_workout_plan, "goal_summary":goal_summary}), 200
+    
+
+def get_goal_summary_prompt(goals):
+    goal_summary_prompt = f"""
+    Summarise this athlete goals shortly.
+    {goals}
+    """
+    return goal_summary_prompt
+
 def generate_goal_prompt(form_data, top_3_long_runs, races):
     goal_type = form_data.get('goalType', '') 
     goal = form_data.get('goal', '')
@@ -188,16 +219,18 @@ def generate_goal_prompt(form_data, top_3_long_runs, races):
     special_conditions = form_data.get('specialConditions', '')
     other_info = form_data.get('otherInfo', '')
     
+    
     goal_prompt = f"""
-    You are a professional running coach. You have been hired by a client to help them train for a running goals.
-    Summarise clients goal in a actionable and measurable way. Clients goal wants to train for {goal} by {target_date}.
-    The client is currently at a fitness level of {fitness_level} and  can commit {time_commitment} per week for training.
-    In past 3 months, longest 3 runs of the client are {top_3_long_runs}.
+    Athlete goal is to train for {goal} by {target_date}.
+    The Athlete is currently at a fitness level of {fitness_level} and  can commit {time_commitment} per day for training on weekdays.
+    In past 3 months, longest 3 runs of the Athlete are {top_3_long_runs}.
     Athlete has recently performed {recent_performance}, and race performances from strava are {races}. 
     He/she can train for {training_days} days in a week and can do {strength_sessions} strength sessions per week.
-    The client has {injuries} and {special_conditions} that you need to consider while creating the plan.
-    The client prefers {preferences} and has {other_info} that you need to consider while creating the plan.
+    The Athlete has {injuries} and {special_conditions} that you need to consider while creating the plan.
+    The Athlete prefers {preferences} and has {other_info} that you need to consider while creating the plan.
     """
+    
+    return goal_prompt
     
 @app.route("/health")
 def health_check():
@@ -255,6 +288,20 @@ def auth_success_page():
 def already_authorized():
     return render_template('alreadyAuthorized.html')    
 
+@app.route('/submit_feedback', methods=['POST'])
+def submit_feedback():
+    data = request.get_json()
+    athlete_id = data.get('athlete_id')
+    feedback = data.get('feedback')
+    upcoming_plan = data.get('next_week_plan')
+
+    try:
+        # Save feedback to the database
+        database.save_feedback(athlete_id, feedback)  # Replace with your database logic
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+    
 # Helper Functions
 def verify_webhook():
     mode = request.args.get('hub.mode')

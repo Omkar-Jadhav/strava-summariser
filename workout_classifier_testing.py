@@ -315,7 +315,7 @@ class WorkoutClassifier:
         lap_details =[f"Lap {i+1}: {lap_distances[i]:.2f} km at {lap_speeds[i]} min/Km" for i in range(len(lap_speeds))]    
         return lap_details
     
-def get_run_type(activities, headers):
+def get_run_type(activities,latest_activity,  headers, ):
     """Public API with complete validation"""
     try:
         if not activities or not headers:
@@ -326,7 +326,7 @@ def get_run_type(activities, headers):
             logger.error("Invalid input types")
             return []
         
-        latest_activity = activities[0]
+        
         classifier = WorkoutClassifier(activities, headers)
         return [classifier.classify_workout(a, latest_activity) for a in activities], classifier.stats
     except Exception as e:

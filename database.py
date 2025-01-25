@@ -37,7 +37,7 @@ def check_athlete_in_data(client, athlete_id):
     collection = db["refresh tokens"]
 
     logger.info("before find")
-    results = collection.find({"athlete_id":athlete_id})
+    results = collection.find({"athlete_id":int(athlete_id)})
     logger.info(results)
 
     for result in results:
@@ -68,7 +68,7 @@ def check_session_token_in_data(client, session_token):
     else:
         return None, None, None, None, None
         
-def update_tokens(client, session_token, expires_at, refresh_token):
+def update_tokens(client, session_token):
     """Updates the tokens in the database and logs success or errors."""
 
     db = client["strava"]
@@ -77,12 +77,6 @@ def update_tokens(client, session_token, expires_at, refresh_token):
     try:
         result = collection.update_one(
             {"session_token": session_token},
-            {
-                "$set": {
-                    "expires_at": expires_at,
-                    "refresh_token": refresh_token
-                }
-            }
         )
         logger.info("Updated tokens for session token %s", session_token)
         return result.modified_count
