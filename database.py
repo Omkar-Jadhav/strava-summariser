@@ -1,3 +1,4 @@
+from datetime import datetime
 import certifi
 from pymongo.mongo_client import MongoClient
 import logging
@@ -50,26 +51,96 @@ def check_athlete_in_data(client, athlete_id):
     logger.info("No refresh token found for athlete ID %s", athlete_id)
     return None
 
-def save_athlete_data(client, data):
-    """Saves athlete data to the database and logs success or errors."""
-
-    athlete_id = data["athlete_id"]
-    refresh_token = data["refresh_token"]
-    athlete_name = data["athlete_name"]
+def check_session_token_in_data(client, session_token):
+    logger.info("Checking for session token %s in database", session_token)
+    db = client["strava"]
+    collection = db["refresh tokens"]
+    results = collection.find({"session_token": session_token})  
+    for result in results:
+        athlete_id = result.get("athlete_id")
+        expires_at = result.get("expires_at", datetime.now())
+        refresh_token = result.get("refresh_token")
+        previous_workout_plan = result.get("previous_workout_plan", '') 
+        athlete_name = result.get("athlete_name", '')
+        
+    if athlete_id:
+        return athlete_id, expires_at, refresh_token, previous_workout_plan, athlete_name
+    else:
+        return None, None, None, None, None
+        
+def update_tokens(client, session_token, expires_at, refresh_token):
+    """Updates the tokens in the database and logs success or errors."""
 
     db = client["strava"]
     collection = db["refresh tokens"]
 
     try:
-        collection.insert_one({
-            "athlete_id": athlete_id,
-            "refresh_token": refresh_token,
-            "athlete_name": athlete_name
-        })
-        logger.info("Saved athlete data for ID %s successfully", athlete_id)
-        return "Saved"
+        result = collection.update_one(
+            {"session_token": session_token},
+            {
+                "$set": {
+                    "expires_at": expires_at,
+                    "refresh_token": refresh_token
+                }
+            }
+        )
+        logger.info("Updated tokens for session token %s", session_token)
+        return result.modified_count
     except Exception as e:
-        logger.error("Error saving athlete data: %s", str(e))
+        logger.error("Error updating tokens: %s", str(e))
+        return None
+
+def save_athlete_data(client, data):
+    """Saves or updates athlete data in the database and logs success or errors."""
+
+    athlete_id = data["athlete_id"]
+    refresh_token = data["refresh_token"]
+    athlete_name = data["athlete_name"]
+    session_token = data.get("session_token", '')
+    expires_at = data.get("expires_at", datetime.now())
+    previous_workout_plan = data.get("previous_workout_plan", '')
+    athlete_preferences = data.get("athlete_preferences", '')
+
+    db = client["strava"]
+    collection = db["refresh tokens"]
+
+    try:
+        existing_data = collection.find_one({"athlete_id": athlete_id})
+        if existing_data:
+            update_fields = {}
+            if existing_data.get("refresh_token") != refresh_token:
+                update_fields["refresh_token"] = refresh_token
+            if existing_data.get("athlete_name") != athlete_name:
+                update_fields["athlete_name"] = athlete_name
+            if existing_data.get("session_token") != session_token:
+                update_fields["session_token"] = session_token
+            if existing_data.get("expires_at") != expires_at:
+                update_fields["expires_at"] = expires_at
+            if existing_data.get("previous_workout_plan") != previous_workout_plan:
+                update_fields["previous_workout_plan"] = previous_workout_plan
+            if existing_data.get("athlete_preferences") != athlete_preferences:
+                update_fields["athlete_preferences"] = athlete_preferences
+
+            if update_fields:
+                collection.update_one({"athlete_id": athlete_id}, {"$set": update_fields})
+                logger.info("Updated athlete data for ID %s successfully", athlete_id)
+            else:
+                logger.info("No changes detected for athlete ID %s", athlete_id)
+            return "Updated"
+        else:
+            collection.insert_one({
+                "athlete_id": athlete_id,
+                "refresh_token": refresh_token,
+                "athlete_name": athlete_name,
+                "session_token": session_token,
+                "expires_at": expires_at,
+                "previous_workout_plan": previous_workout_plan,
+                "athlete_preferences": athlete_preferences
+            })
+            logger.info("Saved athlete data for ID %s successfully", athlete_id)
+            return "Saved"
+    except Exception as e:
+        logger.error("Error saving or updating athlete data: %s", str(e))
         return None
 
 

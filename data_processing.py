@@ -105,7 +105,7 @@ def give_ride_summary(ride_activities):
     #     ["Avg ride speed:", f"{avg_ride_speed}"]
     # ]
     overall_ride_summary_data = [
-        [f"{total_ride_sessions} 🚴‍♂️ |", f"{total_ride_distance / 1000} Km 🛣️ |", f"{total_ride_time_hhmmss} ⌚ | ", f"{total_elevation_gain:.2f} 🚵"],
+        [f"{total_ride_sessions} 🚴‍♂️ |", f"{total_ride_distance/1000:.2f} Km 🛣️ |", f"{total_ride_time_hhmmss} ⌚ | ", f"{total_elevation_gain:.2f} 🚵"],
         [f"{avg_ride_speed} Avg Speed 🚴‍♂️", f"{avg_ride_time} Avg ⌚ |", f"{avg_ride_distance:.2f} Km/ride 🚴‍♂️ |", f"{avg_elevation_gain:.2f} m ↗️ |", ]
     ]
 

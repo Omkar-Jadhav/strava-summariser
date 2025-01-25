@@ -1,5 +1,47 @@
 [
     {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "time,",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time.",
+        "description": "time.",
+        "detail": "time.",
+        "documentation": {}
+    },
+    {
+        "label": "tabulate",
+        "importPath": "tabulate",
+        "description": "tabulate",
+        "isExtraImport": true,
+        "detail": "tabulate",
+        "documentation": {}
+    },
+    {
+        "label": "tabulate",
+        "importPath": "tabulate",
+        "description": "tabulate",
+        "isExtraImport": true,
+        "detail": "tabulate",
+        "documentation": {}
+    },
+    {
+        "label": "tabulate",
+        "importPath": "tabulate",
+        "description": "tabulate",
+        "isExtraImport": true,
+        "detail": "tabulate",
+        "documentation": {}
+    },
+    {
         "label": "Groq",
         "importPath": "groq",
         "description": "groq",
@@ -25,6 +67,47 @@
         "documentation": {}
     },
     {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "secrets",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "secrets",
+        "description": "secrets",
+        "detail": "secrets",
+        "documentation": {}
+    },
+    {
         "label": "flask",
         "kind": 6,
         "isExtraImport": true,
@@ -42,7 +125,31 @@
         "documentation": {}
     },
     {
+        "label": "make_response",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "redirect",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
         "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "session",
         "importPath": "flask",
         "description": "flask",
         "isExtraImport": true,
@@ -110,6 +217,14 @@
         "documentation": {}
     },
     {
+        "label": "athlete_id",
+        "importPath": "test_strava_activity",
+        "description": "test_strava_activity",
+        "isExtraImport": true,
+        "detail": "test_strava_activity",
+        "documentation": {}
+    },
+    {
         "label": "certifi",
         "kind": 6,
         "isExtraImport": true,
@@ -132,14 +247,6 @@
         "description": "pymongo.mongo_client",
         "isExtraImport": true,
         "detail": "pymongo.mongo_client",
-        "documentation": {}
-    },
-    {
-        "label": "tabulate",
-        "importPath": "tabulate",
-        "description": "tabulate",
-        "isExtraImport": true,
-        "detail": "tabulate",
         "documentation": {}
     },
     {
@@ -225,24 +332,6 @@
         "documentation": {}
     },
     {
-        "label": "requests",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "requests",
-        "description": "requests",
-        "detail": "requests",
-        "documentation": {}
-    },
-    {
-        "label": "time,",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "time.",
-        "description": "time.",
-        "detail": "time.",
-        "documentation": {}
-    },
-    {
         "label": "data_processing",
         "kind": 6,
         "isExtraImport": true,
@@ -283,22 +372,6 @@
         "importPath": "workout_classifier_testing",
         "description": "workout_classifier_testing",
         "detail": "workout_classifier_testing",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
         "documentation": {}
     },
     {
@@ -344,6 +417,168 @@
         "documentation": {}
     },
     {
+        "label": "get_access_token",
+        "kind": 2,
+        "importPath": "strava-webhooks.http-nodejs.strava",
+        "description": "strava-webhooks.http-nodejs.strava",
+        "peekOfCode": "def get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',\n        'refresh_token': REFRESH_TOKEN\n    }\n    response = requests.post(auth_url, data=payload)\n    return response.json()['access_token']",
+        "detail": "strava-webhooks.http-nodejs.strava",
+        "documentation": {}
+    },
+    {
+        "label": "get_latest_activities",
+        "kind": 2,
+        "importPath": "strava-webhooks.http-nodejs.strava",
+        "description": "strava-webhooks.http-nodejs.strava",
+        "peekOfCode": "def get_latest_activities():\n    access_token = get_access_token()\n    # API endpoint for athlete activities\n    activities_url = 'https://www.strava.com/api/v3/athlete/activities'\n    headers = {'Authorization': f'Bearer {access_token}'}\n    BEFORE =int(time.time()) - (7*24*60*60*30)\n    AFTER = int(time.time())\n    PAGE =1\n    PER_PAGE = 10000\n    parameters = {",
+        "detail": "strava-webhooks.http-nodejs.strava",
+        "documentation": {}
+    },
+    {
+        "label": "convert_seconds_in_hhmmss",
+        "kind": 2,
+        "importPath": "strava-webhooks.http-nodejs.strava",
+        "description": "strava-webhooks.http-nodejs.strava",
+        "peekOfCode": "def convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return str(mov_speed_min) + ':' + str(mov_speed_sec) + ' min/Km'\ndef give_yoga_summary(yoga_activities):\n    total_yoga_time = 0",
+        "detail": "strava-webhooks.http-nodejs.strava",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_speed",
+        "kind": 2,
+        "importPath": "strava-webhooks.http-nodejs.strava",
+        "description": "strava-webhooks.http-nodejs.strava",
+        "peekOfCode": "def calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return str(mov_speed_min) + ':' + str(mov_speed_sec) + ' min/Km'\ndef give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))",
+        "detail": "strava-webhooks.http-nodejs.strava",
+        "documentation": {}
+    },
+    {
+        "label": "give_yoga_summary",
+        "kind": 2,
+        "importPath": "strava-webhooks.http-nodejs.strava",
+        "description": "strava-webhooks.http-nodejs.strava",
+        "peekOfCode": "def give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))\n    total_yoga_time = convert_seconds_in_hhmmss(total_yoga_time)\n    overall_yoga_summary_data =[\n        [\"Total yoga sessions:\", f\"{total_sessions}\"],",
+        "detail": "strava-webhooks.http-nodejs.strava",
+        "documentation": {}
+    },
+    {
+        "label": "give_run_summary",
+        "kind": 2,
+        "importPath": "strava-webhooks.http-nodejs.strava",
+        "description": "strava-webhooks.http-nodejs.strava",
+        "peekOfCode": "def give_run_summary(run_activities):\n    tot_distance_ran_year = 0\n    tot_distance_ran_month = 0\n    avg_distance_per_run = 0\n    avg_distance_per_week = 0\n    tot_elevation_gain = 0\n    avg_elevation_gain = 0\n    tot_elevation_gain_trail = 0\n    avg_elevation_gain_trail = 0\n    tot_trail_distance = 0",
+        "detail": "strava-webhooks.http-nodejs.strava",
+        "documentation": {}
+    },
+    {
+        "label": "CLIENT_ID",
+        "kind": 5,
+        "importPath": "strava-webhooks.http-nodejs.strava",
+        "description": "strava-webhooks.http-nodejs.strava",
+        "peekOfCode": "CLIENT_ID = '114698'\nCLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\nREFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',",
+        "detail": "strava-webhooks.http-nodejs.strava",
+        "documentation": {}
+    },
+    {
+        "label": "CLIENT_SECRET",
+        "kind": 5,
+        "importPath": "strava-webhooks.http-nodejs.strava",
+        "description": "strava-webhooks.http-nodejs.strava",
+        "peekOfCode": "CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\nREFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',\n        'refresh_token': REFRESH_TOKEN",
+        "detail": "strava-webhooks.http-nodejs.strava",
+        "documentation": {}
+    },
+    {
+        "label": "REFRESH_TOKEN",
+        "kind": 5,
+        "importPath": "strava-webhooks.http-nodejs.strava",
+        "description": "strava-webhooks.http-nodejs.strava",
+        "peekOfCode": "REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',\n        'refresh_token': REFRESH_TOKEN\n    }",
+        "detail": "strava-webhooks.http-nodejs.strava",
+        "documentation": {}
+    },
+    {
+        "label": "get_access_token",
+        "kind": 2,
+        "importPath": "strava-webhooks.strava",
+        "description": "strava-webhooks.strava",
+        "peekOfCode": "def get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',\n        'refresh_token': REFRESH_TOKEN\n    }\n    response = requests.post(auth_url, data=payload)\n    return response.json()['access_token']",
+        "detail": "strava-webhooks.strava",
+        "documentation": {}
+    },
+    {
+        "label": "get_latest_activities",
+        "kind": 2,
+        "importPath": "strava-webhooks.strava",
+        "description": "strava-webhooks.strava",
+        "peekOfCode": "def get_latest_activities():\n    access_token = get_access_token()\n    # API endpoint for athlete activities\n    activities_url = 'https://www.strava.com/api/v3/athlete/activities'\n    headers = {'Authorization': f'Bearer {access_token}'}\n    BEFORE =int(time.time()) - (7*24*60*60*30)\n    AFTER = int(time.time())\n    PAGE =1\n    PER_PAGE = 10000\n    parameters = {",
+        "detail": "strava-webhooks.strava",
+        "documentation": {}
+    },
+    {
+        "label": "convert_seconds_in_hhmmss",
+        "kind": 2,
+        "importPath": "strava-webhooks.strava",
+        "description": "strava-webhooks.strava",
+        "peekOfCode": "def convert_seconds_in_hhmmss(seconds):\n    hours = int(seconds//3600)\n    minutes = int((seconds%3600)//60)\n    seconds = int(seconds % 60)\n    return str(hours).zfill(2) +':' + str(minutes).zfill(2) +':'+ str(seconds).zfill(2)\ndef calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return str(mov_speed_min) + ':' + str(mov_speed_sec) + ' min/Km'\ndef give_yoga_summary(yoga_activities):\n    total_yoga_time = 0",
+        "detail": "strava-webhooks.strava",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_speed",
+        "kind": 2,
+        "importPath": "strava-webhooks.strava",
+        "description": "strava-webhooks.strava",
+        "peekOfCode": "def calculate_speed(moving_time, distance):\n    mov_speed_min, mov_speed_sec = map(int,divmod(moving_time/distance, 60))\n    return str(mov_speed_min) + ':' + str(mov_speed_sec) + ' min/Km'\ndef give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))",
+        "detail": "strava-webhooks.strava",
+        "documentation": {}
+    },
+    {
+        "label": "give_yoga_summary",
+        "kind": 2,
+        "importPath": "strava-webhooks.strava",
+        "description": "strava-webhooks.strava",
+        "peekOfCode": "def give_yoga_summary(yoga_activities):\n    total_yoga_time = 0\n    total_sessions = 0\n    for activity in yoga_activities:\n        total_yoga_time += activity[\"elapsed_time\"]\n        total_sessions += 1\n    avg_yoga_session = convert_seconds_in_hhmmss(round(total_yoga_time/total_sessions, 2))\n    total_yoga_time = convert_seconds_in_hhmmss(total_yoga_time)\n    overall_yoga_summary_data =[\n        [\"Total yoga sessions:\", f\"{total_sessions}\"],",
+        "detail": "strava-webhooks.strava",
+        "documentation": {}
+    },
+    {
+        "label": "give_run_summary",
+        "kind": 2,
+        "importPath": "strava-webhooks.strava",
+        "description": "strava-webhooks.strava",
+        "peekOfCode": "def give_run_summary(run_activities):\n    tot_distance_ran_year = 0\n    tot_distance_ran_month = 0\n    avg_distance_per_run = 0\n    avg_distance_per_week = 0\n    tot_elevation_gain = 0\n    avg_elevation_gain = 0\n    tot_elevation_gain_trail = 0\n    avg_elevation_gain_trail = 0\n    tot_trail_distance = 0",
+        "detail": "strava-webhooks.strava",
+        "documentation": {}
+    },
+    {
+        "label": "CLIENT_ID",
+        "kind": 5,
+        "importPath": "strava-webhooks.strava",
+        "description": "strava-webhooks.strava",
+        "peekOfCode": "CLIENT_ID = '114698'\nCLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\nREFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',",
+        "detail": "strava-webhooks.strava",
+        "documentation": {}
+    },
+    {
+        "label": "CLIENT_SECRET",
+        "kind": 5,
+        "importPath": "strava-webhooks.strava",
+        "description": "strava-webhooks.strava",
+        "peekOfCode": "CLIENT_SECRET = '858dd455b9a1d41095727a9285943ec4210810b2'\nREFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',\n        'refresh_token': REFRESH_TOKEN",
+        "detail": "strava-webhooks.strava",
+        "documentation": {}
+    },
+    {
+        "label": "REFRESH_TOKEN",
+        "kind": 5,
+        "importPath": "strava-webhooks.strava",
+        "description": "strava-webhooks.strava",
+        "peekOfCode": "REFRESH_TOKEN = '239efcb1a295abda6e7d930587d120817cb5997d'\n# Step 1: Get Access Token (you may do this once to obtain the token)\ndef get_access_token():\n    auth_url = 'https://www.strava.com/oauth/token'\n    payload = {\n        'client_id': CLIENT_ID,\n        'client_secret': CLIENT_SECRET,\n        'grant_type': 'refresh_token',\n        'refresh_token': REFRESH_TOKEN\n    }",
+        "detail": "strava-webhooks.strava",
+        "documentation": {}
+    },
+    {
         "label": "get_insights_by_llm",
         "kind": 2,
         "importPath": "ai",
@@ -375,7 +610,79 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def start():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():\n    return jsonify({\"status\": \"healthy\"})\n@app.route('/webhook', methods=['GET', 'POST'])\ndef webhook():\n    if request.method == 'GET':\n        return verify_webhook()\n    elif request.method == 'POST':",
+        "peekOfCode": "def start():\n   return render_template('index.html')\n@app.route(\"/training\")\ndef training():\n    return render_template('training_landing_pg.html')\n@app.route(\"/connectStrava\")\ndef connect_strava():\n    session_token = request.cookies.get('session_token')\n    if not session_token:\n        auth_url = (",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "training",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def training():\n    return render_template('training_landing_pg.html')\n@app.route(\"/connectStrava\")\ndef connect_strava():\n    session_token = request.cookies.get('session_token')\n    if not session_token:\n        auth_url = (\n        f\"https://www.strava.com/oauth/authorize?\"\n        f\"client_id={STRAVA_CLIENT_ID}&\" \n        f\"redirect_uri={url_for('strava_callback', _external=True)}&\"",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "connect_strava",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def connect_strava():\n    session_token = request.cookies.get('session_token')\n    if not session_token:\n        auth_url = (\n        f\"https://www.strava.com/oauth/authorize?\"\n        f\"client_id={STRAVA_CLIENT_ID}&\" \n        f\"redirect_uri={url_for('strava_callback', _external=True)}&\"\n        f\"response_type=code&\"\n        f\"approval_prompt=auto&\"\n        f\"scope=activity:read_all,activity:write\"",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "training_qna",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def training_qna():\n    # Retrieve athlete_id from session\n    athlete_id = session.get('athlete_id')\n    athlete_name = session.get('athlete_name')\n    if not athlete_id:\n        return redirect('/connectStrava')  # Redirect if no session\n    # Render the template with athlete_id\n    return render_template('training_qna.html', athlete_id=athlete_id, athlete_name=athlete_name)\n@app.route(\"/training_dashboard\")\ndef training_dashboard():  ",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "training_dashboard",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def training_dashboard():  \n     # Retrieve athlete_id from session\n    athlete_id = session.get('athlete_id')\n    athlete_name = session.get('athlete_name')\n    if not athlete_id:\n        return redirect('/connectStrava')  # Redirect if no session\n    # Render the template with athlete_id\n    return render_template('training_dashboard.html', athlete_id=athlete_id, athlete_name=athlete_name)\n@app.route('/strava-callback')\ndef strava_callback():",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "strava_callback",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def strava_callback():\n    error = request.args.get('error')\n    if error:\n        return f\"Strava authorization failed: {error}\"\n    auth_code = request.args.get('code')\n    if not auth_code:\n        return \"Authorization code missing\", 400\n    try:\n        token_response = exchange_code_for_token(auth_code)\n        athlete = token_response.get('athlete')",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "exchange_code_for_token",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def exchange_code_for_token(code):\n    data = {\n        'client_id': STRAVA_CLIENT_ID,\n        'client_secret': STRAVA_CLIENT_SECRET,\n        'code': code,\n        'grant_type': 'authorization_code'\n    }\n    STRAVA_TOKEN_URL = f\"https://www.strava.com/oauth/token\"\n    response = requests.post(STRAVA_TOKEN_URL, data=data)\n    return response.json()",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "generate_plan",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def generate_plan():\n    form_data = request.json\n    month_1_activities, month_2_activities, month_3_activities = strava.get_activities_for_period(12, athlete_id, sport_type='Run')\n    all_activities_3_mnths = month_1_activities + month_2_activities + month_3_activities\n    top_3_long_runs = strava.get_top_three_longest_runs(all_activities_3_mnths)\n    races=strava.get_races(all_activities_3_mnths)\n    athlete_goal_prompt = generate_goal_prompt(form_data, top_3_long_runs, races)\ndef generate_goal_prompt(form_data, top_3_long_runs, races):\n    goal_type = form_data.get('goalType', '') \n    goal = form_data.get('goal', '')",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "generate_goal_prompt",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def generate_goal_prompt(form_data, top_3_long_runs, races):\n    goal_type = form_data.get('goalType', '') \n    goal = form_data.get('goal', '')\n    target_date = form_data.get('targetDate', '')\n    training_days = form_data.get('trainingDays', '')\n    fitness_level = form_data.get('fitnessLevel', '')\n    recent_performance = form_data.get('recentPerformance', '')\n    strength_sessions = form_data.get('strengthSessions', '')\n    time_commitment = form_data.get('timeCommitment', '')\n    injuries = form_data.get('injuries', '')",
         "detail": "app",
         "documentation": {}
     },
@@ -456,7 +763,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\napp = Flask(__name__)\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\n# Routes\n@app.route(\"/\")\ndef start():\n    return render_template('index.html')",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\napp = Flask(__name__)\napp.secret_key = os.urandom(24)  # Set a secure secret key\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\nSTRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')\nSTRAVA_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')\n# Routes",
         "detail": "app",
         "documentation": {}
     },
@@ -465,7 +772,16 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\n# Routes\n@app.route(\"/\")\ndef start():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():",
+        "peekOfCode": "app = Flask(__name__)\napp.secret_key = os.urandom(24)  # Set a secure secret key\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\nSTRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')\nSTRAVA_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')\n# Routes\n@app.route(\"/\")\ndef start():",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app.secret_key",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app.secret_key = os.urandom(24)  # Set a secure secret key\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\nSTRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')\nSTRAVA_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')\n# Routes\n@app.route(\"/\")\ndef start():\n   return render_template('index.html')",
         "detail": "app",
         "documentation": {}
     },
@@ -474,7 +790,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "VERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\n# Routes\n@app.route(\"/\")\ndef start():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():\n    return jsonify({\"status\": \"healthy\"})\n@app.route('/webhook', methods=['GET', 'POST'])",
+        "peekOfCode": "VERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\nSTRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')\nSTRAVA_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')\n# Routes\n@app.route(\"/\")\ndef start():\n   return render_template('index.html')\n@app.route(\"/training\")\ndef training():",
         "detail": "app",
         "documentation": {}
     },
@@ -483,7 +799,25 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "DATA_FILE = \"refresh_tokens.json\"\n# Routes\n@app.route(\"/\")\ndef start():\n    return render_template('index.html')\n@app.route(\"/health\")\ndef health_check():\n    return jsonify({\"status\": \"healthy\"})\n@app.route('/webhook', methods=['GET', 'POST'])\ndef webhook():",
+        "peekOfCode": "DATA_FILE = \"refresh_tokens.json\"\nSTRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')\nSTRAVA_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')\n# Routes\n@app.route(\"/\")\ndef start():\n   return render_template('index.html')\n@app.route(\"/training\")\ndef training():\n    return render_template('training_landing_pg.html')",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "STRAVA_CLIENT_ID",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "STRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')\nSTRAVA_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')\n# Routes\n@app.route(\"/\")\ndef start():\n   return render_template('index.html')\n@app.route(\"/training\")\ndef training():\n    return render_template('training_landing_pg.html')\n@app.route(\"/connectStrava\")",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "STRAVA_CLIENT_SECRET",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "STRAVA_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')\n# Routes\n@app.route(\"/\")\ndef start():\n   return render_template('index.html')\n@app.route(\"/training\")\ndef training():\n    return render_template('training_landing_pg.html')\n@app.route(\"/connectStrava\")\ndef connect_strava():",
         "detail": "app",
         "documentation": {}
     },
@@ -506,11 +840,29 @@
         "documentation": {}
     },
     {
+        "label": "check_session_token_in_data",
+        "kind": 2,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "def check_session_token_in_data(client, session_token):\n    logger.info(\"Checking for session token %s in database\", session_token)\n    db = client[\"strava\"]\n    collection = db[\"refresh tokens\"]\n    results = collection.find({\"session_token\": session_token})  \n    for result in results:\n        athlete_id = result.get(\"athlete_id\")\n        expires_at = result.get(\"expires_at\", datetime.now())\n        refresh_token = result.get(\"refresh_token\")\n        previous_workout_plan = result.get(\"previous_workout_plan\", '') ",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "update_tokens",
+        "kind": 2,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "def update_tokens(client, session_token, expires_at, refresh_token):\n    \"\"\"Updates the tokens in the database and logs success or errors.\"\"\"\n    db = client[\"strava\"]\n    collection = db[\"refresh tokens\"]\n    try:\n        result = collection.update_one(\n            {\"session_token\": session_token},\n            {\n                \"$set\": {\n                    \"expires_at\": expires_at,",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
         "label": "save_athlete_data",
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def save_athlete_data(client, data):\n    \"\"\"Saves athlete data to the database and logs success or errors.\"\"\"\n    athlete_id = data[\"athlete_id\"]\n    refresh_token = data[\"refresh_token\"]\n    athlete_name = data[\"athlete_name\"]\n    db = client[\"strava\"]\n    collection = db[\"refresh tokens\"]\n    try:\n        collection.insert_one({\n            \"athlete_id\": athlete_id,",
+        "peekOfCode": "def save_athlete_data(client, data):\n    \"\"\"Saves or updates athlete data in the database and logs success or errors.\"\"\"\n    athlete_id = data[\"athlete_id\"]\n    refresh_token = data[\"refresh_token\"]\n    athlete_name = data[\"athlete_name\"]\n    session_token = data.get(\"session_token\", '')\n    expires_at = data.get(\"expires_at\", datetime.now())\n    previous_workout_plan = data.get(\"previous_workout_plan\", '')\n    athlete_preferences = data.get(\"athlete_preferences\", '')\n    db = client[\"strava\"]",
         "detail": "database",
         "documentation": {}
     },
@@ -619,6 +971,33 @@
         "importPath": "strava",
         "description": "strava",
         "peekOfCode": "def get_access_token(athlete_id):\n    client = database.initiate_mango_connection()\n    refresh_token = database.check_athlete_in_data(client,athlete_id)\n    database.close_client(client)\n    logger.info(f'Refresh token{refresh_token} for athlete ID {athlete_id}')\n    # Check if the athlete_id exists in the refresh_tokens\n    if refresh_token is not None:\n        # Retrieve the refresh_token for the athlete_id\n        logger.info('inside if refresh-token condition')\n        REFRESH_TOKEN = refresh_token",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "get_top_three_longest_runs",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def get_top_three_longest_runs(activities):\n    runs = []\n    for activity in activities:\n        if activity['type'] == 'Run':\n            distance_km = activity['distance'] / 1000  # Convert meters to kilometers\n            moving_time = activity['moving_time']\n            avg_pace_min_per_km = utils.calculate_pace_minKm(moving_time, distance_km * 1000)\n            elevation_gain = activity.get('total_elevation_gain', 0)  # Elevation in meters\n            runs.append({\n                \"distance\": round(distance_km, 2),",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "get_race_details",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def get_race_details(activities):\n    races = []\n    for activity in activities:\n        if activity.get('workout_type') == 1:  # Strava identifies races with workout_type = 1\n            distance_km = activity['distance'] / 1000  # Convert meters to kilometers\n            moving_time = activity['moving_time']\n            avg_pace_min_per_km = utils.calculate_pace_minKm(moving_time, distance_km * 1000)\n            elevation_gain = activity.get('total_elevation_gain', 0)  # Elevation in meters\n            races.append({\n                \"name\": activity.get('name', 'Unnamed Race'),",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
+        "label": "get_activities_for_period",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def get_activities_for_period(weeks, athlete_id, sport_type=None):\n    \"\"\"Get activities for a specific time period and sport type.\"\"\"\n    # Step 1: Retrieve Access Token\n    access_token = get_access_token(athlete_id)\n    logger.info('Access token retrieved')\n    # Step 2: Define API Endpoint and Parameters\n    BEFORE = int(time.time()) \n    AFTER = int(time.time()) - (weeks * 7 * 24 * 60 * 60)\n    activities_url = \"https://www.strava.com/api/v3/athlete/activities\"\n    headers = {'Authorization': f'Bearer {access_token}'}   ",
         "detail": "strava",
         "documentation": {}
     },
@@ -771,7 +1150,7 @@
         "kind": 5,
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
-        "peekOfCode": "athlete_id = 64768690\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id\n    }\nstrava.get_latest_activities(inputs)\n# print(latest_activity_data)",
+        "peekOfCode": "athlete_id = 64768690\ninputs={\n        \"activity_id\":activity_id,\n        \"athlete_id\":athlete_id\n    }\n# strava2.get_latest_activities(inputs)\n# print(latest_activity_data)",
         "detail": "test_strava_activity",
         "documentation": {}
     },

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connect Strava 🏃♂️</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth_styles.css') }}">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="strava-card">
+            <h2>Connect Your Strava Account 🏅</h2>
+            <p>To provide personalized training plans, we need access to your Strava data.</p>
+            <button class="strava-button" onclick="connectStrava()">
+                <img src="{{ url_for('static', filename='strava-logo.svg') }}" alt="Strava">
+                Authorize Strava
+            </button>
+            <p class="small-text">We'll sync your activities and performance history</p>
+        </div>
+    </div>
+</body>
+</html>

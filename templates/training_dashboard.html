@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FitBot Dashboard 📊</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='training_dashboad.css') }}">
+</head>
+<body>
+    <div class="chat-container" style="width: 100%; max-width: none; height: 100vh; border-radius: 0;">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            FitBot Coach 🏋️‍♂️
+        </div>
+        <button class="new-cycle-button" onclick="showWarningModal()">
+            🆕 New Training Cycle
+        </button>
+    
+       
+        <!-- Warning Modal -->
+        <div id="warning-modal" class="warning-modal">
+            <h3>⚠️ Warning</h3>
+            <p>Starting a new training cycle will reset your current progress. Are you sure?</p>
+            <div class="modal-buttons">
+                <button class="tab-button" onclick="startNewTrainingCycle()">Confirm</button>
+                <button class="tab-button" onclick="hideWarningModal()">Cancel</button>
+            </div>
+        </div>
+    
+        <!-- Chat Body -->
+        <div class="chat-body">
+            <!-- Bot Message: Welcome and Summary -->
+            <div class="chat-message bot">
+                <h3>Welcome back, Athlete!</h3>
+                <p>Here's your summary:</p>
+                <ul>
+                    <li><strong>Goal:</strong> {{ athlete_goal }}</li>
+                    <li><strong>Preferences:</strong> {{ athlete_preferences }}</li>
+                </ul>
+            </div>
+
+            <!-- Bot Message: Next Week's Plan -->
+            <div class="chat-message bot">
+                <h3>Next Week's Plan</h3>
+                <p>{{ next_week_plan }}</p>
+            </div>
+
+            <!-- Bot Message: Feedback Prompt -->
+            <div class="chat-message bot">
+                <p>Do you have any feedback or suggestions for this plan? Type below!</p>
+            </div>
+
+            <!-- User Message: Feedback Input -->
+            <div class="chat-message user" id="feedback-message" style="display: none;">
+                <p id="feedback-text"></p>
+            </div>
+        </div>
+
+        <!-- Chat Footer -->
+        <div class="chat-footer">
+            <input type="text" id="chat-input" class="chat-input" placeholder="Type your feedback here...">
+            <button id="chat-send-button" class="chat-send-button" onclick="sendFeedback()">Send</button>
+        </div>
+    </div>
+
+    <!-- Warning Modal -->
+    <div id="warning-modal" class="warning-modal">
+        <h3>⚠️ Warning</h3>
+        <p>Starting a new training cycle will change your current goal. Are you sure you want to proceed?</p>
+        <button class="tab-button" onclick="startNewTrainingCycle()">Yes, Start New Cycle</button>
+        <button class="tab-button" onclick="hideWarningModal()">Cancel</button>
+    </div>
+
+    <script>
+        // Show warning modal
+        function showWarningModal() {
+            document.getElementById('warning-modal').style.display = 'block';
+        }
+
+        // Hide warning modal
+        function hideWarningModal() {
+            document.getElementById('warning-modal').style.display = 'none';
+        }
+
+        // Start new training cycle
+        function startNewTrainingCycle() {
+            hideWarningModal();
+            window.location.href = '/start_new_training_cycle';  // Redirect to new training cycle page
+        }
+
+        // Send feedback to the backend
+        function sendFeedback() {
+            const feedback = document.getElementById('chat-input').value;
+            if (!feedback) {
+                alert('Please enter your feedback before sending.');
+                return;
+            }
+
+            // Display user's feedback in the chat
+            document.getElementById('feedback-text').textContent = feedback;
+            document.getElementById('feedback-message').style.display = 'block';
+
+            // Send feedback to the backend
+            fetch('/submit_feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    athlete_id: "{{ athlete_id }}",
+                    feedback: feedback
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Thank you for your feedback!');
+                    document.getElementById('chat-input').value = '';  // Clear input
+                } else {
+                    alert('Failed to submit feedback. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
