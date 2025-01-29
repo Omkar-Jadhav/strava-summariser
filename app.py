@@ -11,7 +11,7 @@ import json
 import database
 import logging
 import strava_v2_testing
-from test_plan_data import goal_summary, past_week_activity_dtls
+from test_plan_data import athlete_id, goal_summary, past_week_activity_dtls
 import test_plan_data
 from test_strava_activity import athlete_id
 import workout_classifier_testing
@@ -82,7 +82,7 @@ def connect_strava():
         if previous_workout_plan=='':
             return redirect('/training_qna')
         else:
-            return redirect('/training_dashboard')
+            return redirect(url_for('training_dashboard', athlete_id=athlete_id))
        
     
 @app.route("/training_qna")
@@ -97,24 +97,40 @@ def training_qna():
     return render_template('training_qna.html', athlete_id=athlete_id, athlete_name=athlete_name)
 
 
-@app.route("/training_dashboard")
-def training_dashboard():  
+@app.route("/training_dashboard/<athlete_id>")
+def training_dashboard(athlete_id=None):  
      # Retrieve athlete_id from session
-    athlete_id = session.get('athlete_id')
+    athlete_id = athlete_id or session.get('athlete_id')
     athlete_name = session.get('athlete_name')
    
     next_week_plan = session.get('next_week_workout_plan')
     goal_summary = session.get('goal_summary')
     dates = session.get('dates')
-    next_week_plan = test_plan_data.next_week_plan
-    goal_summary = test_plan_data.goal_summary
-    dates = test_plan_data.dates
-    athlete_id = test_plan_data.athlete_id
-    
+    if next_week_plan is None or next_week_plan=="":
+        dates,next_week_plan, notes,goal_summary = database.get_athelte_training_details(athlete_id)
+    # next_week_plan = test_plan_data.next_week_plan
+    # goal_summary = test_plan_data.goal_summary
+    # dates = test_plan_data.dates
+    # athlete_id = test_plan_data.athlete_id
+    next_week_plan = join_dict_keys_values(next_week_plan)
     next_week_plan =  markdown2.markdown(next_week_plan)
-    goal_summary =  markdown2.markdown(goal_summary)
+    if goal_summary:
+        goal_summary =  markdown2.markdown(goal_summary)
     return render_template('training_dashboard.html', athlete_name = "Omkar Jadhav",next_week_plan=next_week_plan, goal_summary=goal_summary, dates=dates, athlete_id=athlete_id)
 
+def join_dict_keys_values(data):
+    if isinstance(data, dict):  # Check if it's a dictionary
+        return " ".join(f"{key} {value}" for key, value in data.items())
+    
+    try:
+        # Check if it's a valid JSON string and convert it to a dictionary
+        data = json.loads(data)  
+        if isinstance(data, dict):
+            return " ".join(f"{key} {value}" for key, value in data.items())
+    except (json.JSONDecodeError, TypeError):
+        pass
+    
+    return data
 
 @app.route('/process_user_input', methods=['POST'])
 def process_user_input():
@@ -130,7 +146,7 @@ def process_user_input():
         # Step 2: Call GPT for plan update
         gpt_response, is_plan_updated = work_on_user_query(athlete_message, current_plan, goal_summary)
         
-        if is_plan_updated:
+        if is_plan_updated.lower()=='true':
             workout_json, dates,notes = parse_workout_plan(gpt_response)
             database.save_workout_plan(athlete_id, workout_json, dates)
             
@@ -230,45 +246,42 @@ def get_last_athlete_msg_and_chat(chat_history):
 
 def work_on_user_query(user_input, current_plan, goal_summary):
     prompt=f"""
-    Act as a professional running coach. The user has some query/suggestions/inputs/changes on the training plan you had provided earlier.
-    Your task is to answer to those query/suggestions/inputs/changes keeping in mind of the athlete goals. If there is any general question about training then just respond to that query.
-    In case there is a change in the plan, provide the complete updated plan for the week considering the changes.
-    
-    To update the athlete workout plan use following instructions -
-    1. Generate a complete workout plan for the athlete  Include the type of runs, distance, pace, and any other relevant details. provide a detailed workout plan.
-    2. Keep a holistic nature while developing the plan considering strenghts, weaknesses and specific requirements of the athlete. 
-    3. It is essential to keep him injury free while simultaneously increasing the fitness level of athlete.
-    4. Add strength, mobility workouts whenever necessary and as per requirement of athlete. Mention type of workouts to be done in strength training and mobility workouts. Include rest days for proper recovery.
-    5. Ensure all days are covered in the plan.
-    
-    The output format should be -
-    'Response: Response to the query/suggestions/inputs/changes
-    is_plan_updated: True/False
-    '
-    Ensure that the response should be in simple markdown format.
-    If the already provided training plan is updated based on suggestions, then the flag 'is_plan_updated' should be returned as 'True' else it should be 'False'.
+    Act as a professional running coach. The user may have queries, suggestions, inputs, or changes regarding the training plan you previously provided.
 
-    Take sometime and thing on the instructions provided.
-    
-    Here's the athlete's current plan provided by you - {current_plan}
-    Athlete's goal is - {goal_summary}
-    Athlete's input is - {user_input}
-    
-    If workout plan is generated,then in markdown format use following structure:
-    Dates: DD/MM/YYYY - DD/MM/YYYY (first line)
-    Overview of the previous workouts: Overview
-    Workout Plan:
-    [Day] - workouts
-    
-    is_plan_updated:True/False
-    Before generating the response make sure that 
-    - Response is in desired format only. 'Response: answer to query, is_plan_updated:True/False'
-    - The output should be in simple markdown format strictly.
-    - Ensure the subitems are properly bullet pointed with simple markdown.
-    - Ensure for bolding the text #### should be used.
-    
-    The complete updated plan is -
-    """
+Your task is to respond to these queries, incorporating the athlete’s goals and needs. If there is a change in the plan, provide the updated version for the entire week, reflecting any modifications. For general questions about training, just respond directly.
+
+To update the workout plan, follow these instructions:
+
+Generate a complete workout plan: Include the type of runs (e.g., intervals, tempo), distance, pace, and other relevant details for each day.
+Consider a holistic approach: Address the athlete’s strengths, weaknesses, and specific requirements.
+Ensure injury prevention: Strive to keep the athlete injury-free while improving fitness levels.
+Incorporate strength and mobility workouts: Add these workouts as needed, based on the athlete’s requirements. Specify the type of exercises for strength and mobility sessions.
+Include rest days: Ensure proper recovery is accounted for, including rest days.
+Cover all days of the week: Make sure every day in the plan is detailed.
+Output Format:
+
+Response: Direct response to the query/suggestions/inputs/changes.
+is_plan_updated: True or False (if the plan was updated).
+The response should be in markdown format with the following structure:
+
+Dates: Specify the date range (e.g., DD/MM/YYYY - DD/MM/YYYY).
+Overview of Previous Workouts: Brief overview of the athlete's recent workouts and performance.
+Workout Plan: Detailed plan for each day of the week, covering the following:
+[Day] - Type of workout, distance, pace, and any relevant notes.
+is_plan_updated: Indicate whether the plan was updated (True or False).
+Additional Notes:
+
+Use #### to bold important text.
+Ensure subitems are properly bullet-pointed.
+Keep responses simple and focused on the athlete’s needs.
+Here is the athlete's current plan:
+{current_plan}
+Athlete's goal is:
+{goal_summary}
+Athlete's input is:
+{user_input}
+
+"""
     gpt_response = ai.get_response_from_groq(prompt)
     response, is_plan_updated = extract_response_and_plan_status(gpt_response)
     
@@ -290,16 +303,17 @@ def extract_response_and_plan_status(gpt_output):
     # Extract the response text between "Response:" and the next part
     response = gpt_output[response_start_idx + len("Response: "):is_plan_updated_start_idx].strip()
     
-    # Extract the "is_plan_updated" value
-    is_plan_updated_start_idx = gpt_output.find("is_plan_updated:", is_plan_updated_start_idx)
-    if is_plan_updated_start_idx != -1:
-        # Find the value after "is_plan_updated:"
-        is_plan_updated = gpt_output[is_plan_updated_start_idx + len("is_plan_updated:"):].strip().split()[0]
-    else:
-        is_plan_updated = None
+    # Extract the value of is_plan_updated
+    is_plan_updated_text = gpt_output[is_plan_updated_start_idx + len("is_plan_updated:"):].strip()
+
+    # Ensure we only extract 'True' or 'False' cleanly
+    is_plan_updated = None
+    for word in is_plan_updated_text.split():
+        if word in {"True", "False"}:
+            is_plan_updated = word
+            break  # Stop at the first valid boolean value
 
     return response, is_plan_updated
-
 
 def is_user_input_relevant(user_input, next_week_plan, goal_summary, messages):
     prompt=f"""
@@ -397,39 +411,39 @@ def generate_plan_for_new_user():
     database.close_client(client)
     
     if not athlete_present_in_training:
-        # all_activities_3_mnths = strava.get_activities_for_period(12, athlete_id, sport_type='Run')
-        # all_activities_3_mnths_combined =  list(itertools.chain(*all_activities_3_mnths))
+        all_activities_3_mnths = strava.get_activities_for_period(12, athlete_id, sport_type='Run')
+        all_activities_3_mnths_combined =  list(itertools.chain(*all_activities_3_mnths))
 
-        # top_3_long_runs = strava.get_top_three_longest_runs(all_activities_3_mnths_combined)
-        # races=strava.get_race_details(all_activities_3_mnths_combined)
+        top_3_long_runs = strava.get_top_three_longest_runs(all_activities_3_mnths_combined)
+        races=strava.get_race_details(all_activities_3_mnths_combined)
         
-        # access_token = strava.get_access_token(athlete_id)
-        # headers = {'Authorization': f'Bearer {access_token}'} 
-        # past_month_activity_dtls, athlete_baseline_stats = workout_classifier_testing.get_run_type(all_activities_3_mnths[0], all_activities_3_mnths[0][0],headers)
+        access_token = strava.get_access_token(athlete_id)
+        headers = {'Authorization': f'Bearer {access_token}'} 
+        past_month_activity_dtls, athlete_baseline_stats = workout_classifier_testing.get_run_type(all_activities_3_mnths[0], all_activities_3_mnths[0][0],headers)
         
-        # m2_m3_dtls, _ = workout_classifier_testing.get_run_type(all_activities_3_mnths[1]+all_activities_3_mnths[1], all_activities_3_mnths[0][0], headers)
+        m2_m3_dtls, _ = workout_classifier_testing.get_run_type(all_activities_3_mnths[1]+all_activities_3_mnths[1], all_activities_3_mnths[0][0], headers)
         
-        # activities_3_mnths_dtls = past_month_activity_dtls+m2_m3_dtls
-        # past_3m_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(activities_3_mnths_dtls)])
-        # past_month_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_month_activity_dtls)])
+        activities_3_mnths_dtls = past_month_activity_dtls+m2_m3_dtls
+        past_3m_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(activities_3_mnths_dtls)])
+        past_month_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_month_activity_dtls)])
         
-        # past_3m_summarised = ai.analyse_past_3m_runs(past_3m_runs_details, athlete_baseline_stats)
-        # athlete_goals = generate_goal_prompt(form_data, top_3_long_runs, races)
+        past_3m_summarised = ai.analyse_past_3m_runs(past_3m_runs_details, athlete_baseline_stats)
+        athlete_goals = generate_goal_prompt(form_data, top_3_long_runs, races)
         
-        # goal_summary_prompt = get_goal_summary_prompt(athlete_goals)
-        # goal_summary = ai.get_response_from_groq(goal_summary_prompt)
+        goal_summary_prompt = get_goal_summary_prompt(athlete_goals)
+        goal_summary = ai.get_response_from_groq(goal_summary_prompt)
         
         # # athlete_goals = test_plan_data.athlete_goals
         # # athlete_baseline_stats= test_plan_data.athlete_baseline_stats
         # # past_3m_summarised = test_plan_data.past_3m_summarised
         # # past_month_runs_details = test_plan_data.past_month_run_details
-        goal_summary = test_plan_data.goal_summary
+        # goal_summary = test_plan_data.goal_summary
         
-        # prompt_for_plan = strava_v2_testing.format_prompt_for_llm(athlete_goals,athlete_baseline_stats,  past_3m_summarised, past_month_runs_details)
+        prompt_for_plan = strava_v2_testing.format_prompt_for_llm(athlete_goals,athlete_baseline_stats,  past_3m_summarised, past_month_runs_details)
         
-        # # next_week_workout_plan, reason= ai.get_response_from_deepseek(prompt_for_plan)
-        # next_week_plan_ = ai.get_response_from_groq(prompt_for_plan)
-        next_week_plan_ = test_plan_data.new_plan_3
+        # next_week_workout_plan, reason= ai.get_response_from_deepseek(prompt_for_plan)
+        next_week_plan_ = ai.get_response_from_groq(prompt_for_plan)
+        # next_week_plan_ = test_plan_data.new_plan_3
         workout_json, dates, notes = parse_workout_plan(next_week_plan_)
 
         next_week_plan =  markdown2.markdown(next_week_plan_)
@@ -445,10 +459,10 @@ def generate_plan_for_new_user():
         database.save_workout_plan(athlete_id, workout_json, dates, goal_summary)
         return jsonify({
             "success": True,
-            "redirect_url": url_for('training_dashboard')  # Redirect to the training dashboard 
+            "redirect_url": url_for('training_dashboard', athlete_id=athlete_id)  # Redirect to the training dashboard 
         }), 200
     else:
-        dates,goal_summary, last_week_plan = database.get_athelte_training_details(athlete_id)
+        dates,last_week_plan, notes,goal_summary = database.get_athelte_training_details(athlete_id)
         next_week_avail, next_week_plan= generate_next_week_plan(dates,goal_summary,last_week_plan,past_week_activity_dtls)
         
         session['next_week_workout_plan'] = next_week_plan
@@ -462,7 +476,7 @@ def generate_plan_for_new_user():
             database.save_workout_plan(athlete_id, workout_json, dates, notes)
         return jsonify({
             "success": True,
-            "redirect_url": url_for('training_dashboard')  # Redirect to the training dashboard 
+            "redirect_url": url_for('training_dashboard', athlete_id=athlete_id)  # Redirect to the training dashboard 
         }), 200
     
 
@@ -560,6 +574,8 @@ def generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activ
     today = datetime.today()
     prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')
     prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')
+    next_week_avail = False
+    next_week_plan = last_week_plan
     if prev_start_date< today and today >= prev_end_date:
         next_week_avail = True
         last_week_acitivity = strava.get_activities_for_period(1, athlete_id, sport_type='Run')
@@ -587,12 +603,14 @@ def generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activ
         database.save_workout_plan(athlete_id, workout_json, dates, notes)
         
         return next_week_avail, next_week_plan
-    
+    else:
+        return next_week_avail, last_week_plan
+        
 @app.route('/getNextWeekPlan', methods=['POST'])
 def get_next_week_plan():
     athlete_id = request.json.get('athlete_id')
     last_week_plan =request.json.get('last_week_plan')
-    goal_summary = request.json.get('goal_summary')
+    goal_summary = request.json.get('goal_summary') or ''
     last_dates = request.json.get('dates')
     dates = last_dates.split("-")
     next_week_avail = False

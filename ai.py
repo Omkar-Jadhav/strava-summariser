@@ -77,7 +77,8 @@ def analyse_past_3m_runs(activities, athlete_baseline):
 def get_response_from_groq(inp_message):
     completion = client.chat.completions.create(
         # model="llama-3.3-70b-versatile",
-        model = "llama3-70b-8192",
+        # model = "llama3-70b-8192",
+        model ="deepseek-r1-distill-llama-70b",
         # model="llama3-8b-8192",
         messages=[
             {
@@ -99,8 +100,16 @@ def get_response_from_groq(inp_message):
     output = ""
     for chunk in completion:
         output += chunk.choices[0].delta.content or ""
-        
+
+    output = extract_after_think(output)
     return output
+
+def extract_after_think(text):
+    tag = "</think>"
+    index = text.find(tag)
+    if index != -1:
+        return text[index + len(tag):].strip()
+    return text  # Return None if </think> is not found
 
 def get_response_from_deepseek(inp_message):
     client = OpenAI(api_key=os.environ.get("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")

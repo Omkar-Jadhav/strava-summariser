@@ -143,7 +143,8 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
                 collection.update_one(
                     {"athlete_id": athlete_id},
                     {"$set": {"workout_plan": past_workouts}},
-                    {"goal_sumamry":goal_summary}
+                    {"goal_sumamry":goal_summary,},
+                    upsert=False  
                 )  
             elif len(past_workouts)>5:
                 past_workouts.pop(0)
@@ -151,7 +152,8 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
                 collection.update_one(
                     {"athlete_id": athlete_id},
                     {"$set": {"workout_plan": past_workouts}},
-                    {"goal_sumamry":goal_summary}
+                    {"goal_sumamry":goal_summary},
+                    upsert=False  
                 )
             else:
                 past_workouts.append({dates:plan})
@@ -239,15 +241,20 @@ def get_access_token_for_athlete(athlete_id):
     return refresh_token
 
 def get_athelte_training_details(athlete_id):
+    client = initiate_mango_connection()
     db = client["strava"]
-    collection = db["workout_plan"]
+    collection = db["workout_details"]
     results = collection.find({"athlete_id":athlete_id})
     logger.info(results)
     for result in results:
         latest_workout_plan = result.get("workout_plan")[0]
         goal_summary = result.get("goal_summary")
-        
-    return next(iter(latest_workout_plan.items())),goal_summary
+    close_client(client)
+    dates =list(latest_workout_plan.keys())[0]
+    plan = list(latest_workout_plan.values())[0]['plan']
+    notes = list(latest_workout_plan.values())[0]['notes']
+    
+    return dates,plan, notes,goal_summary
         
     
     

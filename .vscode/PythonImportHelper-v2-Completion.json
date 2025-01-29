@@ -261,6 +261,14 @@
         "documentation": {}
     },
     {
+        "label": "athlete_id",
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "isExtraImport": true,
+        "detail": "test_plan_data",
+        "documentation": {}
+    },
+    {
         "label": "goal_summary",
         "importPath": "test_plan_data",
         "description": "test_plan_data",
@@ -531,7 +539,16 @@
         "kind": 2,
         "importPath": "ai",
         "description": "ai",
-        "peekOfCode": "def get_response_from_groq(inp_message):\n    completion = client.chat.completions.create(\n        # model=\"llama-3.3-70b-versatile\",\n        model = \"llama3-70b-8192\",\n        # model=\"llama3-8b-8192\",\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"You are a helpful and professional running coach.\"\n            },",
+        "peekOfCode": "def get_response_from_groq(inp_message):\n    completion = client.chat.completions.create(\n        # model=\"llama-3.3-70b-versatile\",\n        # model = \"llama3-70b-8192\",\n        model =\"deepseek-r1-distill-llama-70b\",\n        # model=\"llama3-8b-8192\",\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"You are a helpful and professional running coach.\"",
+        "detail": "ai",
+        "documentation": {}
+    },
+    {
+        "label": "extract_after_think",
+        "kind": 2,
+        "importPath": "ai",
+        "description": "ai",
+        "peekOfCode": "def extract_after_think(text):\n    tag = \"</think>\"\n    index = text.find(tag)\n    if index != -1:\n        return text[index + len(tag):].strip()\n    return text  # Return None if </think> is not found\ndef get_response_from_deepseek(inp_message):\n    client = OpenAI(api_key=os.environ.get(\"DEEPSEEK_API_KEY\"), base_url=\"https://api.deepseek.com\")\n    messages = [{\"role\": \"user\", \"content\": f\"{inp_message}\"}]\n    response = client.chat.completions.create(",
         "detail": "ai",
         "documentation": {}
     },
@@ -585,7 +602,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def training_qna():\n    # Retrieve athlete_id from session\n    athlete_id = session.get('athlete_id')\n    athlete_name = session.get('athlete_name')\n    if not athlete_id:\n        return redirect('/connectStrava')  # Redirect if no session\n    # Render the template with athlete_id\n    return render_template('training_qna.html', athlete_id=athlete_id, athlete_name=athlete_name)\n@app.route(\"/training_dashboard\")\ndef training_dashboard():  ",
+        "peekOfCode": "def training_qna():\n    # Retrieve athlete_id from session\n    athlete_id = session.get('athlete_id')\n    athlete_name = session.get('athlete_name')\n    if not athlete_id:\n        return redirect('/connectStrava')  # Redirect if no session\n    # Render the template with athlete_id\n    return render_template('training_qna.html', athlete_id=athlete_id, athlete_name=athlete_name)\n@app.route(\"/training_dashboard/<athlete_id>\")\ndef training_dashboard(athlete_id=None):  ",
         "detail": "app",
         "documentation": {}
     },
@@ -594,7 +611,16 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def training_dashboard():  \n     # Retrieve athlete_id from session\n    athlete_id = session.get('athlete_id')\n    athlete_name = session.get('athlete_name')\n    next_week_plan = session.get('next_week_workout_plan')\n    goal_summary = session.get('goal_summary')\n    dates = session.get('dates')\n    next_week_plan = test_plan_data.next_week_plan\n    goal_summary = test_plan_data.goal_summary\n    dates = test_plan_data.dates",
+        "peekOfCode": "def training_dashboard(athlete_id=None):  \n     # Retrieve athlete_id from session\n    athlete_id = athlete_id or session.get('athlete_id')\n    athlete_name = session.get('athlete_name')\n    next_week_plan = session.get('next_week_workout_plan')\n    goal_summary = session.get('goal_summary')\n    dates = session.get('dates')\n    if next_week_plan is None or next_week_plan==\"\":\n        dates,next_week_plan, notes,goal_summary = database.get_athelte_training_details(athlete_id)\n    # next_week_plan = test_plan_data.next_week_plan",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "join_dict_keys_values",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def join_dict_keys_values(data):\n    if isinstance(data, dict):  # Check if it's a dictionary\n        return \" \".join(f\"{key} {value}\" for key, value in data.items())\n    try:\n        # Check if it's a valid JSON string and convert it to a dictionary\n        data = json.loads(data)  \n        if isinstance(data, dict):\n            return \" \".join(f\"{key} {value}\" for key, value in data.items())\n    except (json.JSONDecodeError, TypeError):\n        pass",
         "detail": "app",
         "documentation": {}
     },
@@ -639,7 +665,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def work_on_user_query(user_input, current_plan, goal_summary):\n    prompt=f\"\"\"\n    Act as a professional running coach. The user has some query/suggestions/inputs/changes on the training plan you had provided earlier.\n    Your task is to answer to those query/suggestions/inputs/changes keeping in mind of the athlete goals. If there is any general question about training then just respond to that query.\n    In case there is a change in the plan, provide the complete updated plan for the week considering the changes.\n    To update the athlete workout plan use following instructions -\n    1. Generate a complete workout plan for the athlete  Include the type of runs, distance, pace, and any other relevant details. provide a detailed workout plan.\n    2. Keep a holistic nature while developing the plan considering strenghts, weaknesses and specific requirements of the athlete. \n    3. It is essential to keep him injury free while simultaneously increasing the fitness level of athlete.\n    4. Add strength, mobility workouts whenever necessary and as per requirement of athlete. Mention type of workouts to be done in strength training and mobility workouts. Include rest days for proper recovery.",
+        "peekOfCode": "def work_on_user_query(user_input, current_plan, goal_summary):\n    prompt=f\"\"\"\n    Act as a professional running coach. The user may have queries, suggestions, inputs, or changes regarding the training plan you previously provided.\nYour task is to respond to these queries, incorporating the athlete’s goals and needs. If there is a change in the plan, provide the updated version for the entire week, reflecting any modifications. For general questions about training, just respond directly.\nTo update the workout plan, follow these instructions:\nGenerate a complete workout plan: Include the type of runs (e.g., intervals, tempo), distance, pace, and other relevant details for each day.\nConsider a holistic approach: Address the athlete’s strengths, weaknesses, and specific requirements.\nEnsure injury prevention: Strive to keep the athlete injury-free while improving fitness levels.\nIncorporate strength and mobility workouts: Add these workouts as needed, based on the athlete’s requirements. Specify the type of exercises for strength and mobility sessions.\nInclude rest days: Ensure proper recovery is accounted for, including rest days.",
         "detail": "app",
         "documentation": {}
     },
@@ -684,7 +710,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def generate_plan_for_new_user():\n    form_data = request.json\n    athlete_id = form_data.get('athlete_id', '')\n    athlete_name = form_data.get('athlete_name','')\n    client = database.initiate_mango_connection()\n    athlete_present_in_training =database.check_athlete_in_training_data(client, athlete_id)\n    database.close_client(client)\n    if not athlete_present_in_training:\n        # all_activities_3_mnths = strava.get_activities_for_period(12, athlete_id, sport_type='Run')\n        # all_activities_3_mnths_combined =  list(itertools.chain(*all_activities_3_mnths))",
+        "peekOfCode": "def generate_plan_for_new_user():\n    form_data = request.json\n    athlete_id = form_data.get('athlete_id', '')\n    athlete_name = form_data.get('athlete_name','')\n    client = database.initiate_mango_connection()\n    athlete_present_in_training =database.check_athlete_in_training_data(client, athlete_id)\n    database.close_client(client)\n    if not athlete_present_in_training:\n        all_activities_3_mnths = strava.get_activities_for_period(12, athlete_id, sport_type='Run')\n        all_activities_3_mnths_combined =  list(itertools.chain(*all_activities_3_mnths))",
         "detail": "app",
         "documentation": {}
     },
@@ -747,7 +773,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def auth_success_page():\n    return render_template('authSuccessPage.html')    \n@app.route('/alreadyAuthorized')\ndef already_authorized():\n    return render_template('alreadyAuthorized.html')    \ndef generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    if prev_start_date< today and today >= prev_end_date:",
+        "peekOfCode": "def auth_success_page():\n    return render_template('authSuccessPage.html')    \n@app.route('/alreadyAuthorized')\ndef already_authorized():\n    return render_template('alreadyAuthorized.html')    \ndef generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    next_week_avail = False",
         "detail": "app",
         "documentation": {}
     },
@@ -756,7 +782,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def already_authorized():\n    return render_template('alreadyAuthorized.html')    \ndef generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    if prev_start_date< today and today >= prev_end_date:\n        next_week_avail = True\n        last_week_acitivity = strava.get_activities_for_period(1, athlete_id, sport_type='Run')\n        last_week_acitivity =list(itertools.chain(*last_week_acitivity))",
+        "peekOfCode": "def already_authorized():\n    return render_template('alreadyAuthorized.html')    \ndef generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    next_week_avail = False\n    next_week_plan = last_week_plan\n    if prev_start_date< today and today >= prev_end_date:\n        next_week_avail = True",
         "detail": "app",
         "documentation": {}
     },
@@ -765,7 +791,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    if prev_start_date< today and today >= prev_end_date:\n        next_week_avail = True\n        last_week_acitivity = strava.get_activities_for_period(1, athlete_id, sport_type='Run')\n        last_week_acitivity =list(itertools.chain(*last_week_acitivity))\n        access_token = strava.get_access_token(athlete_id)\n        headers = {'Authorization': f'Bearer {access_token}'} ",
+        "peekOfCode": "def generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    next_week_avail = False\n    next_week_plan = last_week_plan\n    if prev_start_date< today and today >= prev_end_date:\n        next_week_avail = True\n        last_week_acitivity = strava.get_activities_for_period(1, athlete_id, sport_type='Run')\n        last_week_acitivity =list(itertools.chain(*last_week_acitivity))",
         "detail": "app",
         "documentation": {}
     },
@@ -774,7 +800,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def get_next_week_plan():\n    athlete_id = request.json.get('athlete_id')\n    last_week_plan =request.json.get('last_week_plan')\n    goal_summary = request.json.get('goal_summary')\n    last_dates = request.json.get('dates')\n    dates = last_dates.split(\"-\")\n    next_week_avail = False\n    next_week_avail, next_week_plan = generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls)\n    if next_week_avail:\n        return  jsonify({",
+        "peekOfCode": "def get_next_week_plan():\n    athlete_id = request.json.get('athlete_id')\n    last_week_plan =request.json.get('last_week_plan')\n    goal_summary = request.json.get('goal_summary') or ''\n    last_dates = request.json.get('dates')\n    dates = last_dates.split(\"-\")\n    next_week_avail = False\n    next_week_avail, next_week_plan = generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls)\n    if next_week_avail:\n        return  jsonify({",
         "detail": "app",
         "documentation": {}
     },
@@ -963,7 +989,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def get_athelte_training_details(athlete_id):\n    db = client[\"strava\"]\n    collection = db[\"workout_plan\"]\n    results = collection.find({\"athlete_id\":athlete_id})\n    logger.info(results)\n    for result in results:\n        latest_workout_plan = result.get(\"workout_plan\")[0]\n        goal_summary = result.get(\"goal_summary\")\n    return next(iter(latest_workout_plan.items())),goal_summary\ndef close_client(client):",
+        "peekOfCode": "def get_athelte_training_details(athlete_id):\n    client = initiate_mango_connection()\n    db = client[\"strava\"]\n    collection = db[\"workout_details\"]\n    results = collection.find({\"athlete_id\":athlete_id})\n    logger.info(results)\n    for result in results:\n        latest_workout_plan = result.get(\"workout_plan\")[0]\n        goal_summary = result.get(\"goal_summary\")\n    close_client(client)",
         "detail": "database",
         "documentation": {}
     },
