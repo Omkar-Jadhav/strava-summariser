@@ -196,38 +196,33 @@ function generatePlan() {
         preferences: document.getElementById('preferences').value,
         specialConditions: document.getElementById('specialConditions').value,
         otherInfo: document.getElementById('otherInfo').value,
-        athlete_id: document.getElementById('athlete_id').value
+        athlete_id: document.getElementById('athlete_id').value,
+        athlete_name: document.getElementById('athlete_name').value
     };
 
     console.log('Form Data:', formData);
 
+    
     fetch('/generatePlan', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData)
     })
-    .then(response => {
-        if (response.ok) {
-            window.location.href = '/trainingDashboard';
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Redirect to the training dashboard
+            window.location.href = data.redirect_url;
         } else {
-            alert('Error generating plan. Please try again.');
+            alert('Failed to generate plan. Please try again.');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error generating plan. Please try again.');
+        alert('An error occurred. Please try again.');
     });
-
-    // Redirect to the new page
-    if (response.ok) {
-        window.location.href = '/plan';
-    } else {
-        alert('Error generating plan. Please try again.');
-    
-    alert('Plan generated! Check the console for the form data.');
-}
 }
 
 // Initialize the form

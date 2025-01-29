@@ -1,8 +1,12 @@
 from datetime import datetime
+import json
 import certifi
 from pymongo.mongo_client import MongoClient
 import logging
 import os
+from test_strava_activity import athlete_id
+from ai import client
+from test_plan_data import athlete_id, goal_summary
 # Configure logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # Adjust logging level as needed
@@ -51,17 +55,43 @@ def check_athlete_in_data(client, athlete_id):
     logger.info("No refresh token found for athlete ID %s", athlete_id)
     return None
 
+
+def check_athlete_in_training_data(client, athlete_id):
+    """Checks if an athlete ID exists in the database and logs results."""
+
+    logger.debug("Checking for athlete ID %s in database", athlete_id)
+
+    db = client["strava"]
+    collection = db["workout_details"]
+
+    logger.info("before find")
+    workouts = collection.find_one({"athlete_id": athlete_id})
+    logger.info(workouts)
+    if workouts:
+        if len(workouts)>=1:
+            return True
+        else:
+            return False
+    else:
+        return False
+
 def check_session_token_in_data(client, session_token):
     logger.info("Checking for session token %s in database", session_token)
     db = client["strava"]
-    collection = db["refresh tokens"]
-    results = collection.find({"session_token": session_token})  
-    for result in results:
+    collection_refresh_tokens = db["refresh tokens"]
+    collection_workouts = db["workout_details"]
+    results_tokens = collection_refresh_tokens.find({"session_token": session_token}) 
+    previous_workout_plan=''
+    for result in results_tokens:
         athlete_id = result.get("athlete_id")
         expires_at = result.get("expires_at", datetime.now())
         refresh_token = result.get("refresh_token")
-        previous_workout_plan = result.get("previous_workout_plan", '') 
         athlete_name = result.get("athlete_name", '')
+        
+    results_workouts = collection_workouts.find({"athlete_id": athlete_id})
+    for result in results_workouts:
+        previous_workout_plan = result.get("workout_plan")
+    
         
     if athlete_id:
         return athlete_id, expires_at, refresh_token, previous_workout_plan, athlete_name
@@ -76,15 +106,69 @@ def update_tokens(client, session_token):
 
     try:
         result = collection.update_one(
-            {"session_token": session_token},
+            {"athlete_id": athlete_id},
+            {"$set": {"session_token": session_token}},
         )
         logger.info("Updated tokens for session token %s", session_token)
         return result.modified_count
     except Exception as e:
         logger.error("Error updating tokens: %s", str(e))
         return None
+    
+def key_in_any_dict(lst, key):
+    for dictionary in lst:
+        if key in dictionary:
+            return True
+    return False
 
-def save_athlete_data(client, data):
+def get_dict_with_key(lst, key):
+    for index, dictionary in enumerate(lst):
+        if key in dictionary:
+            return index, dictionary
+        
+    return None, None  # Return None if the key is not found in any dictionary
+
+def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
+    client = initiate_mango_connection()
+    collection = client["strava"]['workout_details']
+    try:
+        workouts = collection.find_one({"athlete_id": athlete_id})
+        if workouts:
+            past_workouts =  workouts.get('workout_plan')
+            goal_summary = workouts.get('summary')
+            if  key_in_any_dict(past_workouts, dates):
+                index, workout =get_dict_with_key(past_workouts, dates)
+                workout[dates]=plan
+                past_workouts[index]= workout
+                collection.update_one(
+                    {"athlete_id": athlete_id},
+                    {"$set": {"workout_plan": past_workouts}},
+                    {"goal_sumamry":goal_summary}
+                )  
+            elif len(past_workouts)>5:
+                past_workouts.pop(0)
+                past_workouts.append({dates: {"plan":plan, "notes":notes} })
+                collection.update_one(
+                    {"athlete_id": athlete_id},
+                    {"$set": {"workout_plan": past_workouts}},
+                    {"goal_sumamry":goal_summary}
+                )
+            else:
+                past_workouts.append({dates:plan})
+        else:
+            collection.insert_one({
+                    "athlete_id": athlete_id,
+                    "workout_plan": [{dates:{"plan":plan, "notes":notes}}],
+                    "goal-summary":goal_summary
+                })
+        logger.info("Saved workout data for athlete %s successfully for %s", athlete_id, str(dates))
+        return "Workout saved"
+    except Exception as e:
+        logger.error("Error saving or updating athlete data: %s", str(e))
+        return None
+        
+
+def save_athlete_data(client, data, collection_name ="refresh_tokens"):
     """Saves or updates athlete data in the database and logs success or errors."""
 
     athlete_id = data["athlete_id"]
@@ -96,7 +180,7 @@ def save_athlete_data(client, data):
     athlete_preferences = data.get("athlete_preferences", '')
 
     db = client["strava"]
-    collection = db["refresh tokens"]
+    collection = db[collection_name]
 
     try:
         existing_data = collection.find_one({"athlete_id": athlete_id})
@@ -154,6 +238,19 @@ def get_access_token_for_athlete(athlete_id):
     close_client(client)
     return refresh_token
 
+def get_athelte_training_details(athlete_id):
+    db = client["strava"]
+    collection = db["workout_plan"]
+    results = collection.find({"athlete_id":athlete_id})
+    logger.info(results)
+    for result in results:
+        latest_workout_plan = result.get("workout_plan")[0]
+        goal_summary = result.get("goal_summary")
+        
+    return next(iter(latest_workout_plan.items())),goal_summary
+        
+    
+    
 def close_client(client):
     """Closes the connection to the MongoDB client and logs it."""
 

@@ -76,7 +76,9 @@ def analyse_past_3m_runs(activities, athlete_baseline):
     
 def get_response_from_groq(inp_message):
     completion = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        # model="llama-3.3-70b-versatile",
+        model = "llama3-70b-8192",
+        # model="llama3-8b-8192",
         messages=[
             {
                 "role": "system",

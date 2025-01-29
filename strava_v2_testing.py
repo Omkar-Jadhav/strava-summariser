@@ -175,6 +175,21 @@ def format_prompt_for_llm(athlete_goal, athlete_baseline, past_3m_summarised, pa
     It is essential to keep him injury free while simultaneously increasing the fitness level of athlete.
     Add strength, mobility workouts whenever necessary and as per requirement of athlete. Mention type of workouts to be done in strength training and mobility workouts. Include rest days for proper recovery.
     Consider any inputs from the athlete and adjust the plan accordingly.
+    When generating workout plans, Generate the workout plan in an markdown format:
+    Dates: DD/MM/YYYY - DD/MM/YYYY (first line)
+    Bird's eye view: Overview
+    Workout Plan:
+    [Day] - workouts
+    
+    Notes:
+
+    Please ensure:
+- Provide markdown formatting for components, items and subitems
+- Keep dates in first line starting with title Date
+- Days always start with capitalized names
+- Put all notes after workout plan section
+- Nested items use proper bullet hierarchy in markdown
+- Verify date format is DD/MM/YYYY - DD/MM/YYYY
     """
     
     return prompt

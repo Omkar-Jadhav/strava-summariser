@@ -186,7 +186,7 @@
 
 .new-cycle-button {
     position: absolute;
-    top: 20px;
+    top: 10px;
     left: 20px;
     z-index: 1000;
     background: var(--secondary);
@@ -202,6 +202,29 @@
 }
 
 .new-cycle-button:hover {
+    transform: scale(1.05);
+    background:  #3ebbb3;
+}
+
+
+.next-week-button {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    z-index: 1000;
+    background: var(--secondary);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-family: inherit;
+    font-size: 16px;
+}
+
+.next-week-button:hover {
     transform: scale(1.05);
     background:  #3ebbb3;
 }
@@ -236,4 +259,71 @@
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 2000;
+}
+/* Chat Container */
+#chat-container {
+    background: var(--card-bg);
+    border-radius: 20px 20px 0 0; /* Rounded corners only at the top */
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1); /* Shadow at the top */
+    width: 100%; /* Full width */
+    height: auto; /* Height adjusts to content */
+    position: fixed; /* Fixed positioning */
+    bottom: 0; /* Stick to the bottom */
+    left: 0; /* Align to the left */
+    z-index: 1000; /* Ensure it stays on top of other content */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Chat Messages */
+#chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: var(--background);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 60vh; /* Limit height to prevent taking up the entire screen */
+}
+
+/* Chat Input Container */
+#chat-input {
+    padding: 20px;
+    background: var(--card-bg);
+    border-top: 2px solid var(--secondary);
+    display: flex;
+    gap: 10px;
+    border-radius: 0 0 20px 20px; /* Rounded corners only at the bottom */
+}
+
+/* User Input Field */
+#user-input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid var(--secondary);
+    border-radius: 10px;
+    font-size: 16px;
+    background: var(--background);
+}
+
+/* Send Button */
+#chat-input button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+#chat-input button:hover {
+    transform: scale(1.05);
+    background: #ff4c4c;
+}
+
+/* Add padding to the bottom of the body to prevent content overlap */
+body {
+    padding-bottom: 200px; /* Adjust this value based on the height of your chat container */
 }

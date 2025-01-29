@@ -134,35 +134,44 @@ def get_activities_for_period(weeks, athlete_id, sport_type=None):
     
     logger.info(f"Total activities fetched: {len(all_activities)}")
     
-    # Split activities into three separate lists for each month
-    current_time = int(time.time())
-    one_month_seconds = 30 * 24 * 60 * 60
-    month_1_activities = []
-    month_2_activities = []
-    month_3_activities = []
+    month_wise_activities = get_month_wise_activities(all_activities, weeks, sport_type)
     
+    return month_wise_activities
+
+def get_month_wise_activities(all_activities, weeks, sport_type):
+    current_time = int(time.time())
+    week_seconds = 7 * 24 * 60 * 60
+    
+    segmented_activities = []
+    for i in range(weeks // 4 + 1):  # Creates enough groups for 4+4+1 pattern
+        segmented_activities.append([])
+
     for activity in all_activities:
         activity_time = activity['start_date']
         activity_timestamp = int(datetime.datetime.strptime(activity_time, '%Y-%m-%dT%H:%M:%SZ').timestamp())
         
-        if current_time - one_month_seconds <= activity_timestamp <= current_time:
-            month_1_activities.append(activity)
-        elif current_time - 2 * one_month_seconds <= activity_timestamp < current_time - one_month_seconds:
-            month_2_activities.append(activity)
-        elif current_time - 3 * one_month_seconds <= activity_timestamp < current_time - 2 * one_month_seconds:
-            month_3_activities.append(activity)
-    
+        week_index = (current_time - activity_timestamp) // week_seconds
+        
+        if week_index < weeks:
+            segment_index = week_index // 4  # Determines which group it belongs to
+            segmented_activities[segment_index].append(activity)
+
+    # Filter by sport type if provided
     if sport_type:
-        month_1_activities = [activity for activity in month_1_activities if activity['type'] == sport_type]
-        month_2_activities = [activity for activity in month_2_activities if activity['type'] == sport_type]
-        month_3_activities = [activity for activity in month_3_activities if activity['type'] == sport_type]
-        return month_1_activities, month_2_activities, month_3_activities
+        segmented_activities = [
+            [activity for activity in segment if activity['type'] == sport_type] 
+            for segment in segmented_activities
+        ]
     
-    logger.info(f"Month 1 activities: {len(month_1_activities)}")
-    logger.info(f"Month 2 activities: {len(month_2_activities)}")
-    logger.info(f"Month 3 activities: {len(month_3_activities)}")
-    
-    return month_1_activities, month_2_activities, month_3_activities
+    # Remove empty segments
+    segmented_activities = [segment for segment in segmented_activities if segment]
+
+    # Logging segment counts
+    for i, segment in enumerate(segmented_activities):
+        logger.info(f"Segment {i+1} activities: {len(segment)}")
+
+    return segmented_activities
+
 
 def get_latest_activities(inputs):
     logging.info('Inside get_latest_activities')

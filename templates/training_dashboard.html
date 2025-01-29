@@ -4,9 +4,84 @@
     <meta charset="UTF-8">
     <title>FitBot Dashboard 📊</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='training_dashboad.css') }}">
+    <style>
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            max-width: none;
+            border-radius: 0;
+        }
+
+        .chat-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .chat-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+        #chat-input {
+            display: flex;
+            position: sticky;
+            bottom: 0;
+            background-color: white;
+            padding: 10px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        #chat-input button {
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #chat-input button:hover {
+            background-color: #45a049;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+        }
+
+        .chat-message.bot {
+            background-color: #e6ffe6;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .chat-message.athlete {
+            background-color: #e6f7ff;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: right;
+        }
+    </style>
 </head>
 <body>
-    <div class="chat-container" style="width: 100%; max-width: none; height: 100vh; border-radius: 0;">
+    <div class="chat-container">
         <!-- Chat Header -->
         <div class="chat-header">
             FitBot Coach 🏋️‍♂️
@@ -14,8 +89,11 @@
         <button class="new-cycle-button" onclick="showWarningModal()">
             🆕 New Training Cycle
         </button>
-    
-       
+
+        <button class="next-week-button" onclick="getNextWeekPlan()">
+            🆕 Get Next Week Workout
+        </button>
+
         <!-- Warning Modal -->
         <div id="warning-modal" class="warning-modal">
             <h3>⚠️ Warning</h3>
@@ -25,54 +103,78 @@
                 <button class="tab-button" onclick="hideWarningModal()">Cancel</button>
             </div>
         </div>
-    
+
         <!-- Chat Body -->
-        <div class="chat-body">
+        <div class="chat-body" id="chat-body">
             <!-- Bot Message: Welcome and Summary -->
             <div class="chat-message bot">
                 <h3>Hello there, {{ athlete_name}}!</h3>
+                <input type="hidden" id="athlete_id" name="athlete_id" value={athlete_id}> 
                 <p>Here's your summary:</p>
                 <ul>
-                    <li><strong>Goal:</strong> {{ athlete_goal }}</li>
+                    <li><strong>Goal:</strong> {{ goal_summary | safe }}</li>
                 </ul>
             </div>
 
             <!-- Bot Message: Next Week's Plan -->
             <div class="chat-message bot">
                 <h3>Next Week's Plan</h3>
-                <p>{{ next_week_plan }}</p>
-            </div>
-
-            <!-- Bot Message: Feedback Prompt -->
-            <div class="chat-message bot">
-                <p>Do you have any feedback or suggestions for this plan? Type below!</p>
-            </div>
-
-            <!-- User Message: Feedback Input -->
-            <div class="chat-message user" id="feedback-message" style="display: none;">
-                <p id="feedback-text"></p>
+                <input type="hidden" id="dates" name="dates" value={dates}>
+                <input type="hidden" id="next_week_plan" name="next_week_plan" value={next_week_plan}>
+                <p>{{ next_week_plan | safe }}</p>
             </div>
         </div>
 
-        <!-- Chat Footer -->
-        <div class="chat-footer">
-            <input type="text" id="chat-input" class="chat-input" placeholder="Type your feedback here...">
-            <button id="chat-send-button" class="chat-send-button" onclick="sendFeedback()">Send</button>
+        <!-- Chat Input -->
+        <div id="chat-input">
+            <input type="text" id="user-input" placeholder="Ask about your plans or goals...">
+            <button onclick="sendMessage()">Send</button>
         </div>
-    </div>
-
-    <!-- Warning Modal -->
-    <div id="warning-modal" class="warning-modal">
-        <h3>⚠️ Warning</h3>
-        <p>Starting a new training cycle will change your current goal. Are you sure you want to proceed?</p>
-        <button class="tab-button" onclick="startNewTrainingCycle()">Yes, Start New Cycle</button>
-        <button class="tab-button" onclick="hideWarningModal()">Cancel</button>
     </div>
 
     <script>
+        let chatHistory = [];
+        document.getElementById("dates").value={{dates|tojson }}
+        document.getElementById("next_week_plan").value={{next_week_plan|tojson }}
         // Show warning modal
         function showWarningModal() {
             document.getElementById('warning-modal').style.display = 'block';
+        }
+
+        async function getNextWeekPlan(){
+            const next_week_plan = document.getElementById("next_week_plan").value
+            const goal_summary = {{ goal_summary|tojson }};
+            const dates = document.getElementById("dates").value
+            const athlete_id = {{athlete_id|tojson}}
+        try {
+            const response = await fetch('/getNextWeekPlan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({'last_week_plan': next_week_plan, 'goal_summary': goal_summary, "athlete_id":athlete_id, "dates":dates })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+
+            if (data.next_week_avail) {
+                if (data.next_week_plan) {
+                    updated_plan = JSON.stringify(data.next_week_plan)
+                    document.getElementById("next_week_plan").value = updated_plan
+                    appendMessage("Coach", updated_plan); // Display GPT's response
+                    addMessageToHistory("Coach", updated_plan)
+                }
+                if(data.dates){
+                    document.getElementById("dates").value = data.dates
+                }
+            } else {
+                alert("Your Plan will be available next week")
+            }
+        } catch (error) {
+            alert("An error occured. Please contact the developer")
+        }
+
         }
 
         // Hide warning modal
@@ -86,42 +188,69 @@
             window.location.href = '/start_new_training_cycle';  // Redirect to new training cycle page
         }
 
-        // Send feedback to the backend
-        function sendFeedback() {
-            const feedback = document.getElementById('chat-input').value;
-            if (!feedback) {
-                alert('Please enter your feedback before sending.');
-                return;
+        // Chat functionality
+        function appendMessage(sender, message) {
+            const chatMessages = document.getElementById('chat-body');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender === 'Athlete' ? 'athlete' : 'bot'}`;
+            messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll
+        }
+
+        function addMessageToHistory(sender, message) {
+            chatHistory.push({ sender, message });
+        }
+
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const message = userInput.value.trim();
+            const next_week_plan =document.getElementById("next_week_plan").value
+            const goal_summary = {{ goal_summary|tojson }};
+
+            if (message) {
+                appendMessage("Athlete", message);
+                addMessageToHistory("Athlete", message);
+                userInput.value = ""; // Clear input field
             }
 
-            // Display user's feedback in the chat
-            document.getElementById('feedback-text').textContent = feedback;
-            document.getElementById('feedback-message').style.display = 'block';
+            try {
+                const response = await fetch('/process_user_input', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 'messages': chatHistory, 'next_week_plan': next_week_plan, 'goal_summary': goal_summary })
+                });
 
-            // Send feedback to the backend
-            fetch('/submit_feedback', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    athlete_id: "{{ athlete_id }}",
-                    feedback: feedback
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Thank you for your feedback!');
-                    document.getElementById('chat-input').value = '';  // Clear input
-                } else {
-                    alert('Failed to submit feedback. Please try again.');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                const data = await response.json();
+
+                if (data.relevant) {
+                    if (data.gpt_response) {
+                        updated_plan = JSON.stringify(data.gpt_response)
+                        appendMessage("Coach", updated_plan); // Display GPT's response
+                        addMessageToHistory("Coach", updated_plan)
+                    }
+                } else {
+                    ask_different_request = "Sorry, I couldn't understand your request. Please make sure it's related to your plan."
+                    addMessageToHistory("Coach", ask_different_request)
+                    appendMessage("Coach",ask_different_request );
+                }
+            } catch (error) {
+                error_message = "An error occurred. Please try again."
+                addMessageToHistory("Coach", error_message)
+                appendMessage("Coach",error_message );
+                console.error(error);
+            }
         }
+
+        // Allow pressing Enter to send
+        document.getElementById('user-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
     </script>
 </body>
 </html>

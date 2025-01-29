@@ -57,6 +57,24 @@
         "documentation": {}
     },
     {
+        "label": "itertools",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "itertools",
+        "description": "itertools",
+        "detail": "itertools",
+        "documentation": {}
+    },
+    {
+        "label": "re",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "re",
+        "description": "re",
+        "detail": "re",
+        "documentation": {}
+    },
+    {
         "label": "secrets",
         "kind": 6,
         "isExtraImport": true,
@@ -157,6 +175,14 @@
         "documentation": {}
     },
     {
+        "label": "client",
+        "importPath": "ai",
+        "description": "ai",
+        "isExtraImport": true,
+        "detail": "ai",
+        "documentation": {}
+    },
+    {
         "label": "get_insights_by_llm",
         "importPath": "ai",
         "description": "ai",
@@ -209,6 +235,80 @@
         "documentation": {}
     },
     {
+        "label": "strava_v2_testing",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "strava_v2_testing",
+        "description": "strava_v2_testing",
+        "detail": "strava_v2_testing",
+        "documentation": {}
+    },
+    {
+        "label": "format_prompt_for_llm",
+        "importPath": "strava_v2_testing",
+        "description": "strava_v2_testing",
+        "isExtraImport": true,
+        "detail": "strava_v2_testing",
+        "documentation": {}
+    },
+    {
+        "label": "test_plan_data",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "detail": "test_plan_data",
+        "documentation": {}
+    },
+    {
+        "label": "goal_summary",
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "isExtraImport": true,
+        "detail": "test_plan_data",
+        "documentation": {}
+    },
+    {
+        "label": "past_week_activity_dtls",
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "isExtraImport": true,
+        "detail": "test_plan_data",
+        "documentation": {}
+    },
+    {
+        "label": "goal_summary",
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "isExtraImport": true,
+        "detail": "test_plan_data",
+        "documentation": {}
+    },
+    {
+        "label": "athlete_id",
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "isExtraImport": true,
+        "detail": "test_plan_data",
+        "documentation": {}
+    },
+    {
+        "label": "goal_summary",
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "isExtraImport": true,
+        "detail": "test_plan_data",
+        "documentation": {}
+    },
+    {
+        "label": "athlete_id",
+        "importPath": "test_strava_activity",
+        "description": "test_strava_activity",
+        "isExtraImport": true,
+        "detail": "test_strava_activity",
+        "documentation": {}
+    },
+    {
         "label": "athlete_id",
         "importPath": "test_strava_activity",
         "description": "test_strava_activity",
@@ -226,12 +326,20 @@
         "documentation": {}
     },
     {
-        "label": "strava_v2_testing",
+        "label": "CORS",
+        "importPath": "flask_cors",
+        "description": "flask_cors",
+        "isExtraImport": true,
+        "detail": "flask_cors",
+        "documentation": {}
+    },
+    {
+        "label": "markdown2",
         "kind": 6,
         "isExtraImport": true,
-        "importPath": "strava_v2_testing",
-        "description": "strava_v2_testing",
-        "detail": "strava_v2_testing",
+        "importPath": "markdown2",
+        "description": "markdown2",
+        "detail": "markdown2",
         "documentation": {}
     },
     {
@@ -423,7 +531,7 @@
         "kind": 2,
         "importPath": "ai",
         "description": "ai",
-        "peekOfCode": "def get_response_from_groq(inp_message):\n    completion = client.chat.completions.create(\n        model=\"llama-3.3-70b-versatile\",\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"You are a helpful and professional running coach.\"\n            },\n            {\n                \"role\": \"user\",",
+        "peekOfCode": "def get_response_from_groq(inp_message):\n    completion = client.chat.completions.create(\n        # model=\"llama-3.3-70b-versatile\",\n        model = \"llama3-70b-8192\",\n        # model=\"llama3-8b-8192\",\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"You are a helpful and professional running coach.\"\n            },",
         "detail": "ai",
         "documentation": {}
     },
@@ -486,7 +594,70 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def training_dashboard():  \n     # Retrieve athlete_id from session\n    # athlete_id = session.get('athlete_id')\n    # athlete_name = session.get('athlete_name')\n    # if not athlete_id:\n    #     return redirect('/connectStrava')  # Redirect if no session\n    # Render the template with athlete_id\n    return render_template('training_dashboard.html', athlete_name = \"Omkar Jadhav\",athlete_id = 64768690)\n@app.route('/strava-callback')\ndef strava_callback():",
+        "peekOfCode": "def training_dashboard():  \n     # Retrieve athlete_id from session\n    athlete_id = session.get('athlete_id')\n    athlete_name = session.get('athlete_name')\n    next_week_plan = session.get('next_week_workout_plan')\n    goal_summary = session.get('goal_summary')\n    dates = session.get('dates')\n    next_week_plan = test_plan_data.next_week_plan\n    goal_summary = test_plan_data.goal_summary\n    dates = test_plan_data.dates",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "process_user_input",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def process_user_input():\n    chat_history = request.json.get('messages')\n    current_plan =request.json.get('next_week_plan')\n    goal_summary = request.json.get('goal_summary')\n    athlete_message, chat_history = get_last_athlete_msg_and_chat(chat_history)\n    # Step 1: Check relevance\n    is_athlete_msg_relevant = is_user_input_relevant(athlete_message, current_plan, goal_summary,chat_history) \n    if is_athlete_msg_relevant == 'relevant':\n        # Step 2: Call GPT for plan update\n        gpt_response, is_plan_updated = work_on_user_query(athlete_message, current_plan, goal_summary)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "parse_workout_plan",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def parse_workout_plan(text):\n    # Extracting dates\n    date_start_idx = text.find(\"Dates: \")\n    if date_start_idx != -1:\n        date_end_idx = text.find(\"\\n\", date_start_idx)\n        date_range = text[date_start_idx + len(\"Dates: \"):date_end_idx].strip()\n        dates = date_range.split(\" - \") if date_range else None\n        if dates:\n            dates = \"-\".join(dates)\n    else:",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "parse_workout_plan_",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def parse_workout_plan_(text):\n    # Extracting Dates\n    dates = re.search(r\"\\s*(\\d{2}/\\d{2}/\\d{4})\\s*-\\s*(\\d{2}/\\d{2}/\\d{4})\", text)\n    dates = dates.groups() if dates else None\n    if dates:\n        dates = \"-\".join(dates)\n    # Extracting Workouts\n    workouts = {}\n    workout_pattern = r\"#### (\\w+)\\s*-([^#]+)\"\n    workout_matches = re.findall(workout_pattern, text)  ",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "get_last_athlete_msg_and_chat",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def get_last_athlete_msg_and_chat(chat_history):\n    if chat_history:\n    # Get the last athlete input\n        last_athlete_message = chat_history[-1]\n        if last_athlete_message['sender'] == 'Athlete':\n            last_athlete_input = last_athlete_message['message']\n            # Combine all previous messages into a single string\n            previous_messages = \" \".join(\n                f\"{msg['sender']}: {msg['message']}\" \n                for msg in chat_history[:-1]",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "work_on_user_query",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def work_on_user_query(user_input, current_plan, goal_summary):\n    prompt=f\"\"\"\n    Act as a professional running coach. The user has some query/suggestions/inputs/changes on the training plan you had provided earlier.\n    Your task is to answer to those query/suggestions/inputs/changes keeping in mind of the athlete goals. If there is any general question about training then just respond to that query.\n    In case there is a change in the plan, provide the complete updated plan for the week considering the changes.\n    To update the athlete workout plan use following instructions -\n    1. Generate a complete workout plan for the athlete  Include the type of runs, distance, pace, and any other relevant details. provide a detailed workout plan.\n    2. Keep a holistic nature while developing the plan considering strenghts, weaknesses and specific requirements of the athlete. \n    3. It is essential to keep him injury free while simultaneously increasing the fitness level of athlete.\n    4. Add strength, mobility workouts whenever necessary and as per requirement of athlete. Mention type of workouts to be done in strength training and mobility workouts. Include rest days for proper recovery.",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "extract_response_and_plan_status",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def extract_response_and_plan_status(gpt_output):\n    # Find the position of the \"Response:\" keyword\n    response_start_idx = gpt_output.find(\"Response:\")\n    if response_start_idx == -1:\n        return None, None  # Return None if \"Response:\" is not found\n    # Find the position of the next line starting with \"is_plan_updated:\"\n    is_plan_updated_start_idx = gpt_output.find(\"is_plan_updated:\", response_start_idx)\n    if is_plan_updated_start_idx == -1:\n        # If \"is_plan_updated:\" is not found, assume it’s at the end of the string\n        is_plan_updated_start_idx = len(gpt_output)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "is_user_input_relevant",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def is_user_input_relevant(user_input, next_week_plan, goal_summary, messages):\n    prompt=f\"\"\"\n    You are a chat reviewer. \n    The chat you have to review is in between an athlete and a coach. You have to predict if the athlete input is relevant with the discussion or not. You are provided with athlete goal summary, his next weeks plan coach has provided, previous chat discussion.\n    The athlete may ask for queries/suggestions/changes/questions/details/strategies etc.\n    If the user input is relevant with the discussion you have return only one word - \"relevant\". \n    If the user input is not relevatnt with discussion you have to return only following words - \"not relevant\" \n    The output should only \"relevant\" or \"not relevant\", and nothing else no explanation is required.\n    Here's the chat history - {messages}\n    Athlete goal is  -{goal_summary}",
         "detail": "app",
         "documentation": {}
     },
@@ -509,11 +680,11 @@
         "documentation": {}
     },
     {
-        "label": "generate_plan",
+        "label": "generate_plan_for_new_user",
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def generate_plan():\n    form_data = request.json\n    athlete_id = form_data.get('athlete_id', '')\n    month_1_activities, month_2_activities, month_3_activities = strava.get_activities_for_period(12, athlete_id, sport_type='Run')\n    all_activities_3_mnths = month_1_activities + month_2_activities + month_3_activities\n    top_3_long_runs = strava.get_top_three_longest_runs(all_activities_3_mnths)\n    races=strava.get_race_details(all_activities_3_mnths)\n    access_token = strava.get_access_token(athlete_id)\n    headers = {'Authorization': f'Bearer {access_token}'} \n    past_month_activity_dtls, athlete_baseline_stats = workout_classifier_testing.get_run_type(month_1_activities, month_1_activities[0],headers)",
+        "peekOfCode": "def generate_plan_for_new_user():\n    form_data = request.json\n    athlete_id = form_data.get('athlete_id', '')\n    athlete_name = form_data.get('athlete_name','')\n    client = database.initiate_mango_connection()\n    athlete_present_in_training =database.check_athlete_in_training_data(client, athlete_id)\n    database.close_client(client)\n    if not athlete_present_in_training:\n        # all_activities_3_mnths = strava.get_activities_for_period(12, athlete_id, sport_type='Run')\n        # all_activities_3_mnths_combined =  list(itertools.chain(*all_activities_3_mnths))",
         "detail": "app",
         "documentation": {}
     },
@@ -576,7 +747,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def auth_success_page():\n    return render_template('authSuccessPage.html')    \n@app.route('/alreadyAuthorized')\ndef already_authorized():\n    return render_template('alreadyAuthorized.html')    \n@app.route('/submit_feedback', methods=['POST'])\ndef submit_feedback():\n    data = request.get_json()\n    athlete_id = data.get('athlete_id')\n    feedback = data.get('feedback')",
+        "peekOfCode": "def auth_success_page():\n    return render_template('authSuccessPage.html')    \n@app.route('/alreadyAuthorized')\ndef already_authorized():\n    return render_template('alreadyAuthorized.html')    \ndef generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    if prev_start_date< today and today >= prev_end_date:",
         "detail": "app",
         "documentation": {}
     },
@@ -585,16 +756,34 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def already_authorized():\n    return render_template('alreadyAuthorized.html')    \n@app.route('/submit_feedback', methods=['POST'])\ndef submit_feedback():\n    data = request.get_json()\n    athlete_id = data.get('athlete_id')\n    feedback = data.get('feedback')\n    upcoming_plan = data.get('next_week_plan')\n    try:\n        # Save feedback to the database",
+        "peekOfCode": "def already_authorized():\n    return render_template('alreadyAuthorized.html')    \ndef generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    if prev_start_date< today and today >= prev_end_date:\n        next_week_avail = True\n        last_week_acitivity = strava.get_activities_for_period(1, athlete_id, sport_type='Run')\n        last_week_acitivity =list(itertools.chain(*last_week_acitivity))",
         "detail": "app",
         "documentation": {}
     },
     {
-        "label": "submit_feedback",
+        "label": "generate_next_week_plan",
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def submit_feedback():\n    data = request.get_json()\n    athlete_id = data.get('athlete_id')\n    feedback = data.get('feedback')\n    upcoming_plan = data.get('next_week_plan')\n    try:\n        # Save feedback to the database\n        database.save_feedback(athlete_id, feedback)  # Replace with your database logic\n        return jsonify({'success': True})\n    except Exception as e:",
+        "peekOfCode": "def generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    if prev_start_date< today and today >= prev_end_date:\n        next_week_avail = True\n        last_week_acitivity = strava.get_activities_for_period(1, athlete_id, sport_type='Run')\n        last_week_acitivity =list(itertools.chain(*last_week_acitivity))\n        access_token = strava.get_access_token(athlete_id)\n        headers = {'Authorization': f'Bearer {access_token}'} ",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "get_next_week_plan",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def get_next_week_plan():\n    athlete_id = request.json.get('athlete_id')\n    last_week_plan =request.json.get('last_week_plan')\n    goal_summary = request.json.get('goal_summary')\n    last_dates = request.json.get('dates')\n    dates = last_dates.split(\"-\")\n    next_week_avail = False\n    next_week_avail, next_week_plan = generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls)\n    if next_week_avail:\n        return  jsonify({",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "format_next_week_prompt_for_llm",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def format_next_week_prompt_for_llm(last_week_plan, goal_summary, past_week_activity_dtls):\n    prompt= f\"\"\"\n    You are a professional running coach. You are a helpful, friendly but strict coach.\n    As a strict coach keep your athletes on their toes and make them accountable for their missed run activities or workouts. However, you also help them to plan for their running goals in a friendly manner.\n    Today is {datetime.now().strftime(\"%B %d, %Y\")}. The athlete's goal is - {goal_summary}.   \n    For the past week the workout plan was - {last_week_plan}.\n    And the athletes past_week_run_details were - {past_week_activity_dtls}.\n    First applaud the athlete for the workouts he has followed in last week if he has done any. However, be strict and keep the athlete accountable for any missed workouts from the provided plan.\n    Next generate the next weeks complete workout plan. Include the type of runs, distance, pace, and any other relevant details. provide a detailed workout plan.\n    Keep a holistic nature while developing the plan considering strenghts, weaknesses and specific requirements of the athlete. ",
         "detail": "app",
         "documentation": {}
     },
@@ -621,7 +810,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\napp = Flask(__name__)\napp.secret_key = os.urandom(24)  # Set a secure secret key\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\nSTRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')\nSTRAVA_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')\n# Routes",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\napp = Flask(__name__)\napp.secret_key = os.urandom(24)  # Set a secure secret key\napp.config.update(\n    SESSION_COOKIE_SAMESITE='Lax',  # Allows cookies in same-site context\n    SESSION_COOKIE_SECURE=False     # Set to True in production (HTTPS)\n)\nCORS(app, supports_credentials=True)  # Enable CORS with credentials\n# Constants",
         "detail": "app",
         "documentation": {}
     },
@@ -630,7 +819,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\napp.secret_key = os.urandom(24)  # Set a secure secret key\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\nSTRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')\nSTRAVA_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')\n# Routes\n@app.route(\"/\")\ndef start():",
+        "peekOfCode": "app = Flask(__name__)\napp.secret_key = os.urandom(24)  # Set a secure secret key\napp.config.update(\n    SESSION_COOKIE_SAMESITE='Lax',  # Allows cookies in same-site context\n    SESSION_COOKIE_SECURE=False     # Set to True in production (HTTPS)\n)\nCORS(app, supports_credentials=True)  # Enable CORS with credentials\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"",
         "detail": "app",
         "documentation": {}
     },
@@ -639,7 +828,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app.secret_key = os.urandom(24)  # Set a secure secret key\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\nSTRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')\nSTRAVA_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')\n# Routes\n@app.route(\"/\")\ndef start():\n   return render_template('index.html')",
+        "peekOfCode": "app.secret_key = os.urandom(24)  # Set a secure secret key\napp.config.update(\n    SESSION_COOKIE_SAMESITE='Lax',  # Allows cookies in same-site context\n    SESSION_COOKIE_SECURE=False     # Set to True in production (HTTPS)\n)\nCORS(app, supports_credentials=True)  # Enable CORS with credentials\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\nSTRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')",
         "detail": "app",
         "documentation": {}
     },
@@ -698,11 +887,20 @@
         "documentation": {}
     },
     {
+        "label": "check_athlete_in_training_data",
+        "kind": 2,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "def check_athlete_in_training_data(client, athlete_id):\n    \"\"\"Checks if an athlete ID exists in the database and logs results.\"\"\"\n    logger.debug(\"Checking for athlete ID %s in database\", athlete_id)\n    db = client[\"strava\"]\n    collection = db[\"workout_details\"]\n    logger.info(\"before find\")\n    workouts = collection.find_one({\"athlete_id\": athlete_id})\n    logger.info(workouts)\n    if workouts:\n        if len(workouts)>=1:",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
         "label": "check_session_token_in_data",
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def check_session_token_in_data(client, session_token):\n    logger.info(\"Checking for session token %s in database\", session_token)\n    db = client[\"strava\"]\n    collection = db[\"refresh tokens\"]\n    results = collection.find({\"session_token\": session_token})  \n    for result in results:\n        athlete_id = result.get(\"athlete_id\")\n        expires_at = result.get(\"expires_at\", datetime.now())\n        refresh_token = result.get(\"refresh_token\")\n        previous_workout_plan = result.get(\"previous_workout_plan\", '') ",
+        "peekOfCode": "def check_session_token_in_data(client, session_token):\n    logger.info(\"Checking for session token %s in database\", session_token)\n    db = client[\"strava\"]\n    collection_refresh_tokens = db[\"refresh tokens\"]\n    collection_workouts = db[\"workout_details\"]\n    results_tokens = collection_refresh_tokens.find({\"session_token\": session_token}) \n    previous_workout_plan=''\n    for result in results_tokens:\n        athlete_id = result.get(\"athlete_id\")\n        expires_at = result.get(\"expires_at\", datetime.now())",
         "detail": "database",
         "documentation": {}
     },
@@ -711,7 +909,34 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def update_tokens(client, session_token):\n    \"\"\"Updates the tokens in the database and logs success or errors.\"\"\"\n    db = client[\"strava\"]\n    collection = db[\"refresh tokens\"]\n    try:\n        result = collection.update_one(\n            {\"session_token\": session_token},\n        )\n        logger.info(\"Updated tokens for session token %s\", session_token)\n        return result.modified_count",
+        "peekOfCode": "def update_tokens(client, session_token):\n    \"\"\"Updates the tokens in the database and logs success or errors.\"\"\"\n    db = client[\"strava\"]\n    collection = db[\"refresh tokens\"]\n    try:\n        result = collection.update_one(\n            {\"athlete_id\": athlete_id},\n            {\"$set\": {\"session_token\": session_token}},\n        )\n        logger.info(\"Updated tokens for session token %s\", session_token)",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "key_in_any_dict",
+        "kind": 2,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "def key_in_any_dict(lst, key):\n    for dictionary in lst:\n        if key in dictionary:\n            return True\n    return False\ndef get_dict_with_key(lst, key):\n    for index, dictionary in enumerate(lst):\n        if key in dictionary:\n            return index, dictionary\n    return None, None  # Return None if the key is not found in any dictionary",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "get_dict_with_key",
+        "kind": 2,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "def get_dict_with_key(lst, key):\n    for index, dictionary in enumerate(lst):\n        if key in dictionary:\n            return index, dictionary\n    return None, None  # Return None if the key is not found in any dictionary\ndef save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):\n    client = initiate_mango_connection()\n    collection = client[\"strava\"]['workout_details']\n    try:\n        workouts = collection.find_one({\"athlete_id\": athlete_id})",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "save_workout_plan",
+        "kind": 2,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):\n    client = initiate_mango_connection()\n    collection = client[\"strava\"]['workout_details']\n    try:\n        workouts = collection.find_one({\"athlete_id\": athlete_id})\n        if workouts:\n            past_workouts =  workouts.get('workout_plan')\n            goal_summary = workouts.get('summary')\n            if  key_in_any_dict(past_workouts, dates):\n                index, workout =get_dict_with_key(past_workouts, dates)",
         "detail": "database",
         "documentation": {}
     },
@@ -720,7 +945,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def save_athlete_data(client, data):\n    \"\"\"Saves or updates athlete data in the database and logs success or errors.\"\"\"\n    athlete_id = data[\"athlete_id\"]\n    refresh_token = data[\"refresh_token\"]\n    athlete_name = data[\"athlete_name\"]\n    session_token = data.get(\"session_token\", '')\n    expires_at = data.get(\"expires_at\", datetime.now())\n    previous_workout_plan = data.get(\"previous_workout_plan\", '')\n    athlete_preferences = data.get(\"athlete_preferences\", '')\n    db = client[\"strava\"]",
+        "peekOfCode": "def save_athlete_data(client, data, collection_name =\"refresh_tokens\"):\n    \"\"\"Saves or updates athlete data in the database and logs success or errors.\"\"\"\n    athlete_id = data[\"athlete_id\"]\n    refresh_token = data[\"refresh_token\"]\n    athlete_name = data[\"athlete_name\"]\n    session_token = data.get(\"session_token\", '')\n    expires_at = data.get(\"expires_at\", datetime.now())\n    previous_workout_plan = data.get(\"previous_workout_plan\", '')\n    athlete_preferences = data.get(\"athlete_preferences\", '')\n    db = client[\"strava\"]",
         "detail": "database",
         "documentation": {}
     },
@@ -730,6 +955,15 @@
         "importPath": "database",
         "description": "database",
         "peekOfCode": "def get_access_token_for_athlete(athlete_id):\n    client=initiate_mango_connection()\n    db = client[\"strava\"]\n    collection = db[\"refresh tokens\"]\n    results = collection.find({\"athlete_id\":athlete_id})\n    logger.info(results)\n    refresh_token =\"\"\n    for result in results:\n        logger.info(result)\n        refresh_token = result.get(\"refresh_token\")",
+        "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "get_athelte_training_details",
+        "kind": 2,
+        "importPath": "database",
+        "description": "database",
+        "peekOfCode": "def get_athelte_training_details(athlete_id):\n    db = client[\"strava\"]\n    collection = db[\"workout_plan\"]\n    results = collection.find({\"athlete_id\":athlete_id})\n    logger.info(results)\n    for result in results:\n        latest_workout_plan = result.get(\"workout_plan\")[0]\n        goal_summary = result.get(\"goal_summary\")\n    return next(iter(latest_workout_plan.items())),goal_summary\ndef close_client(client):",
         "detail": "database",
         "documentation": {}
     },
@@ -860,6 +1094,15 @@
         "documentation": {}
     },
     {
+        "label": "get_month_wise_activities",
+        "kind": 2,
+        "importPath": "strava",
+        "description": "strava",
+        "peekOfCode": "def get_month_wise_activities(all_activities, weeks, sport_type):\n    current_time = int(time.time())\n    week_seconds = 7 * 24 * 60 * 60\n    segmented_activities = []\n    for i in range(weeks // 4 + 1):  # Creates enough groups for 4+4+1 pattern\n        segmented_activities.append([])\n    for activity in all_activities:\n        activity_time = activity['start_date']\n        activity_timestamp = int(datetime.datetime.strptime(activity_time, '%Y-%m-%dT%H:%M:%SZ').timestamp())\n        week_index = (current_time - activity_timestamp) // week_seconds",
+        "detail": "strava",
+        "documentation": {}
+    },
+    {
         "label": "get_latest_activities",
         "kind": 2,
         "importPath": "strava",
@@ -986,39 +1229,120 @@
         "documentation": {}
     },
     {
+        "label": "parse_workout_plan",
+        "kind": 2,
+        "importPath": "test_plan",
+        "description": "test_plan",
+        "peekOfCode": "def parse_workout_plan(text):\n    # Extracting Dates\n    dates = re.search(r\"\\s*(\\d{2}/\\d{2}/\\d{4})\\s*-\\s*(\\d{2}/\\d{2}/\\d{4})\", text)\n    dates = dates.groups() if dates else None\n    # Extracting Workouts\n    workouts = {}\n    workout_pattern = r\"#### (\\w+)\\s*-([^#]+)\"\n    workout_matches = re.findall(workout_pattern, text)\n    for day, details in workout_matches:\n        workouts[day] = details.strip()",
+        "detail": "test_plan",
+        "documentation": {}
+    },
+    {
         "label": "url",
         "kind": 5,
         "importPath": "test_plan",
         "description": "test_plan",
-        "peekOfCode": "url = \"https://localhost/generatePlan\"\nform_data = {'goalType': 'specific', 'goal': '100Km ultra trail with 5000m elevation', 'targetDate': '2025-03-09', 'trainingDays': '5', 'fitnessLevel': 'intermediate', 'recentPerformance': '100Km ultra trail 3380D+ in 19:30, marathon in 3:45', 'strengthSessions': '4', 'timeCommitment': '1.5hr', 'injuries': '', 'preferences': 'Long runs and long trails on weekends only', 'specialConditions': '', 'otherInfo': '', 'athlete_id': '64768690'}\nform_data = json.dumps(form_data)\nresponse = requests.post(url, json=form_data)\n# Print the response\nif response.status_code == 200:\n    print(\"Response from server:\")\n    print(response.json())\nelse:\n    print(f\"Error: {response.status_code}\")",
+        "peekOfCode": "url = \"https://localhost/generatePlan\"\n# form_data = {'goalType': 'specific', 'goal': '100Km ultra trail with 5000m elevation', 'targetDate': '2025-03-09', 'trainingDays': '5', 'fitnessLevel': 'intermediate', 'recentPerformance': '100Km ultra trail 3380D+ in 19:30, marathon in 3:45', 'strengthSessions': '4', 'timeCommitment': '1.5hr', 'injuries': '', 'preferences': 'Long runs and long trails on weekends only', 'specialConditions': '', 'otherInfo': '', 'athlete_id': '64768690'}\n# form_data = json.dumps(form_data)\n# response = requests.post(url, json=form_data)\n# # Print the response\n# if response.status_code == 200:\n#     print(\"Response from server:\")\n#     print(response.json())\n# else:\n#     print(f\"Error: {response.status_code}\")",
         "detail": "test_plan",
         "documentation": {}
     },
     {
-        "label": "form_data",
+        "label": "string1",
         "kind": 5,
         "importPath": "test_plan",
         "description": "test_plan",
-        "peekOfCode": "form_data = {'goalType': 'specific', 'goal': '100Km ultra trail with 5000m elevation', 'targetDate': '2025-03-09', 'trainingDays': '5', 'fitnessLevel': 'intermediate', 'recentPerformance': '100Km ultra trail 3380D+ in 19:30, marathon in 3:45', 'strengthSessions': '4', 'timeCommitment': '1.5hr', 'injuries': '', 'preferences': 'Long runs and long trails on weekends only', 'specialConditions': '', 'otherInfo': '', 'athlete_id': '64768690'}\nform_data = json.dumps(form_data)\nresponse = requests.post(url, json=form_data)\n# Print the response\nif response.status_code == 200:\n    print(\"Response from server:\")\n    print(response.json())\nelse:\n    print(f\"Error: {response.status_code}\")\n    print(response.text)",
+        "peekOfCode": "string1 = test_plan_data.next_week_plan\nstring4= test_plan_data.new_plan_3\nstring3 = test_plan_data.new_plan_2\nimport json\nimport re\nimport re\ndef parse_workout_plan(text):\n    # Extracting Dates\n    dates = re.search(r\"\\s*(\\d{2}/\\d{2}/\\d{4})\\s*-\\s*(\\d{2}/\\d{2}/\\d{4})\", text)\n    dates = dates.groups() if dates else None",
         "detail": "test_plan",
         "documentation": {}
     },
     {
-        "label": "form_data",
+        "label": "string3",
         "kind": 5,
         "importPath": "test_plan",
         "description": "test_plan",
-        "peekOfCode": "form_data = json.dumps(form_data)\nresponse = requests.post(url, json=form_data)\n# Print the response\nif response.status_code == 200:\n    print(\"Response from server:\")\n    print(response.json())\nelse:\n    print(f\"Error: {response.status_code}\")\n    print(response.text)",
+        "peekOfCode": "string3 = test_plan_data.new_plan_2\nimport json\nimport re\nimport re\ndef parse_workout_plan(text):\n    # Extracting Dates\n    dates = re.search(r\"\\s*(\\d{2}/\\d{2}/\\d{4})\\s*-\\s*(\\d{2}/\\d{2}/\\d{4})\", text)\n    dates = dates.groups() if dates else None\n    # Extracting Workouts\n    workouts = {}",
         "detail": "test_plan",
         "documentation": {}
     },
     {
-        "label": "response",
+        "label": "string",
         "kind": 5,
         "importPath": "test_plan",
         "description": "test_plan",
-        "peekOfCode": "response = requests.post(url, json=form_data)\n# Print the response\nif response.status_code == 200:\n    print(\"Response from server:\")\n    print(response.json())\nelse:\n    print(f\"Error: {response.status_code}\")\n    print(response.text)",
+        "peekOfCode": "string = test_plan_data.new_plan\n# parsed_plan1 = parse_workout_plan(string1)\nparsed_plan4 = parse_workout_plan(string4)\n# parsed_plan3 = parse_workout_plan(string3)\n# parse_plan = parse_workout_plan(string)\n# workouts = extract_daily_workouts(parse_plan[1])\n# print(parsed_plan3)\n# print(parsed_plan1)\n# print(parsed_plan4)",
         "detail": "test_plan",
+        "documentation": {}
+    },
+    {
+        "label": "parsed_plan4",
+        "kind": 5,
+        "importPath": "test_plan",
+        "description": "test_plan",
+        "peekOfCode": "parsed_plan4 = parse_workout_plan(string4)\n# parsed_plan3 = parse_workout_plan(string3)\n# parse_plan = parse_workout_plan(string)\n# workouts = extract_daily_workouts(parse_plan[1])\n# print(parsed_plan3)\n# print(parsed_plan1)\n# print(parsed_plan4)",
+        "detail": "test_plan",
+        "documentation": {}
+    },
+    {
+        "label": "athlete_id",
+        "kind": 5,
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "peekOfCode": "athlete_id = 64768690\npast_3m_summarised =\"\"\" **Summary of Athlete's Past 3 Months Running History**\nThe athlete has a diverse and extensive running history over the past 3 months, consisting of various types of runs, including long runs, tempo runs, easy runs, recovery runs, intervals, trail runs, and hill workouts.\n**Total Distance and Elevation Gain**\nThe total distance covered by the athlete over the past 3 months is approximately 734.14 km, with a total elevation gain of 10,341.2 meters.\n**Types of Runs and Frequency**\n1. **Long Runs**: 4 long runs, with distances ranging from 22.33 km to 30.33 km, and average paces between 05:25 min/km and 06:09 min/km.\n2. **Tempo Runs**: 5 tempo runs, with distances ranging from 1.74 km to 15.23 km, and average paces between 04:57 min/km and 05:54 min/km.\n3. **Easy Runs**: 11 easy runs, with distances ranging from 3.07 km to 11.03 km, and average paces between 06:00 min/km and 06:27 min/km.\n4. **Recovery Runs**: 13 recovery runs, with no specific distance or pace data available.",
+        "detail": "test_plan_data",
+        "documentation": {}
+    },
+    {
+        "label": "past_month_run_details",
+        "kind": 5,
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "peekOfCode": "past_month_run_details = \"\"\"\nprint(past_month_runs_details)\n1. Day 0: Trail Run\n14.40 km | ↗️1017.0m\n2. Day 2: Trail Run\n4.77 km | ↗️202.0m\n3. Day 2:Base Training of 8.10 km at 05:24 min/Km | ↗️12.0m\n4. Day 4: Recovery Run\n5. Day 5: Trail Run\n4.44 km | ↗️102.0m",
+        "detail": "test_plan_data",
+        "documentation": {}
+    },
+    {
+        "label": "goal_summary",
+        "kind": 5,
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "peekOfCode": "goal_summary = \"\"\"\nHere is a brief summary of the athlete's goals and current situation:\n**Goal:** Complete a 100Km ultra trail with 5000m elevation by March 9, 2025.\n**Current Fitness Level:** Intermediate\n**Available Training Time:** 1.5 hours/day, 5 days a week\n**Recent Performances:**\n* Completed a 100Km ultra trail with 3342m elevation in 19:27:15\n* Completed a marathon in 3:45\n* Recent long runs: 100.3km, 42.61km, and 41.86km with varying paces and elevations\n**Training Preferences:**",
+        "detail": "test_plan_data",
+        "documentation": {}
+    },
+    {
+        "label": "dates",
+        "kind": 5,
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "peekOfCode": "dates = \"20/01/2025 - 26/01/2025\"\ngoal_summary = \"\\nHere is a brief summary of the athlete's goals and current situation:\\n\\n**Goal:** Complete a 100Km ultra trail with 5000m elevation by March 9, 2025.\\n\\n**Current Fitness Level:** Intermediate\\n\\n**Available Training Time:** 1.5 hours/day, 5 days a week\\n\\n**Recent Performances:**\\n\\n* Completed a 100Km ultra trail with 3342m elevation in 19:27:15\\n* Completed a marathon in 3:45\\n* Recent long runs: 100.3km, 42.61km, and 41.86km with varying paces and elevations\\n\\n**Training Preferences:**\\n\\n* Long runs and trails only on weekends\\n* Can commit to 4 strength sessions per week\\n\\nThis information will be used to create a personalized training plan to help the athlete achieve their goal.\"\nnew_plan=\"Dates: 03/02/2025 - 09/02/2025\\n\\nOverview of the previous workouts: The athlete completed a hill workout, two trail runs, and a base training session in the past week, with a total distance of 38.3 km and elevation gain of 1256m. Although the athlete did not follow the prescribed workout plan completely, they still managed to get some quality training done. I applaud the athlete for their efforts, but I expect them to be more consistent with the plan in the upcoming week.\\n\\nWorkout Plan:\\nMonday (1.5 hours)\\n- Warm-up: \\n▪ Easy running: 10-15 minutes\\n- Strength Training: \\n▪ Squats: 3 sets of 12 reps\\n▪ Lunges: 3 sets of 12 reps (per leg)\\n▪ Calf raises: 3 sets of 18 reps\\n- Cool-down: \\n▪ Stretching and foam rolling: 10-15 minutes\\nTuesday (1.5 hours)\\n- Warm-up: \\n▪ Easy running: 10-15 minutes\\n- Tempo Run: \\n▪ Moderate pace: 35 minutes at approximately 6:00-6:30 min/km\\n- Cool-down: \\n▪ Easy running: 10-15 minutes\\n- Mobility Workout: \\n▪ Leg swings: 3 sets of 12 reps (front and back)\\n▪ Hip circles: 3 sets of 12 reps\\nWednesday (1.5 hours)\\n- Warm-up: \\n▪ Easy running: 10-15 minutes\\n- Hill Repeats: \\n▪ High intensity: 7-9 x 400m hill repeats at approximately 4:00-4:30 min/km\\n- Cool-down: \\n▪ Easy running: 10-15 minutes\\n- Strength Training: \\n▪ Deadlifts: 3 sets of 12 reps\\n▪ Step-ups: 3 sets of 12 reps (per leg)\\nThursday (1.5 hours)\\n- Warm-up: \\n▪ Easy running: 10-15 minutes\\n- Easy Run: \\n▪ Easy pace: 50 minutes at approximately 7:00-7:30 min/km\\n- Cool-down: \\n▪ Stretching and foam rolling: 10-15 minutes\\n- Mobility Workout: \\n▪ Hip flexor stretches: 3 sets of 12 reps\\n▪ Quad stretches: 3 sets of 12 reps\\nFriday (1.5 hours)\\n- Warm-up: \\n▪ Easy running: 10-15 minutes\\n- Long Run: \\n▪ Moderate pace: 70 minutes at approximately 6:30-7:00 min/km\\n- Cool-down: \\n▪ Easy running: 10-15 minutes\\n- Strength Training: \\n▪ Leg press: 3 sets of 12 reps\\n▪ Calf raises: 3 sets of 18 reps\\nSaturday (Rest Day)\\nSunday (2.5 hours)\\n- Warm-up: \\n▪ Easy running: 10-15 minutes\\n- Long Run: \\n▪ Moderate pace: 2.5 hours at approximately 6:30-7:00 min/km with 1200m elevation gain\\n- Cool-down: \\n▪ Easy running: 10-15 minutes\\n\\nNotes:\\n- The athlete should focus on proper nutrition and hydration to support their training.\\n- It is essential to get 7-9 hours of sleep each night to aid in recovery.\\n- The athlete should incorporate rest and recovery techniques such as foam rolling, stretching, and self-myofascial release to aid in recovery.\\n- I expect the athlete to follow the prescribed workout plan more consistently in the upcoming week.\\n- The athlete should listen to their body and adjust the intensity and volume of training based on how they feel.\"\npast_week_activity_dtls = \"1. Day 0: Hill Workout of 11.03 km at 05:43 min/Km | ↗️25.0m\\n2. Day 2: Trail Run\\n14.40 km | ↗️1017.0m\\n3. Day 5: Trail Run\\n4.77 km | ↗️202.0m\\n4. Day 5:Base Training of 8.10 km at 05:24 min/Km | ↗️12.0m\"\nnew_plan_2 = \"### Dates: 03/02/2025 - 09/02/2025\\n### Overview of the previous workouts: \\nThe athlete has completed some workouts in the past week, including a hill workout, two trail runs, and a base training session. The details of these workouts are as follows:\\n* Day 0: Hill Workout of 11.03 km at 05:43 min/Km with 25.0m elevation gain\\n* Day 2: Trail Run of 14.40 km with 1017.0m elevation gain\\n* Day 5: Trail Run of 4.77 km with 202.0m elevation gain\\n* Day 5: Base Training of 8.10 km at 05:24 min/Km with 12.0m elevation gain\\nHowever, the athlete has missed some workouts from the provided plan, including strength training sessions, mobility workouts, and easy runs. It is essential to stay on track with the plan to achieve the goal of completing a 100Km ultra trail with 5000m elevation by March 9, 2025.\\n\\n### Workout Plan:\\n#### Monday \\n- Warm-up: 10-15 minutes of easy running\\n- Strength Training:\\n  * Squats: 3 sets of 12 reps\\n  * Lunges: 3 sets of 12 reps (per leg)\\n  * Calf raises: 3 sets of 18 reps\\n  * Core exercises: 3 sets of 12 reps (plank, Russian twists, etc.)\\n- Cool-down: 10-15 minutes of stretching and foam rolling\\n\\n#### Tuesday \\n- Warm-up: 10-15 minutes of easy running\\n- Tempo Run: 35 minutes at a moderate pace (approx. 6:00-6:30 min/km)\\n- Cool-down: 10-15 minutes of easy running\\n- Mobility Workout:\\n  * Leg swings: 3 sets of 12 reps (front and back)\\n  * Hip circles: 3 sets of 12 reps\\n  * Calf stretches: 3 sets of 12 reps\\n\\n#### Wednesday \\n- Warm-up: 10-15 minutes of easy running\\n- Hill Repeats: 7-9 x 400m hill repeats at a high intensity (approx. 4:00-4:30 min/km)\\n- Cool-down: 10-15 minutes of easy running\\n- Strength Training:\\n  * Deadlifts: 3 sets of 12 reps\\n  * Step-ups: 3 sets of 12 reps (per leg)\\n  * Calf raises: 3 sets of 18 reps\\n\\n#### Thursday \\n- Warm-up: 10-15 minutes of easy running\\n- Easy Run: 50 minutes at an easy pace (approx. 7:00-7:30 min/km)\\n- Cool-down: 10-15 minutes of stretching and foam rolling\\n- Mobility Workout:\\n  * Hip flexor stretches: 3 sets of 12 reps\\n  * Quad stretches: 3 sets of 12 reps\\n  * Calf stretches: 3 sets of 12 reps\\n\\n#### Friday \\n- Warm-up: 10-15 minutes of easy running\\n- Long Run: 70 minutes at a moderate pace (approx. 6:30-7:00 min/km)\\n- Cool-down: 10-15 minutes of easy running\\n- Strength Training:\\n  * Leg press: 3 sets of 12 reps\\n  * Calf raises: 3 sets of 18 reps\\n  * Core exercises: 3 sets of 12 reps (plank, Russian twists, etc.)\\n\\n#### Saturday \\n- Rest Day\\n\\n#### Sunday \\n- Warm-up: 10-15 minutes of easy running\\n- Long Run: 2.5 hours at a moderate pace (approx. 6:30-7:00 min/km) with 1200m elevation gain\\n- Cool-down: 10-15 minutes of easy running\\n\\n### Notes:\\n* The athlete should listen to their body and adjust the intensity and volume of training based on how they feel.\\n* The athlete should also pay attention to their nutrition and hydration to ensure they are fueling their body for optimal performance.\\n* The athlete should aim to get 7-9 hours of sleep each night to aid in recovery.\\n* The athlete should also incorporate rest and recovery techniques such as foam rolling, stretching, and self-myofascial release to aid in recovery.\\n* It is essential to stay on track with the plan and complete all the workouts as scheduled to achieve the goal of completing a 100Km ultra trail with 5000m elevation by March 9, 2025.\"\nnew_plan_3 =\"Dates:29/01/2025 - 04/02/2025\\n### Bird's eye view: \\nThe workout plan for the next week will focus on building the athlete's endurance, strength, and mobility to reach the goal of completing a 100km trail run by 28/06/2025. The plan will include a mix of easy runs, tempo workouts, hill repeats, and long runs to improve cardiovascular fitness and running efficiency. Strength training and mobility workouts will be added to enhance muscular endurance, flexibility, and injury prevention.\\n\\n### Workout Plan:\\n#### Monday \\n- Easy Run: 10km at 06:30 min/km pace\\n- Strength Training: Lower Body Workout (Squats, Lunges, Calf Raises)\\n  * Warm-up: 10-15 minutes of light cardio and dynamic stretching\\n  * Squats: 3 sets of 10 reps\\n  * Lunges: 3 sets of 10 reps (per leg)\\n  * Calf Raises: 3 sets of 15 reps\\n  * Cool-down: 10-15 minutes of static stretching\\n\\n#### Tuesday \\n- Tempo Workout: 6km at 05:30 min/km pace\\n- Mobility Workout: Foam Rolling and Self-Myofascial Release (Focus on IT Band, Calves, and Quads)\\n  * 10-15 minutes of foam rolling and self-myofascial release\\n\\n#### Wednesday \\n- Hill Repeats: 8km (4km uphill at 07:00 min/km pace, 4km downhill at 05:00 min/km pace)\\n- Strength Training: Core Workout (Planks, Russian Twists, Leg Raises)\\n  * Warm-up: 10-15 minutes of light cardio and dynamic stretching\\n  * Planks: 3 sets of 30-second hold\\n  * Russian Twists: 3 sets of 15 reps\\n  * Leg Raises: 3 sets of 15 reps\\n  * Cool-down: 10-15 minutes of static stretching\\n\\n#### Thursday \\n- Easy Run: 10km at 06:30 min/km pace\\n- Mobility Workout: Yoga or Active Recovery (Focus on Hip Flexors, Hamstrings, and Lower Back)\\n  * 30-45 minutes of yoga or active recovery\\n\\n#### Friday \\n- Long Run: 25km at 06:15 min/km pace\\n- Strength Training: Upper Body Workout (Push-ups, Pull-ups, Dumbbell Rows)\\n  * Warm-up: 10-15 minutes of light cardio and dynamic stretching\\n  * Push-ups: 3 sets of 10 reps\\n  * Pull-ups: 3 sets of as many reps as possible\\n  * Dumbbell Rows: 3 sets of 10 reps (per arm)\\n  * Cool-down: 10-15 minutes of static stretching\\n\\n#### Saturday \\n- Rest Day or Active Recovery (30-45 minutes of easy cycling, swimming, or walking)\\n\\n#### Sunday \\n- Rest Day or Active Recovery (30-45 minutes of easy cycling, swimming, or walking)\\n\\n### Notes:\\n* Make sure to warm up and cool down properly before and after each workout\\n* Incorporate proper nutrition and hydration to support training and recovery\\n* Listen to your body and adjust the plan as needed to avoid injury or burnout\\n* Get at least 7-9 hours of sleep each night to aid in recovery and adaptation\\n* Incorporate visualization techniques and positive self-talk to enhance mental preparation and resilience\\n* Review and adjust the plan with your coach or trainer on a regular basis to ensure progress towards your goal.\"",
+        "detail": "test_plan_data",
+        "documentation": {}
+    },
+    {
+        "label": "goal_summary",
+        "kind": 5,
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "peekOfCode": "goal_summary = \"\\nHere is a brief summary of the athlete's goals and current situation:\\n\\n**Goal:** Complete a 100Km ultra trail with 5000m elevation by March 9, 2025.\\n\\n**Current Fitness Level:** Intermediate\\n\\n**Available Training Time:** 1.5 hours/day, 5 days a week\\n\\n**Recent Performances:**\\n\\n* Completed a 100Km ultra trail with 3342m elevation in 19:27:15\\n* Completed a marathon in 3:45\\n* Recent long runs: 100.3km, 42.61km, and 41.86km with varying paces and elevations\\n\\n**Training Preferences:**\\n\\n* Long runs and trails only on weekends\\n* Can commit to 4 strength sessions per week\\n\\nThis information will be used to create a personalized training plan to help the athlete achieve their goal.\"\nnew_plan=\"Dates: 03/02/2025 - 09/02/2025\\n\\nOverview of the previous workouts: The athlete completed a hill workout, two trail runs, and a base training session in the past week, with a total distance of 38.3 km and elevation gain of 1256m. Although the athlete did not follow the prescribed workout plan completely, they still managed to get some quality training done. I applaud the athlete for their efforts, but I expect them to be more consistent with the plan in the upcoming week.\\n\\nWorkout Plan:\\nMonday (1.5 hours)\\n- Warm-up: \\n▪ Easy running: 10-15 minutes\\n- Strength Training: \\n▪ Squats: 3 sets of 12 reps\\n▪ Lunges: 3 sets of 12 reps (per leg)\\n▪ Calf raises: 3 sets of 18 reps\\n- Cool-down: \\n▪ Stretching and foam rolling: 10-15 minutes\\nTuesday (1.5 hours)\\n- Warm-up: \\n▪ Easy running: 10-15 minutes\\n- Tempo Run: \\n▪ Moderate pace: 35 minutes at approximately 6:00-6:30 min/km\\n- Cool-down: \\n▪ Easy running: 10-15 minutes\\n- Mobility Workout: \\n▪ Leg swings: 3 sets of 12 reps (front and back)\\n▪ Hip circles: 3 sets of 12 reps\\nWednesday (1.5 hours)\\n- Warm-up: \\n▪ Easy running: 10-15 minutes\\n- Hill Repeats: \\n▪ High intensity: 7-9 x 400m hill repeats at approximately 4:00-4:30 min/km\\n- Cool-down: \\n▪ Easy running: 10-15 minutes\\n- Strength Training: \\n▪ Deadlifts: 3 sets of 12 reps\\n▪ Step-ups: 3 sets of 12 reps (per leg)\\nThursday (1.5 hours)\\n- Warm-up: \\n▪ Easy running: 10-15 minutes\\n- Easy Run: \\n▪ Easy pace: 50 minutes at approximately 7:00-7:30 min/km\\n- Cool-down: \\n▪ Stretching and foam rolling: 10-15 minutes\\n- Mobility Workout: \\n▪ Hip flexor stretches: 3 sets of 12 reps\\n▪ Quad stretches: 3 sets of 12 reps\\nFriday (1.5 hours)\\n- Warm-up: \\n▪ Easy running: 10-15 minutes\\n- Long Run: \\n▪ Moderate pace: 70 minutes at approximately 6:30-7:00 min/km\\n- Cool-down: \\n▪ Easy running: 10-15 minutes\\n- Strength Training: \\n▪ Leg press: 3 sets of 12 reps\\n▪ Calf raises: 3 sets of 18 reps\\nSaturday (Rest Day)\\nSunday (2.5 hours)\\n- Warm-up: \\n▪ Easy running: 10-15 minutes\\n- Long Run: \\n▪ Moderate pace: 2.5 hours at approximately 6:30-7:00 min/km with 1200m elevation gain\\n- Cool-down: \\n▪ Easy running: 10-15 minutes\\n\\nNotes:\\n- The athlete should focus on proper nutrition and hydration to support their training.\\n- It is essential to get 7-9 hours of sleep each night to aid in recovery.\\n- The athlete should incorporate rest and recovery techniques such as foam rolling, stretching, and self-myofascial release to aid in recovery.\\n- I expect the athlete to follow the prescribed workout plan more consistently in the upcoming week.\\n- The athlete should listen to their body and adjust the intensity and volume of training based on how they feel.\"\npast_week_activity_dtls = \"1. Day 0: Hill Workout of 11.03 km at 05:43 min/Km | ↗️25.0m\\n2. Day 2: Trail Run\\n14.40 km | ↗️1017.0m\\n3. Day 5: Trail Run\\n4.77 km | ↗️202.0m\\n4. Day 5:Base Training of 8.10 km at 05:24 min/Km | ↗️12.0m\"\nnew_plan_2 = \"### Dates: 03/02/2025 - 09/02/2025\\n### Overview of the previous workouts: \\nThe athlete has completed some workouts in the past week, including a hill workout, two trail runs, and a base training session. The details of these workouts are as follows:\\n* Day 0: Hill Workout of 11.03 km at 05:43 min/Km with 25.0m elevation gain\\n* Day 2: Trail Run of 14.40 km with 1017.0m elevation gain\\n* Day 5: Trail Run of 4.77 km with 202.0m elevation gain\\n* Day 5: Base Training of 8.10 km at 05:24 min/Km with 12.0m elevation gain\\nHowever, the athlete has missed some workouts from the provided plan, including strength training sessions, mobility workouts, and easy runs. It is essential to stay on track with the plan to achieve the goal of completing a 100Km ultra trail with 5000m elevation by March 9, 2025.\\n\\n### Workout Plan:\\n#### Monday \\n- Warm-up: 10-15 minutes of easy running\\n- Strength Training:\\n  * Squats: 3 sets of 12 reps\\n  * Lunges: 3 sets of 12 reps (per leg)\\n  * Calf raises: 3 sets of 18 reps\\n  * Core exercises: 3 sets of 12 reps (plank, Russian twists, etc.)\\n- Cool-down: 10-15 minutes of stretching and foam rolling\\n\\n#### Tuesday \\n- Warm-up: 10-15 minutes of easy running\\n- Tempo Run: 35 minutes at a moderate pace (approx. 6:00-6:30 min/km)\\n- Cool-down: 10-15 minutes of easy running\\n- Mobility Workout:\\n  * Leg swings: 3 sets of 12 reps (front and back)\\n  * Hip circles: 3 sets of 12 reps\\n  * Calf stretches: 3 sets of 12 reps\\n\\n#### Wednesday \\n- Warm-up: 10-15 minutes of easy running\\n- Hill Repeats: 7-9 x 400m hill repeats at a high intensity (approx. 4:00-4:30 min/km)\\n- Cool-down: 10-15 minutes of easy running\\n- Strength Training:\\n  * Deadlifts: 3 sets of 12 reps\\n  * Step-ups: 3 sets of 12 reps (per leg)\\n  * Calf raises: 3 sets of 18 reps\\n\\n#### Thursday \\n- Warm-up: 10-15 minutes of easy running\\n- Easy Run: 50 minutes at an easy pace (approx. 7:00-7:30 min/km)\\n- Cool-down: 10-15 minutes of stretching and foam rolling\\n- Mobility Workout:\\n  * Hip flexor stretches: 3 sets of 12 reps\\n  * Quad stretches: 3 sets of 12 reps\\n  * Calf stretches: 3 sets of 12 reps\\n\\n#### Friday \\n- Warm-up: 10-15 minutes of easy running\\n- Long Run: 70 minutes at a moderate pace (approx. 6:30-7:00 min/km)\\n- Cool-down: 10-15 minutes of easy running\\n- Strength Training:\\n  * Leg press: 3 sets of 12 reps\\n  * Calf raises: 3 sets of 18 reps\\n  * Core exercises: 3 sets of 12 reps (plank, Russian twists, etc.)\\n\\n#### Saturday \\n- Rest Day\\n\\n#### Sunday \\n- Warm-up: 10-15 minutes of easy running\\n- Long Run: 2.5 hours at a moderate pace (approx. 6:30-7:00 min/km) with 1200m elevation gain\\n- Cool-down: 10-15 minutes of easy running\\n\\n### Notes:\\n* The athlete should listen to their body and adjust the intensity and volume of training based on how they feel.\\n* The athlete should also pay attention to their nutrition and hydration to ensure they are fueling their body for optimal performance.\\n* The athlete should aim to get 7-9 hours of sleep each night to aid in recovery.\\n* The athlete should also incorporate rest and recovery techniques such as foam rolling, stretching, and self-myofascial release to aid in recovery.\\n* It is essential to stay on track with the plan and complete all the workouts as scheduled to achieve the goal of completing a 100Km ultra trail with 5000m elevation by March 9, 2025.\"\nnew_plan_3 =\"Dates:29/01/2025 - 04/02/2025\\n### Bird's eye view: \\nThe workout plan for the next week will focus on building the athlete's endurance, strength, and mobility to reach the goal of completing a 100km trail run by 28/06/2025. The plan will include a mix of easy runs, tempo workouts, hill repeats, and long runs to improve cardiovascular fitness and running efficiency. Strength training and mobility workouts will be added to enhance muscular endurance, flexibility, and injury prevention.\\n\\n### Workout Plan:\\n#### Monday \\n- Easy Run: 10km at 06:30 min/km pace\\n- Strength Training: Lower Body Workout (Squats, Lunges, Calf Raises)\\n  * Warm-up: 10-15 minutes of light cardio and dynamic stretching\\n  * Squats: 3 sets of 10 reps\\n  * Lunges: 3 sets of 10 reps (per leg)\\n  * Calf Raises: 3 sets of 15 reps\\n  * Cool-down: 10-15 minutes of static stretching\\n\\n#### Tuesday \\n- Tempo Workout: 6km at 05:30 min/km pace\\n- Mobility Workout: Foam Rolling and Self-Myofascial Release (Focus on IT Band, Calves, and Quads)\\n  * 10-15 minutes of foam rolling and self-myofascial release\\n\\n#### Wednesday \\n- Hill Repeats: 8km (4km uphill at 07:00 min/km pace, 4km downhill at 05:00 min/km pace)\\n- Strength Training: Core Workout (Planks, Russian Twists, Leg Raises)\\n  * Warm-up: 10-15 minutes of light cardio and dynamic stretching\\n  * Planks: 3 sets of 30-second hold\\n  * Russian Twists: 3 sets of 15 reps\\n  * Leg Raises: 3 sets of 15 reps\\n  * Cool-down: 10-15 minutes of static stretching\\n\\n#### Thursday \\n- Easy Run: 10km at 06:30 min/km pace\\n- Mobility Workout: Yoga or Active Recovery (Focus on Hip Flexors, Hamstrings, and Lower Back)\\n  * 30-45 minutes of yoga or active recovery\\n\\n#### Friday \\n- Long Run: 25km at 06:15 min/km pace\\n- Strength Training: Upper Body Workout (Push-ups, Pull-ups, Dumbbell Rows)\\n  * Warm-up: 10-15 minutes of light cardio and dynamic stretching\\n  * Push-ups: 3 sets of 10 reps\\n  * Pull-ups: 3 sets of as many reps as possible\\n  * Dumbbell Rows: 3 sets of 10 reps (per arm)\\n  * Cool-down: 10-15 minutes of static stretching\\n\\n#### Saturday \\n- Rest Day or Active Recovery (30-45 minutes of easy cycling, swimming, or walking)\\n\\n#### Sunday \\n- Rest Day or Active Recovery (30-45 minutes of easy cycling, swimming, or walking)\\n\\n### Notes:\\n* Make sure to warm up and cool down properly before and after each workout\\n* Incorporate proper nutrition and hydration to support training and recovery\\n* Listen to your body and adjust the plan as needed to avoid injury or burnout\\n* Get at least 7-9 hours of sleep each night to aid in recovery and adaptation\\n* Incorporate visualization techniques and positive self-talk to enhance mental preparation and resilience\\n* Review and adjust the plan with your coach or trainer on a regular basis to ensure progress towards your goal.\"",
+        "detail": "test_plan_data",
+        "documentation": {}
+    },
+    {
+        "label": "past_week_activity_dtls",
+        "kind": 5,
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "peekOfCode": "past_week_activity_dtls = \"1. Day 0: Hill Workout of 11.03 km at 05:43 min/Km | ↗️25.0m\\n2. Day 2: Trail Run\\n14.40 km | ↗️1017.0m\\n3. Day 5: Trail Run\\n4.77 km | ↗️202.0m\\n4. Day 5:Base Training of 8.10 km at 05:24 min/Km | ↗️12.0m\"\nnew_plan_2 = \"### Dates: 03/02/2025 - 09/02/2025\\n### Overview of the previous workouts: \\nThe athlete has completed some workouts in the past week, including a hill workout, two trail runs, and a base training session. The details of these workouts are as follows:\\n* Day 0: Hill Workout of 11.03 km at 05:43 min/Km with 25.0m elevation gain\\n* Day 2: Trail Run of 14.40 km with 1017.0m elevation gain\\n* Day 5: Trail Run of 4.77 km with 202.0m elevation gain\\n* Day 5: Base Training of 8.10 km at 05:24 min/Km with 12.0m elevation gain\\nHowever, the athlete has missed some workouts from the provided plan, including strength training sessions, mobility workouts, and easy runs. It is essential to stay on track with the plan to achieve the goal of completing a 100Km ultra trail with 5000m elevation by March 9, 2025.\\n\\n### Workout Plan:\\n#### Monday \\n- Warm-up: 10-15 minutes of easy running\\n- Strength Training:\\n  * Squats: 3 sets of 12 reps\\n  * Lunges: 3 sets of 12 reps (per leg)\\n  * Calf raises: 3 sets of 18 reps\\n  * Core exercises: 3 sets of 12 reps (plank, Russian twists, etc.)\\n- Cool-down: 10-15 minutes of stretching and foam rolling\\n\\n#### Tuesday \\n- Warm-up: 10-15 minutes of easy running\\n- Tempo Run: 35 minutes at a moderate pace (approx. 6:00-6:30 min/km)\\n- Cool-down: 10-15 minutes of easy running\\n- Mobility Workout:\\n  * Leg swings: 3 sets of 12 reps (front and back)\\n  * Hip circles: 3 sets of 12 reps\\n  * Calf stretches: 3 sets of 12 reps\\n\\n#### Wednesday \\n- Warm-up: 10-15 minutes of easy running\\n- Hill Repeats: 7-9 x 400m hill repeats at a high intensity (approx. 4:00-4:30 min/km)\\n- Cool-down: 10-15 minutes of easy running\\n- Strength Training:\\n  * Deadlifts: 3 sets of 12 reps\\n  * Step-ups: 3 sets of 12 reps (per leg)\\n  * Calf raises: 3 sets of 18 reps\\n\\n#### Thursday \\n- Warm-up: 10-15 minutes of easy running\\n- Easy Run: 50 minutes at an easy pace (approx. 7:00-7:30 min/km)\\n- Cool-down: 10-15 minutes of stretching and foam rolling\\n- Mobility Workout:\\n  * Hip flexor stretches: 3 sets of 12 reps\\n  * Quad stretches: 3 sets of 12 reps\\n  * Calf stretches: 3 sets of 12 reps\\n\\n#### Friday \\n- Warm-up: 10-15 minutes of easy running\\n- Long Run: 70 minutes at a moderate pace (approx. 6:30-7:00 min/km)\\n- Cool-down: 10-15 minutes of easy running\\n- Strength Training:\\n  * Leg press: 3 sets of 12 reps\\n  * Calf raises: 3 sets of 18 reps\\n  * Core exercises: 3 sets of 12 reps (plank, Russian twists, etc.)\\n\\n#### Saturday \\n- Rest Day\\n\\n#### Sunday \\n- Warm-up: 10-15 minutes of easy running\\n- Long Run: 2.5 hours at a moderate pace (approx. 6:30-7:00 min/km) with 1200m elevation gain\\n- Cool-down: 10-15 minutes of easy running\\n\\n### Notes:\\n* The athlete should listen to their body and adjust the intensity and volume of training based on how they feel.\\n* The athlete should also pay attention to their nutrition and hydration to ensure they are fueling their body for optimal performance.\\n* The athlete should aim to get 7-9 hours of sleep each night to aid in recovery.\\n* The athlete should also incorporate rest and recovery techniques such as foam rolling, stretching, and self-myofascial release to aid in recovery.\\n* It is essential to stay on track with the plan and complete all the workouts as scheduled to achieve the goal of completing a 100Km ultra trail with 5000m elevation by March 9, 2025.\"\nnew_plan_3 =\"Dates:29/01/2025 - 04/02/2025\\n### Bird's eye view: \\nThe workout plan for the next week will focus on building the athlete's endurance, strength, and mobility to reach the goal of completing a 100km trail run by 28/06/2025. The plan will include a mix of easy runs, tempo workouts, hill repeats, and long runs to improve cardiovascular fitness and running efficiency. Strength training and mobility workouts will be added to enhance muscular endurance, flexibility, and injury prevention.\\n\\n### Workout Plan:\\n#### Monday \\n- Easy Run: 10km at 06:30 min/km pace\\n- Strength Training: Lower Body Workout (Squats, Lunges, Calf Raises)\\n  * Warm-up: 10-15 minutes of light cardio and dynamic stretching\\n  * Squats: 3 sets of 10 reps\\n  * Lunges: 3 sets of 10 reps (per leg)\\n  * Calf Raises: 3 sets of 15 reps\\n  * Cool-down: 10-15 minutes of static stretching\\n\\n#### Tuesday \\n- Tempo Workout: 6km at 05:30 min/km pace\\n- Mobility Workout: Foam Rolling and Self-Myofascial Release (Focus on IT Band, Calves, and Quads)\\n  * 10-15 minutes of foam rolling and self-myofascial release\\n\\n#### Wednesday \\n- Hill Repeats: 8km (4km uphill at 07:00 min/km pace, 4km downhill at 05:00 min/km pace)\\n- Strength Training: Core Workout (Planks, Russian Twists, Leg Raises)\\n  * Warm-up: 10-15 minutes of light cardio and dynamic stretching\\n  * Planks: 3 sets of 30-second hold\\n  * Russian Twists: 3 sets of 15 reps\\n  * Leg Raises: 3 sets of 15 reps\\n  * Cool-down: 10-15 minutes of static stretching\\n\\n#### Thursday \\n- Easy Run: 10km at 06:30 min/km pace\\n- Mobility Workout: Yoga or Active Recovery (Focus on Hip Flexors, Hamstrings, and Lower Back)\\n  * 30-45 minutes of yoga or active recovery\\n\\n#### Friday \\n- Long Run: 25km at 06:15 min/km pace\\n- Strength Training: Upper Body Workout (Push-ups, Pull-ups, Dumbbell Rows)\\n  * Warm-up: 10-15 minutes of light cardio and dynamic stretching\\n  * Push-ups: 3 sets of 10 reps\\n  * Pull-ups: 3 sets of as many reps as possible\\n  * Dumbbell Rows: 3 sets of 10 reps (per arm)\\n  * Cool-down: 10-15 minutes of static stretching\\n\\n#### Saturday \\n- Rest Day or Active Recovery (30-45 minutes of easy cycling, swimming, or walking)\\n\\n#### Sunday \\n- Rest Day or Active Recovery (30-45 minutes of easy cycling, swimming, or walking)\\n\\n### Notes:\\n* Make sure to warm up and cool down properly before and after each workout\\n* Incorporate proper nutrition and hydration to support training and recovery\\n* Listen to your body and adjust the plan as needed to avoid injury or burnout\\n* Get at least 7-9 hours of sleep each night to aid in recovery and adaptation\\n* Incorporate visualization techniques and positive self-talk to enhance mental preparation and resilience\\n* Review and adjust the plan with your coach or trainer on a regular basis to ensure progress towards your goal.\"",
+        "detail": "test_plan_data",
+        "documentation": {}
+    },
+    {
+        "label": "new_plan_2",
+        "kind": 5,
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "peekOfCode": "new_plan_2 = \"### Dates: 03/02/2025 - 09/02/2025\\n### Overview of the previous workouts: \\nThe athlete has completed some workouts in the past week, including a hill workout, two trail runs, and a base training session. The details of these workouts are as follows:\\n* Day 0: Hill Workout of 11.03 km at 05:43 min/Km with 25.0m elevation gain\\n* Day 2: Trail Run of 14.40 km with 1017.0m elevation gain\\n* Day 5: Trail Run of 4.77 km with 202.0m elevation gain\\n* Day 5: Base Training of 8.10 km at 05:24 min/Km with 12.0m elevation gain\\nHowever, the athlete has missed some workouts from the provided plan, including strength training sessions, mobility workouts, and easy runs. It is essential to stay on track with the plan to achieve the goal of completing a 100Km ultra trail with 5000m elevation by March 9, 2025.\\n\\n### Workout Plan:\\n#### Monday \\n- Warm-up: 10-15 minutes of easy running\\n- Strength Training:\\n  * Squats: 3 sets of 12 reps\\n  * Lunges: 3 sets of 12 reps (per leg)\\n  * Calf raises: 3 sets of 18 reps\\n  * Core exercises: 3 sets of 12 reps (plank, Russian twists, etc.)\\n- Cool-down: 10-15 minutes of stretching and foam rolling\\n\\n#### Tuesday \\n- Warm-up: 10-15 minutes of easy running\\n- Tempo Run: 35 minutes at a moderate pace (approx. 6:00-6:30 min/km)\\n- Cool-down: 10-15 minutes of easy running\\n- Mobility Workout:\\n  * Leg swings: 3 sets of 12 reps (front and back)\\n  * Hip circles: 3 sets of 12 reps\\n  * Calf stretches: 3 sets of 12 reps\\n\\n#### Wednesday \\n- Warm-up: 10-15 minutes of easy running\\n- Hill Repeats: 7-9 x 400m hill repeats at a high intensity (approx. 4:00-4:30 min/km)\\n- Cool-down: 10-15 minutes of easy running\\n- Strength Training:\\n  * Deadlifts: 3 sets of 12 reps\\n  * Step-ups: 3 sets of 12 reps (per leg)\\n  * Calf raises: 3 sets of 18 reps\\n\\n#### Thursday \\n- Warm-up: 10-15 minutes of easy running\\n- Easy Run: 50 minutes at an easy pace (approx. 7:00-7:30 min/km)\\n- Cool-down: 10-15 minutes of stretching and foam rolling\\n- Mobility Workout:\\n  * Hip flexor stretches: 3 sets of 12 reps\\n  * Quad stretches: 3 sets of 12 reps\\n  * Calf stretches: 3 sets of 12 reps\\n\\n#### Friday \\n- Warm-up: 10-15 minutes of easy running\\n- Long Run: 70 minutes at a moderate pace (approx. 6:30-7:00 min/km)\\n- Cool-down: 10-15 minutes of easy running\\n- Strength Training:\\n  * Leg press: 3 sets of 12 reps\\n  * Calf raises: 3 sets of 18 reps\\n  * Core exercises: 3 sets of 12 reps (plank, Russian twists, etc.)\\n\\n#### Saturday \\n- Rest Day\\n\\n#### Sunday \\n- Warm-up: 10-15 minutes of easy running\\n- Long Run: 2.5 hours at a moderate pace (approx. 6:30-7:00 min/km) with 1200m elevation gain\\n- Cool-down: 10-15 minutes of easy running\\n\\n### Notes:\\n* The athlete should listen to their body and adjust the intensity and volume of training based on how they feel.\\n* The athlete should also pay attention to their nutrition and hydration to ensure they are fueling their body for optimal performance.\\n* The athlete should aim to get 7-9 hours of sleep each night to aid in recovery.\\n* The athlete should also incorporate rest and recovery techniques such as foam rolling, stretching, and self-myofascial release to aid in recovery.\\n* It is essential to stay on track with the plan and complete all the workouts as scheduled to achieve the goal of completing a 100Km ultra trail with 5000m elevation by March 9, 2025.\"\nnew_plan_3 =\"Dates:29/01/2025 - 04/02/2025\\n### Bird's eye view: \\nThe workout plan for the next week will focus on building the athlete's endurance, strength, and mobility to reach the goal of completing a 100km trail run by 28/06/2025. The plan will include a mix of easy runs, tempo workouts, hill repeats, and long runs to improve cardiovascular fitness and running efficiency. Strength training and mobility workouts will be added to enhance muscular endurance, flexibility, and injury prevention.\\n\\n### Workout Plan:\\n#### Monday \\n- Easy Run: 10km at 06:30 min/km pace\\n- Strength Training: Lower Body Workout (Squats, Lunges, Calf Raises)\\n  * Warm-up: 10-15 minutes of light cardio and dynamic stretching\\n  * Squats: 3 sets of 10 reps\\n  * Lunges: 3 sets of 10 reps (per leg)\\n  * Calf Raises: 3 sets of 15 reps\\n  * Cool-down: 10-15 minutes of static stretching\\n\\n#### Tuesday \\n- Tempo Workout: 6km at 05:30 min/km pace\\n- Mobility Workout: Foam Rolling and Self-Myofascial Release (Focus on IT Band, Calves, and Quads)\\n  * 10-15 minutes of foam rolling and self-myofascial release\\n\\n#### Wednesday \\n- Hill Repeats: 8km (4km uphill at 07:00 min/km pace, 4km downhill at 05:00 min/km pace)\\n- Strength Training: Core Workout (Planks, Russian Twists, Leg Raises)\\n  * Warm-up: 10-15 minutes of light cardio and dynamic stretching\\n  * Planks: 3 sets of 30-second hold\\n  * Russian Twists: 3 sets of 15 reps\\n  * Leg Raises: 3 sets of 15 reps\\n  * Cool-down: 10-15 minutes of static stretching\\n\\n#### Thursday \\n- Easy Run: 10km at 06:30 min/km pace\\n- Mobility Workout: Yoga or Active Recovery (Focus on Hip Flexors, Hamstrings, and Lower Back)\\n  * 30-45 minutes of yoga or active recovery\\n\\n#### Friday \\n- Long Run: 25km at 06:15 min/km pace\\n- Strength Training: Upper Body Workout (Push-ups, Pull-ups, Dumbbell Rows)\\n  * Warm-up: 10-15 minutes of light cardio and dynamic stretching\\n  * Push-ups: 3 sets of 10 reps\\n  * Pull-ups: 3 sets of as many reps as possible\\n  * Dumbbell Rows: 3 sets of 10 reps (per arm)\\n  * Cool-down: 10-15 minutes of static stretching\\n\\n#### Saturday \\n- Rest Day or Active Recovery (30-45 minutes of easy cycling, swimming, or walking)\\n\\n#### Sunday \\n- Rest Day or Active Recovery (30-45 minutes of easy cycling, swimming, or walking)\\n\\n### Notes:\\n* Make sure to warm up and cool down properly before and after each workout\\n* Incorporate proper nutrition and hydration to support training and recovery\\n* Listen to your body and adjust the plan as needed to avoid injury or burnout\\n* Get at least 7-9 hours of sleep each night to aid in recovery and adaptation\\n* Incorporate visualization techniques and positive self-talk to enhance mental preparation and resilience\\n* Review and adjust the plan with your coach or trainer on a regular basis to ensure progress towards your goal.\"",
+        "detail": "test_plan_data",
         "documentation": {}
     },
     {
