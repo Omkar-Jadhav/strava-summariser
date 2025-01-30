@@ -246,9 +246,9 @@ def get_last_athlete_msg_and_chat(chat_history):
 
 def work_on_user_query(user_input, current_plan, goal_summary):
     prompt=f"""
-    Act as a professional running coach. The user may have queries, suggestions, inputs, or changes regarding the training plan you previously provided.
+    Act as a professional running coach. The user may have queries, suggestions, inputs, or changes regarding the training plan you previously provided. Today is {datetime.now().strftime("%B %d, %Y")}  and the day is {datetime.today().strftime('%A')}
 
-Your task is to respond to these queries, incorporating the athlete’s goals and needs. If there is a change in the plan, provide the updated version for the entire week, reflecting any modifications. For general questions about training, just respond directly.
+Your task is to respond to these queries, incorporating the athlete’s goals and needs. If there is a change in the plan, provide the updated version for the entire week, reflecting any modifications. For general questions about training, just respond directly. 
 
 To update the workout plan, follow these instructions:
 
@@ -259,21 +259,20 @@ Incorporate strength and mobility workouts: Add these workouts as needed, based 
 Include rest days: Ensure proper recovery is accounted for, including rest days.
 Cover all days of the week: Make sure every day in the plan is detailed.
 Output Format:
+'Response: Direct response to the query/suggestions/inputs/changes.
+is_plan_updated: True or False (if the plan was updated).'
 
-Response: Direct response to the query/suggestions/inputs/changes.
-is_plan_updated: True or False (if the plan was updated).
 The response should be in markdown format with the following structure:
-
-Dates: Specify the date range (e.g., DD/MM/YYYY - DD/MM/YYYY).
-Overview of Previous Workouts: Brief overview of the athlete's recent workouts and performance.
+Dates: Specify the date range (e.g., DD/MM/YYYY - DD/MM/YYYY) provided from current plan.
 Workout Plan: Detailed plan for each day of the week, covering the following:
 [Day] - Type of workout, distance, pace, and any relevant notes.
 is_plan_updated: Indicate whether the plan was updated (True or False).
-Additional Notes:
 
+Additional Notes:
 Use #### to bold important text.
 Ensure subitems are properly bullet-pointed.
 Keep responses simple and focused on the athlete’s needs.
+Ensure the dates are added from the current plan.
 Here is the athlete's current plan:
 {current_plan}
 Athlete's goal is:
@@ -634,7 +633,7 @@ def format_next_week_prompt_for_llm(last_week_plan, goal_summary, past_week_acti
     prompt= f"""
     You are a professional running coach. You are a helpful, friendly but strict coach.
     As a strict coach keep your athletes on their toes and make them accountable for their missed run activities or workouts. However, you also help them to plan for their running goals in a friendly manner.
-    Today is {datetime.now().strftime("%B %d, %Y")}. The athlete's goal is - {goal_summary}.   
+    Today is {datetime.now().strftime("%B %d, %Y")} and the day is {datetime.today().strftime('%A')}. The athlete's goal is - {goal_summary}.
     For the past week the workout plan was - {last_week_plan}.
     And the athletes past_week_run_details were - {past_week_activity_dtls}.
     
@@ -644,6 +643,7 @@ def format_next_week_prompt_for_llm(last_week_plan, goal_summary, past_week_acti
     It is essential to keep him injury free while simultaneously increasing the fitness level of athlete.
     Add strength, mobility workouts whenever necessary and as per requirement of athlete. Mention type of workouts to be done in strength training and mobility workouts. Include rest days for proper recovery.
     Consider any inputs from the athlete and adjust the plan accordingly.
+    Give plan only till Sunday.
     When generating workout plans, Generate the workout plan in an markdown format:
     Dates: DD/MM/YYYY - DD/MM/YYYY (first line)
     Overview of the previous workouts: Overview

@@ -244,7 +244,7 @@ def get_athelte_training_details(athlete_id):
     client = initiate_mango_connection()
     db = client["strava"]
     collection = db["workout_details"]
-    results = collection.find({"athlete_id":athlete_id})
+    results = collection.find({"athlete_id":int(athlete_id)})
     logger.info(results)
     for result in results:
         latest_workout_plan = result.get("workout_plan")[0]
