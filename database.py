@@ -5,7 +5,7 @@ from pymongo.mongo_client import MongoClient
 import logging
 import os
 from ai import client
-from test_plan_data import athlete_id, goal_summary
+from test_plan_data import athlete_id
 # Configure logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # Adjust logging level as needed
@@ -97,7 +97,7 @@ def check_session_token_in_data(client, session_token):
     else:
         return None, None, None, None, None
         
-def update_tokens(client, session_token):
+def update_tokens(client, session_token, athlete_id):
     """Updates the tokens in the database and logs success or errors."""
 
     db = client["strava"]

@@ -11,12 +11,9 @@ import json
 import database
 import logging
 import strava_v2_testing
-from test_plan_data import athlete_id, goal_summary, past_week_activity_dtls
-import test_plan_data
+
 import workout_classifier_testing
 from strava_v2_testing import format_prompt_for_llm
-from test_plan_data import goal_summary
-from flask_cors import CORS
 import markdown2
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -28,7 +25,6 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='Lax',  # Allows cookies in same-site context
     SESSION_COOKIE_SECURE=False     # Set to True in production (HTTPS)
 )
-CORS(app, supports_credentials=True)  # Enable CORS with credentials
 # Constants
 VERIFY_TOKEN = "STRAVA"
 DATA_FILE = "refresh_tokens.json"
@@ -75,7 +71,7 @@ def connect_strava():
         #     }
         # ).json()
 
-        database.update_tokens(client, session_token)  
+        database.update_tokens(client, session_token, athlete_id)  
 
         database.close_client(client)
         if previous_workout_plan=='':
@@ -136,6 +132,7 @@ def process_user_input():
     chat_history = request.json.get('messages')
     current_plan =request.json.get('next_week_plan')
     goal_summary = request.json.get('goal_summary')
+    athlete_id =request.json.get('athlete_id')
 
     athlete_message, chat_history = get_last_athlete_msg_and_chat(chat_history)
     # Step 1: Check relevance
@@ -461,7 +458,10 @@ def generate_plan_for_new_user():
         }), 200
     else:
         dates,last_week_plan, notes,goal_summary = database.get_athelte_training_details(athlete_id)
-        next_week_avail, next_week_plan= generate_next_week_plan(dates,goal_summary,last_week_plan,past_week_activity_dtls)
+        past_week_activity_dtls_ = strava.get_activities_for_period(1, athlete_id, sport_type='Run')
+        past_week_activity_dtls= "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_week_activity_dtls_)])
+        
+        next_week_avail, next_week_plan= generate_next_week_plan(dates,goal_summary,last_week_plan,past_week_activity_dtls, athlete_id)
         
         session['next_week_workout_plan'] = next_week_plan
         session['goal_summary'] = goal_summary
@@ -568,7 +568,7 @@ def auth_success_page():
 def already_authorized():
     return render_template('alreadyAuthorized.html')    
 
-def generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls):
+def generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls, athlete_id):
     today = datetime.today()
     prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')
     prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')
@@ -612,6 +612,9 @@ def get_next_week_plan():
     last_dates = request.json.get('dates')
     dates = last_dates.split("-")
     next_week_avail = False
+    
+    past_week_activity_dtls_ = strava.get_activities_for_period(1, athlete_id, sport_type='Run')
+    past_week_activity_dtls= "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_week_activity_dtls_)])
     
     next_week_avail, next_week_plan = generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls)
 

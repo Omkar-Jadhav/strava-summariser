@@ -252,77 +252,12 @@
         "documentation": {}
     },
     {
-        "label": "test_plan_data",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "test_plan_data",
-        "description": "test_plan_data",
-        "detail": "test_plan_data",
-        "documentation": {}
-    },
-    {
-        "label": "athlete_id",
-        "importPath": "test_plan_data",
-        "description": "test_plan_data",
-        "isExtraImport": true,
-        "detail": "test_plan_data",
-        "documentation": {}
-    },
-    {
-        "label": "goal_summary",
-        "importPath": "test_plan_data",
-        "description": "test_plan_data",
-        "isExtraImport": true,
-        "detail": "test_plan_data",
-        "documentation": {}
-    },
-    {
-        "label": "past_week_activity_dtls",
-        "importPath": "test_plan_data",
-        "description": "test_plan_data",
-        "isExtraImport": true,
-        "detail": "test_plan_data",
-        "documentation": {}
-    },
-    {
-        "label": "goal_summary",
-        "importPath": "test_plan_data",
-        "description": "test_plan_data",
-        "isExtraImport": true,
-        "detail": "test_plan_data",
-        "documentation": {}
-    },
-    {
-        "label": "athlete_id",
-        "importPath": "test_plan_data",
-        "description": "test_plan_data",
-        "isExtraImport": true,
-        "detail": "test_plan_data",
-        "documentation": {}
-    },
-    {
-        "label": "goal_summary",
-        "importPath": "test_plan_data",
-        "description": "test_plan_data",
-        "isExtraImport": true,
-        "detail": "test_plan_data",
-        "documentation": {}
-    },
-    {
         "label": "workout_classifier_testing",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "workout_classifier_testing",
         "description": "workout_classifier_testing",
         "detail": "workout_classifier_testing",
-        "documentation": {}
-    },
-    {
-        "label": "CORS",
-        "importPath": "flask_cors",
-        "description": "flask_cors",
-        "isExtraImport": true,
-        "detail": "flask_cors",
         "documentation": {}
     },
     {
@@ -357,6 +292,23 @@
         "description": "pymongo.mongo_client",
         "isExtraImport": true,
         "detail": "pymongo.mongo_client",
+        "documentation": {}
+    },
+    {
+        "label": "test_plan_data",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "detail": "test_plan_data",
+        "documentation": {}
+    },
+    {
+        "label": "athlete_id",
+        "importPath": "test_plan_data",
+        "description": "test_plan_data",
+        "isExtraImport": true,
+        "detail": "test_plan_data",
         "documentation": {}
     },
     {
@@ -613,7 +565,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def process_user_input():\n    chat_history = request.json.get('messages')\n    current_plan =request.json.get('next_week_plan')\n    goal_summary = request.json.get('goal_summary')\n    athlete_message, chat_history = get_last_athlete_msg_and_chat(chat_history)\n    # Step 1: Check relevance\n    is_athlete_msg_relevant = is_user_input_relevant(athlete_message, current_plan, goal_summary,chat_history) \n    if is_athlete_msg_relevant == 'relevant':\n        # Step 2: Call GPT for plan update\n        gpt_response, is_plan_updated = work_on_user_query(athlete_message, current_plan, goal_summary)",
+        "peekOfCode": "def process_user_input():\n    chat_history = request.json.get('messages')\n    current_plan =request.json.get('next_week_plan')\n    goal_summary = request.json.get('goal_summary')\n    athlete_id =request.json.get('athlete_id')\n    athlete_message, chat_history = get_last_athlete_msg_and_chat(chat_history)\n    # Step 1: Check relevance\n    is_athlete_msg_relevant = is_user_input_relevant(athlete_message, current_plan, goal_summary,chat_history) \n    if is_athlete_msg_relevant == 'relevant':\n        # Step 2: Call GPT for plan update",
         "detail": "app",
         "documentation": {}
     },
@@ -757,7 +709,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def auth_success_page():\n    return render_template('authSuccessPage.html')    \n@app.route('/alreadyAuthorized')\ndef already_authorized():\n    return render_template('alreadyAuthorized.html')    \ndef generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    next_week_avail = False",
+        "peekOfCode": "def auth_success_page():\n    return render_template('authSuccessPage.html')    \n@app.route('/alreadyAuthorized')\ndef already_authorized():\n    return render_template('alreadyAuthorized.html')    \ndef generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls, athlete_id):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    next_week_avail = False",
         "detail": "app",
         "documentation": {}
     },
@@ -766,7 +718,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def already_authorized():\n    return render_template('alreadyAuthorized.html')    \ndef generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    next_week_avail = False\n    next_week_plan = last_week_plan\n    if prev_start_date< today and today >= prev_end_date:\n        next_week_avail = True",
+        "peekOfCode": "def already_authorized():\n    return render_template('alreadyAuthorized.html')    \ndef generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls, athlete_id):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    next_week_avail = False\n    next_week_plan = last_week_plan\n    if prev_start_date< today and today >= prev_end_date:\n        next_week_avail = True",
         "detail": "app",
         "documentation": {}
     },
@@ -775,7 +727,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    next_week_avail = False\n    next_week_plan = last_week_plan\n    if prev_start_date< today and today >= prev_end_date:\n        next_week_avail = True\n        last_week_acitivity = strava.get_activities_for_period(1, athlete_id, sport_type='Run')\n        last_week_acitivity =list(itertools.chain(*last_week_acitivity))",
+        "peekOfCode": "def generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls, athlete_id):\n    today = datetime.today()\n    prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')\n    prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')\n    next_week_avail = False\n    next_week_plan = last_week_plan\n    if prev_start_date< today and today >= prev_end_date:\n        next_week_avail = True\n        last_week_acitivity = strava.get_activities_for_period(1, athlete_id, sport_type='Run')\n        last_week_acitivity =list(itertools.chain(*last_week_acitivity))",
         "detail": "app",
         "documentation": {}
     },
@@ -784,7 +736,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def get_next_week_plan():\n    athlete_id = request.json.get('athlete_id')\n    last_week_plan =request.json.get('last_week_plan')\n    goal_summary = request.json.get('goal_summary') or ''\n    last_dates = request.json.get('dates')\n    dates = last_dates.split(\"-\")\n    next_week_avail = False\n    next_week_avail, next_week_plan = generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls)\n    if next_week_avail:\n        return  jsonify({",
+        "peekOfCode": "def get_next_week_plan():\n    athlete_id = request.json.get('athlete_id')\n    last_week_plan =request.json.get('last_week_plan')\n    goal_summary = request.json.get('goal_summary') or ''\n    last_dates = request.json.get('dates')\n    dates = last_dates.split(\"-\")\n    next_week_avail = False\n    past_week_activity_dtls_ = strava.get_activities_for_period(1, athlete_id, sport_type='Run')\n    past_week_activity_dtls= \"\\n\".join([f\"{i+1}. {run_type}\" for i, run_type in enumerate(past_week_activity_dtls_)])\n    next_week_avail, next_week_plan = generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls)",
         "detail": "app",
         "documentation": {}
     },
@@ -820,7 +772,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\napp = Flask(__name__)\napp.secret_key = os.urandom(24)  # Set a secure secret key\napp.config.update(\n    SESSION_COOKIE_SAMESITE='Lax',  # Allows cookies in same-site context\n    SESSION_COOKIE_SECURE=False     # Set to True in production (HTTPS)\n)\nCORS(app, supports_credentials=True)  # Enable CORS with credentials\n# Constants",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nlogger.setLevel(logging.DEBUG)  # Adjust logging level as needed\napp = Flask(__name__)\napp.secret_key = os.urandom(24)  # Set a secure secret key\napp.config.update(\n    SESSION_COOKIE_SAMESITE='Lax',  # Allows cookies in same-site context\n    SESSION_COOKIE_SECURE=False     # Set to True in production (HTTPS)\n)\n# Constants\nVERIFY_TOKEN = \"STRAVA\"",
         "detail": "app",
         "documentation": {}
     },
@@ -829,7 +781,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\napp.secret_key = os.urandom(24)  # Set a secure secret key\napp.config.update(\n    SESSION_COOKIE_SAMESITE='Lax',  # Allows cookies in same-site context\n    SESSION_COOKIE_SECURE=False     # Set to True in production (HTTPS)\n)\nCORS(app, supports_credentials=True)  # Enable CORS with credentials\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"",
+        "peekOfCode": "app = Flask(__name__)\napp.secret_key = os.urandom(24)  # Set a secure secret key\napp.config.update(\n    SESSION_COOKIE_SAMESITE='Lax',  # Allows cookies in same-site context\n    SESSION_COOKIE_SECURE=False     # Set to True in production (HTTPS)\n)\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\nSTRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')",
         "detail": "app",
         "documentation": {}
     },
@@ -838,7 +790,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app.secret_key = os.urandom(24)  # Set a secure secret key\napp.config.update(\n    SESSION_COOKIE_SAMESITE='Lax',  # Allows cookies in same-site context\n    SESSION_COOKIE_SECURE=False     # Set to True in production (HTTPS)\n)\nCORS(app, supports_credentials=True)  # Enable CORS with credentials\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\nSTRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')",
+        "peekOfCode": "app.secret_key = os.urandom(24)  # Set a secure secret key\napp.config.update(\n    SESSION_COOKIE_SAMESITE='Lax',  # Allows cookies in same-site context\n    SESSION_COOKIE_SECURE=False     # Set to True in production (HTTPS)\n)\n# Constants\nVERIFY_TOKEN = \"STRAVA\"\nDATA_FILE = \"refresh_tokens.json\"\nSTRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')\nSTRAVA_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')",
         "detail": "app",
         "documentation": {}
     },
@@ -919,7 +871,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def update_tokens(client, session_token):\n    \"\"\"Updates the tokens in the database and logs success or errors.\"\"\"\n    db = client[\"strava\"]\n    collection = db[\"refresh tokens\"]\n    try:\n        result = collection.update_one(\n            {\"athlete_id\": athlete_id},\n            {\"$set\": {\"session_token\": session_token}},\n        )\n        logger.info(\"Updated tokens for session token %s\", session_token)",
+        "peekOfCode": "def update_tokens(client, session_token, athlete_id):\n    \"\"\"Updates the tokens in the database and logs success or errors.\"\"\"\n    db = client[\"strava\"]\n    collection = db[\"refresh tokens\"]\n    try:\n        result = collection.update_one(\n            {\"athlete_id\": athlete_id},\n            {\"$set\": {\"session_token\": session_token}},\n        )\n        logger.info(\"Updated tokens for session token %s\", session_token)",
         "detail": "database",
         "documentation": {}
     },
