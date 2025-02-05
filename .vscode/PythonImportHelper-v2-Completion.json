@@ -309,14 +309,6 @@
         "documentation": {}
     },
     {
-        "label": "athlete_id",
-        "importPath": "test_strava_activity",
-        "description": "test_strava_activity",
-        "isExtraImport": true,
-        "detail": "test_strava_activity",
-        "documentation": {}
-    },
-    {
         "label": "workout_classifier_testing",
         "kind": 6,
         "isExtraImport": true,

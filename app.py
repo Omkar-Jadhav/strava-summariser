@@ -13,7 +13,6 @@ import logging
 import strava_v2_testing
 from test_plan_data import athlete_id, goal_summary, past_week_activity_dtls
 import test_plan_data
-from test_strava_activity import athlete_id
 import workout_classifier_testing
 from strava_v2_testing import format_prompt_for_llm
 from test_plan_data import goal_summary
