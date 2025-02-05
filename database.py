@@ -4,7 +4,6 @@ import certifi
 from pymongo.mongo_client import MongoClient
 import logging
 import os
-from test_strava_activity import athlete_id
 from ai import client
 from test_plan_data import athlete_id, goal_summary
 # Configure logging
