@@ -1,2 +1,4 @@
 .env
 test_strava_activity.py
+.vscode
+__pycache__

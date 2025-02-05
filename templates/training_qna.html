@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitBot Coach 🏋️♂️ - Your AI Training Partner</title>
+    <meta name="description" content="Hi {{ athlete_name }}, welcome to your personalized training plan!">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='training_qna_styles.css') }}">
+    <script src="{{ url_for('static', filename='training_qna_scripts.js') }}" defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🏋️♂️ FitBot Coach 🤖</h1>
+        <h2 style="text-align: center; font-family: Arial, sans-serif; color: #333;">Hi {{ athlete_name }}, Let's Start!</h2>
+        <div class="progress-bar">
+            <div class="progress" id="progressBar"></div>
+        </div>
+        <input type="hidden" id="athlete_id" value="{{ athlete_id }}">
+        <input type="hidden" id="athlete_name" value="{{ athlete_name }}">
+
+        <div class="question-flow" id="questionFlow">
+            <!-- Goal Selection -->
+            <div class="question-card active" id="goalQuestion">
+                <label><span class="emoji">🎯</span>What's your ultimate fitness goal?</label>
+                <div class="goal-options">
+                    <div class="goal-card" onclick="selectGoal('standard')">
+                        <span class="emoji">🏃♂️</span>
+                        <h3>Standard Race</h3>
+                        <select id="standardGoal" onchange="updateStandardGoal()">
+                            <option value="">Select a goal</option>
+                            <option value="5k">5K Personal Best</option>
+                            <option value="10k">10K Challenge</option>
+                            <option value="half">Half Marathon</option>
+                            <option value="marathon">Marathon</option>
+                            <option value="ultra">Ultra Marathon (50K+)</option>
+                        </select>
+                        <button class="clear-button" onclick="clearStandardGoal()">Clear</button>
+                        <div id="paceTimeSection" style="display: none;">
+                            <div class="time-pace-container">
+                                <!-- Finish Time Inputs -->
+                                <div class="input-group">
+                                    <label>Target Finish Time:</label>
+                                    <div class="time-inputs">
+                                        <input type="number" id="hours" min="0" max="23" placeholder="HH" oninput="calculateFromTime()">
+                                        <span>:</span>
+                                        <input type="number" id="minutes" min="0" max="59" placeholder="MM" oninput="calculateFromTime()">
+                                        <span>:</span>
+                                        <input type="number" id="seconds" min="0" max="59" placeholder="SS" oninput="calculateFromTime()">
+                                    </div>
+                                </div>
+                        
+                                <!-- Pace Inputs -->
+                                <div class="input-group">
+                                    <label>Target Pace (min/km):</label>
+                                    <div class="time-inputs">
+                                        <input type="number" id="paceMinutes" min="0" max="59" placeholder="MM" oninput="calculateFromPace()">
+                                        <span>:</span>
+                                        <input type="number" id="paceSeconds" min="0" max="59" placeholder="SS" oninput="calculateFromPace()">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="paceTimeResult" class="result"></div>
+                        </div>
+                        
+                    </div>
+
+                    <div class="goal-card" onclick="selectGoal('specific')" id="specificEventCard">
+                        <span class="emoji">🏆</span>
+                        <h3>Specific Event Goal</h3>
+                        <input type="text" id="specificEvent" placeholder="e.g., '100Km trail 3380m D+'" oninput="validateSpecificEvent()">
+                        <div class="error-message" id="specificEventError">Please enter your event details</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Date Selection -->
+            <div class="question-card" id="dateQuestion">
+                <label><span class="emoji">📅</span>When's your target date?</label>
+                <input type="date" id="targetDate" min="">
+            </div>
+
+            <!-- Availability -->
+            <div class="question-card" id="availabilityQuestion">
+                <label><span class="emoji">⏳</span>How many days per week can you train?</label>
+                <input type="hidden" id="trainingDays" name="trainingDays">
+                <div class="button-group" id="trainingDaysGroup">
+                    <div class="option-button" onclick="selectOption('trainingDays', 2)">2</div>
+                    <div class="option-button" onclick="selectOption('trainingDays', 3)">3</div>
+                    <div class="option-button" onclick="selectOption('trainingDays', 4)">4</div>
+                    <div class="option-button" onclick="selectOption('trainingDays', 5)">5</div>
+                    <div class="option-button" onclick="selectOption('trainingDays', 6)">6</div>
+                    <div class="option-button" onclick="selectOption('trainingDays', 7)">7</div>
+                </div>
+            </div>
+
+            <!-- Current Fitness -->
+            <div class="question-card" id="fitnessQuestion">
+                <label><span class="emoji">💪</span>What's your current fitness level?</label>
+                <input type="hidden" id="fitnessLevel" name="fitnessLevel">
+                <div class="button-group" id="fitnessLevelGroup">
+                    <div class="option-button" onclick="selectOption('fitnessLevel', 'beginner')">Beginner</div>
+                    <div class="option-button" onclick="selectOption('fitnessLevel', 'intermediate')">Intermediate</div>
+                    <div class="option-button" onclick="selectOption('fitnessLevel', 'advanced')">Advanced</div>
+                    <div class="option-button" onclick="selectOption('fitnessLevel', 'elite')">Elite</div>
+                </div>
+            </div>
+
+            <!-- Recent Performance -->
+            <div class="question-card" id="performanceQuestion">
+                <label><span class="emoji">⏱️</span>What's your most recent race performance?</label>
+                <textarea id="recentPerformance" placeholder="e.g., '5K in 25:00' or 'Marathon in 4:30:00'"></textarea>
+            </div>
+
+            <!-- Longest Run -->
+            <!-- <div class="question-card" id="longestRunQuestion">
+                <label><span class="emoji">🏞️</span>What's the longest run you've done recently?</label>
+                <input type="text" id="longestRun" placeholder="e.g., '30K trail run'">
+            </div> -->
+
+            <!-- Strength Training -->
+            <div class="question-card" id="strengthQuestion">
+                <label><span class="emoji">🏋️</span>How many strength sessions can you do per week?</label>
+                <input type="hidden" id="strengthSessions" name="strengthSessions">
+                <div class="button-group" id="strengthSessionsGroup">
+                    <div class="option-button" onclick="selectOption('strengthSessions', 1)">1</div>
+                    <div class="option-button" onclick="selectOption('strengthSessions', 2)">2</div>
+                    <div class="option-button" onclick="selectOption('strengthSessions', 3)">3</div>
+                    <div class="option-button" onclick="selectOption('strengthSessions', 4)">4</div>
+                    <div class="option-button" onclick="selectOption('strengthSessions', 5)">5</div>
+                </div>
+            </div>
+
+            <!-- Time Commitment -->
+            <div class="question-card" id="timeQuestion">
+                <label><span class="emoji">⏰</span>How much time can you dedicate per session?</label>
+                <input type="hidden" id="timeCommitment" name="timeCommitment">
+                <div class="button-group" id="timeCommitmentGroup">
+                    <div class="option-button" onclick="selectOption('timeCommitment', '30min')">30 min</div>
+                    <div class="option-button" onclick="selectOption('timeCommitment', '1hr')">1 hour</div>
+                    <div class="option-button" onclick="selectOption('timeCommitment', '1.5hr')">1.5 hours</div>
+                    <div class="option-button" onclick="selectOption('timeCommitment', '2hr')">2 hours</div>
+                    <div class="option-button" onclick="selectOption('timeCommitment', '2.5hr')">2.5 hours</div>
+                    <div class="option-button" onclick="selectOption('timeCommitment', '3hr')">3+ hours</div>
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="question-card" id="additionalQuestion">
+                <label><span class="emoji">📝</span>Additional Information</label>
+                <div class="additional-fields">
+                    <div>
+                        <label>Injuries or health concerns:</label>
+                        <textarea id="injuries" placeholder="List any injuries or health issues..."></textarea>
+                    </div>
+                    <div>
+                        <label>Training preferences:</label>
+                        <textarea id="preferences" placeholder="e.g., prefer trail running, hate treadmills..."></textarea>
+                    </div>
+                    <div>
+                        <label>Special conditions:</label>
+                        <textarea id="specialConditions" placeholder="e.g., high altitude training, heat acclimation..."></textarea>
+                    </div>
+                    <div>
+                        <label>Other information:</label>
+                        <textarea id="otherInfo" placeholder="Anything else we should know?"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-button" id="prevButton" onclick="prevQuestion()" disabled>⬅️ Previous</button>
+            <button class="nav-button" id="nextButton" onclick="nextQuestion()">Next ➡️</button>
+        </div>
+
+        <center>
+            <button id="generateButton" onclick="generatePlan()">Generate My Plan! 🚀</button>
+        </center>
+    </div>
+
+</body>
+</html>

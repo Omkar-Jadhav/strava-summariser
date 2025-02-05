@@ -48,6 +48,131 @@ def get_access_token(athlete_id):
         print("Athlete ID not found in data")
         return "Athlete ID not found in data"
 
+def get_top_three_longest_runs(activities):
+    runs = []
+    for activity in activities:
+        if activity['type'] == 'Run':
+            distance_km = activity['distance'] / 1000  # Convert meters to kilometers
+            moving_time = activity['moving_time']
+            avg_pace_min_per_km = utils.calculate_pace_minKm(moving_time, distance_km * 1000)
+            elevation_gain = activity.get('total_elevation_gain', 0)  # Elevation in meters
+            
+            runs.append({
+                "distance": round(distance_km, 2),
+                "avg_pace_min_per_km": avg_pace_min_per_km,
+                "elevation_gain": elevation_gain,
+                "moving_time": utils.convert_seconds_in_hhmmss(moving_time)
+            })
+    
+    # Sort runs by distance in descending order and get the top three
+    top_three_runs = sorted(runs, key=lambda x: x['distance'], reverse=True)[:3]
+    
+    # Format the output as a string with numbered runs and details
+    output = ""
+    for i, run in enumerate(top_three_runs, 1):
+        output += f"{i}. Distance: {run['distance']} km, Pace: {run['avg_pace_min_per_km']} min/km, Elevation Gain: {run['elevation_gain']} m with moving time:{run['moving_time']}\n"
+    
+    return output
+
+def get_race_details(activities):
+    races = []
+    for activity in activities:
+        if activity.get('workout_type') == 1:  # Strava identifies races with workout_type = 1
+            distance_km = activity['distance'] / 1000  # Convert meters to kilometers
+            moving_time = activity['moving_time']
+            avg_pace_min_per_km = utils.calculate_pace_minKm(moving_time, distance_km * 1000)
+            elevation_gain = activity.get('total_elevation_gain', 0)  # Elevation in meters
+            races.append({
+                "name": activity.get('name', 'Unnamed Race'),
+                "distance": round(distance_km, 2),
+                "moving_time": utils.convert_seconds_in_hhmmss(moving_time),
+                "avg_pace_min_per_km": avg_pace_min_per_km,
+                "elevation_gain": elevation_gain
+            })
+    
+    # Format the output as a string with numbered races and details
+    output = ""
+    for i, race in enumerate(races, 1):
+        output += f"{i}. Name: {race['name']}, Distance: {race['distance']} km, Moving Time: {race['moving_time']}, Pace: {race['avg_pace_min_per_km']} min/km, Elevation Gain: {race['elevation_gain']} m\n"
+    
+    return output
+
+def get_activities_for_period(weeks, athlete_id, sport_type=None):
+    """Get activities for a specific time period and sport type."""
+    # Step 1: Retrieve Access Token
+    access_token = get_access_token(athlete_id)
+    logger.info('Access token retrieved')
+    
+    # Step 2: Define API Endpoint and Parameters
+    BEFORE = int(time.time()) 
+    AFTER = int(time.time()) - (weeks * 7 * 24 * 60 * 60)
+    activities_url = "https://www.strava.com/api/v3/athlete/activities"
+    headers = {'Authorization': f'Bearer {access_token}'}   
+    
+    all_activities = []
+    page = 1
+    while True:
+        params = {
+            'before': BEFORE,
+            'after': AFTER,
+            'page': page,
+            'per_page': 200  # Strava's maximum allowed
+        }
+        
+        response = requests.get(activities_url, headers=headers, params=params)
+        if response.status_code == 200:
+            page_activities = response.json()
+            if not page_activities:  # No more activities to fetch
+                break
+                
+            all_activities.extend(page_activities)
+            page += 1
+            logger.info(f"Fetched page {page-1} with {len(page_activities)} activities")
+        else:
+            logger.error(f"Error fetching activities: {response.status_code}")
+            break
+    
+    logger.info(f"Total activities fetched: {len(all_activities)}")
+    
+    month_wise_activities = get_month_wise_activities(all_activities, weeks, sport_type)
+    
+    return month_wise_activities
+
+def get_month_wise_activities(all_activities, weeks, sport_type):
+    current_time = int(time.time())
+    week_seconds = 7 * 24 * 60 * 60
+    
+    segmented_activities = []
+    for i in range(weeks // 4 + 1):  # Creates enough groups for 4+4+1 pattern
+        segmented_activities.append([])
+
+    for activity in all_activities:
+        activity_time = activity['start_date']
+        activity_timestamp = int(datetime.datetime.strptime(activity_time, '%Y-%m-%dT%H:%M:%SZ').timestamp())
+        
+        week_index = (current_time - activity_timestamp) // week_seconds
+        
+        if week_index < weeks:
+            segment_index = week_index // 4  # Determines which group it belongs to
+            segmented_activities[segment_index].append(activity)
+
+    # Filter by sport type if provided
+    if sport_type:
+        segmented_activities = [
+            [activity for activity in segment if activity['type'] == sport_type] 
+            for segment in segmented_activities
+        ]
+    
+    # Remove empty segments
+    segmented_activities = [segment for segment in segmented_activities if segment]
+
+    # Logging segment counts
+    for i, segment in enumerate(segmented_activities):
+        logger.info(f"Segment {i+1} activities: {len(segment)}")
+
+    return segmented_activities
+
+
 def get_latest_activities(inputs):
     logging.info('Inside get_latest_activities')
     latest_activity_id = inputs.get('activity_id')

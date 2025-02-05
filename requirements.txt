@@ -9,3 +9,4 @@ pymongo[srv]==3.11
 groq==0.15.0
 numpy
 openai==1.60.0
+markdown2

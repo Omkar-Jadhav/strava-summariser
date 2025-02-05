@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitBot - Your Personal Running Coach</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(120deg, #f6d365, #fda085);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+        .strava-button {
+            background: #fc4c02;
+            color: #fff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .strava-button:hover {
+            background: #e04302;
+        }
+        .strava-button img {
+            width: 20px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to FitBot!</h1>
+        <p>
+            FitBot helps you train for your personalized running goals, whether it's a marathon, ultra-marathon, or setting a new personal best. Your all-in-one personalized running coach will guide you with weekly training plans, adapting to your progress, challenges, and requests. Let FitBot be your trusted partner in achieving your running dreams.
+        </p>
+        <button class="strava-button" onclick="connectStrava()">
+            <img src="static\images\strava logo.png" alt="Strava Logo">
+            Connect with Strava
+        </button>
+    </div>
+
+    <script>
+        function connectStrava() {
+            
+            window.location.href = "/connectStrava";
+        }
+    </script>
+</body>
+</html>
