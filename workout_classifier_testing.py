@@ -174,6 +174,7 @@ class WorkoutClassifier:
         """Main classification method with full validation"""
         try:
             no_of_days = (datetime.strptime(latest_activity['start_date'], "%Y-%m-%dT%H:%M:%SZ") - datetime.strptime(activity['start_date'], "%Y-%m-%dT%H:%M:%SZ")).days
+            pace = calculate_pace_minKm(activity['moving_time'], activity['distance'])
             # Special cases first
             if activity.get('workout_type') == 1:
                 return self._format_race(activity,no_of_days)
@@ -189,7 +190,7 @@ class WorkoutClassifier:
                 return self._format_long_run(activity, no_of_days)
                 
             if self.stats['distance_mean'] - self.stats['distance_std'] <= features['distance_km'] <= self.stats['distance_mean'] + self.stats['distance_std']:
-                pace = calculate_pace_minKm(activity['moving_time'], activity['distance'])
+                
                 if features['avg_hr'] == 0:
                     if features['speed'] >= self.stats['speed_mean'] + 0.25 * self.stats['speed_std']:
                         return f"Day {no_of_days}: Tempo Workout of {activity['distance']/1000:.2f} km at {pace} | ↗️{activity['total_elevation_gain']}m"
@@ -198,7 +199,7 @@ class WorkoutClassifier:
                         return  f"Day {no_of_days}: Tempo Workout of {activity['distance']/1000:.2f} km at {pace} | ↗️{activity['total_elevation_gain']}m"
                 
             if features['elevation_ratio'] > baseline.get('hill_threshold', 15):
-                pace = calculate_pace_minKm(activity['moving_time'], activity['distance'])
+               
                 return f"Day {no_of_days}: Hill Workout of {activity['distance']/1000:.2f} km at {pace} | ↗️{activity['total_elevation_gain']}m"
                 
             if features['speed'] < (self.stats['speed_mean'] - 0.2*self.stats['speed_std']):
@@ -208,7 +209,6 @@ class WorkoutClassifier:
             if (features['speed'] < (self.stats['speed_mean'] + 0.5*self.stats['speed_std'])) and \
                (activity.get('average_heartrate', 0) < (self.stats['hr_mean'] + 0.4*self.stats['hr_std'])) and \
                 (activity.get('max_heartrate',0) <= self.stats['hr_mean']+1.1*self.stats['hr_std']):
-                pace = calculate_pace_minKm(activity['moving_time'], activity['distance'])
                 return f"Day {no_of_days}: Easy Run of {activity['distance']/1000:.2f} km at {pace} | ↗️{activity['total_elevation_gain']}m "
             
             # Priority-based classification

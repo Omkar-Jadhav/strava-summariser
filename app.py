@@ -112,7 +112,7 @@ def training_dashboard(athlete_id=None):
     # goal_summary = test_plan_data.goal_summary
     # dates = test_plan_data.dates
     # athlete_id = test_plan_data.athlete_id
-    next_week_plan = join_dict_keys_values(next_week_plan)
+    # next_week_plan = join_dict_keys_values(next_week_plan)
     next_week_plan =  markdown2.markdown(next_week_plan)
     if goal_summary:
         goal_summary =  markdown2.markdown(goal_summary)
@@ -124,7 +124,7 @@ def join_dict_keys_values(data):
     
     try:
         # Check if it's a valid JSON string and convert it to a dictionary
-        data = json.loads(data)  
+        # data = json.loads(data)  
         if isinstance(data, dict):
             return " ".join(f"{key} {value}" for key, value in data.items())
     except (json.JSONDecodeError, TypeError):
@@ -246,7 +246,7 @@ def get_last_athlete_msg_and_chat(chat_history):
 
 def work_on_user_query(user_input, current_plan, goal_summary):
     prompt=f"""
-    Act as a professional running coach. The user may have queries, suggestions, inputs, or changes regarding the training plan you previously provided. Today is {datetime.now().strftime("%B %d, %Y")}  and the day is {datetime.today().strftime('%A')}
+    Act as a professional running coach. The user may have queries, suggestions, inputs, or changes regarding the training plan you previously provided. Today is {datetime.now().strftime("%B %d, %Y")}  and the day is {datetime.today().strftime('%A')}.
 
 Your task is to respond to these queries, incorporating the athlete’s goals and needs. If there is a change in the plan, provide the updated version for the entire week, reflecting any modifications. For general questions about training, just respond directly. 
 
@@ -645,20 +645,24 @@ def format_next_week_prompt_for_llm(last_week_plan, goal_summary, past_week_acti
     Consider any inputs from the athlete and adjust the plan accordingly.
     Give plan only till Sunday.
     When generating workout plans, Generate the workout plan in an markdown format:
-    Dates: DD/MM/YYYY - DD/MM/YYYY (first line)
+    Dates: DD/MM/YYYY(start dt) - DD/MM/YYYY(End dt) (first line)
     Overview of the previous workouts: Overview
     Workout Plan:
     [Day] - workouts
     
     Notes:
-
-    Please ensure:
+Ensure -
 - Provide markdown formatting for components, items and subitems
 - Keep dates in first line
 - Days always start with capitalized names
 - Put all notes after workout plan section
 - Nested items use proper bullet hierarchy in markdown
 - Verify date format is DD/MM/YYYY - DD/MM/YYYY
+
+Take a moment and review all the instructions.
+
+Next week plan is-
+  
     """
     
     return prompt
