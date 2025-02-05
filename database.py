@@ -64,7 +64,7 @@ def check_athlete_in_training_data(client, athlete_id):
     collection = db["workout_details"]
 
     logger.info("before find")
-    workouts = collection.find_one({"athlete_id": athlete_id})
+    workouts = collection.find_one({"athlete_id": int(athlete_id)})
     logger.info(workouts)
     if workouts:
         if len(workouts)>=1:
@@ -105,7 +105,7 @@ def update_tokens(client, session_token, athlete_id):
 
     try:
         result = collection.update_one(
-            {"athlete_id": athlete_id},
+            {"athlete_id":int(athlete_id)},
             {"$set": {"session_token": session_token}},
         )
         logger.info("Updated tokens for session token %s", session_token)
@@ -131,7 +131,7 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
     client = initiate_mango_connection()
     collection = client["strava"]['workout_details']
     try:
-        workouts = collection.find_one({"athlete_id": athlete_id})
+        workouts = collection.find_one({"athlete_id": int(athlete_id)})
         if workouts:
             past_workouts =  workouts.get('workout_plan')
             goal_summary = workouts.get('summary')
@@ -140,7 +140,7 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
                 workout[dates]=plan
                 past_workouts[index]= workout
                 collection.update_one(
-                    {"athlete_id": athlete_id},
+                    {"athlete_id": int(athlete_id)},
                     {"$set": {"workout_plan": past_workouts}},
                     {"goal_sumamry":goal_summary,},
                     upsert=False  
@@ -149,7 +149,7 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
                 past_workouts.pop(0)
                 past_workouts.append({dates: {"plan":plan, "notes":notes} })
                 collection.update_one(
-                    {"athlete_id": athlete_id},
+                    {"athlete_id": int(athlete_id)},
                     {"$set": {"workout_plan": past_workouts}},
                     {"goal_sumamry":goal_summary},
                     upsert=False  
@@ -158,7 +158,7 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
                 past_workouts.append({dates:plan})
         else:
             collection.insert_one({
-                    "athlete_id": athlete_id,
+                    "athlete_id": int(athlete_id),
                     "workout_plan": [{dates:{"plan":plan, "notes":notes}}],
                     "goal-summary":goal_summary
                 })
@@ -184,7 +184,7 @@ def save_athlete_data(client, data, collection_name ="refresh_tokens"):
     collection = db[collection_name]
 
     try:
-        existing_data = collection.find_one({"athlete_id": athlete_id})
+        existing_data = collection.find_one({"athlete_id": int(athlete_id)})
         if existing_data:
             update_fields = {}
             if existing_data.get("refresh_token") != refresh_token:
@@ -201,14 +201,14 @@ def save_athlete_data(client, data, collection_name ="refresh_tokens"):
                 update_fields["athlete_preferences"] = athlete_preferences
 
             if update_fields:
-                collection.update_one({"athlete_id": athlete_id}, {"$set": update_fields})
+                collection.update_one({"athlete_id": int(athlete_id)}, {"$set": update_fields})
                 logger.info("Updated athlete data for ID %s successfully", athlete_id)
             else:
                 logger.info("No changes detected for athlete ID %s", athlete_id)
             return "Updated"
         else:
             collection.insert_one({
-                "athlete_id": athlete_id,
+                "athlete_id": int(athlete_id),
                 "refresh_token": refresh_token,
                 "athlete_name": athlete_name,
                 "session_token": session_token,
@@ -241,13 +241,16 @@ def get_access_token_for_athlete(athlete_id):
 
 def get_athelte_training_details(athlete_id):
     client = initiate_mango_connection()
+    logger.info(f"Checking athlete training details for {athlete_id}")
     db = client["strava"]
     collection = db["workout_details"]
-    results = collection.find({"athlete_id":int(athlete_id)})
-    logger.info(results)
+    results = collection.find({"athlete_id":int(athlete_id)})   
     for result in results:
+        logger.info(result)
         latest_workout_plan = result.get("workout_plan")[0]
         goal_summary = result.get("goal_summary")
+        logger.info(f"Latest workout plan is {latest_workout_plan}")
+        logger.info(f"Goal summary is {goal_summary}")
     close_client(client)
     dates =list(latest_workout_plan.keys())[0]
     plan = list(latest_workout_plan.values())[0]['plan']

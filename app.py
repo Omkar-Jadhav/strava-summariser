@@ -108,6 +108,7 @@ def training_dashboard(athlete_id=None):
     goal_summary = session.get('goal_summary')
     dates = session.get('dates')
     if next_week_plan is None or next_week_plan=="":
+        logger.info("next week plan is not available")
         dates,next_week_plan, notes,goal_summary = database.get_athelte_training_details(athlete_id)
     # next_week_plan = test_plan_data.next_week_plan
     # goal_summary = test_plan_data.goal_summary
