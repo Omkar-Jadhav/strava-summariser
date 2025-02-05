@@ -42,8 +42,11 @@ def training():
 
 @app.route("/connectStrava")
 def connect_strava():
+    logger.info("Inside connect strava api call")
+    logger.info(f"{url_for('strava_callback', _external=True)}")
     session_token = request.cookies.get('session_token')
     if not session_token:
+        logger.info("Session token not found")
         auth_url = (
         f"https://www.strava.com/oauth/authorize?"
         f"client_id={STRAVA_CLIENT_ID}&" 
@@ -54,6 +57,7 @@ def connect_strava():
     )
         return redirect(auth_url)
     else:
+        logger.info("Session token found")
         client = database.initiate_mango_connection()
         athlete_id, expires_at, refresh_token, previous_workout_plan, athlete_name = database.check_session_token_in_data(client, session_token)
         session['athlete_id'] = athlete_id
@@ -75,8 +79,10 @@ def connect_strava():
 
         database.close_client(client)
         if previous_workout_plan=='':
+            logger.info("previous workout plan not found")
             return redirect('/training_qna')
         else:
+            logger.info("Previous workout plan found")
             return redirect(url_for('training_dashboard', athlete_id=athlete_id))
        
     
