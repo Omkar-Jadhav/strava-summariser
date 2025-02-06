@@ -81,18 +81,16 @@ def check_session_token_in_data(client, session_token):
     collection_workouts = db["workout_details"]
     results_tokens = collection_refresh_tokens.find({"session_token": session_token}) 
     previous_workout_plan=''
+    athlete_id = None
     for result in results_tokens:
         athlete_id = result.get("athlete_id")
         expires_at = result.get("expires_at", datetime.now())
         refresh_token = result.get("refresh_token")
         athlete_name = result.get("athlete_name", '')
-        
-    results_workouts = collection_workouts.find({"athlete_id": athlete_id})
-    for result in results_workouts:
-        previous_workout_plan = result.get("workout_plan")
-    
-        
-    if athlete_id:
+    if athlete_id:   
+        results_workouts = collection_workouts.find({"athlete_id": athlete_id})
+        for result in results_workouts:
+            previous_workout_plan = result.get("workout_plan")[0]
         return athlete_id, expires_at, refresh_token, previous_workout_plan, athlete_name
     else:
         return None, None, None, None, None
@@ -141,8 +139,7 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
                 past_workouts[index]= workout
                 collection.update_one(
                     {"athlete_id": int(athlete_id)},
-                    {"$set": {"workout_plan": past_workouts}},
-                    {"goal_sumamry":goal_summary,},
+                    {"$set": {"workout_plan": past_workouts, "goal_sumamry":goal_summary,}},
                     upsert=False  
                 )  
             elif len(past_workouts)>5:
@@ -150,8 +147,7 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
                 past_workouts.append({dates: {"plan":plan, "notes":notes} })
                 collection.update_one(
                     {"athlete_id": int(athlete_id)},
-                    {"$set": {"workout_plan": past_workouts}},
-                    {"goal_sumamry":goal_summary},
+                    {"$set": {"workout_plan": past_workouts, "goal_sumamry":goal_summary}},
                     upsert=False  
                 )
             else:
@@ -160,7 +156,7 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
             collection.insert_one({
                     "athlete_id": int(athlete_id),
                     "workout_plan": [{dates:{"plan":plan, "notes":notes}}],
-                    "goal-summary":goal_summary
+                    "goal_summary":goal_summary
                 })
         logger.info("Saved workout data for athlete %s successfully for %s", athlete_id, str(dates))
         return "Workout saved"
@@ -169,7 +165,7 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
         return None
         
 
-def save_athlete_data(client, data, collection_name ="refresh_tokens"):
+def save_athlete_data(client, data, collection_name ="refresh tokens"):
     """Saves or updates athlete data in the database and logs success or errors."""
 
     athlete_id = data["athlete_id"]

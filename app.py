@@ -45,7 +45,11 @@ def connect_strava():
     logger.info("Inside connect strava api call")
     logger.info(f"{url_for('strava_callback', _external=True)}")
     session_token = request.cookies.get('session_token')
-    if not session_token:
+    
+    client = database.initiate_mango_connection()
+    athlete_id, expires_at, refresh_token, previous_workout_plan, athlete_name = database.check_session_token_in_data(client, session_token)
+    
+    if not athlete_id:
         logger.info("Session token not found")
         auth_url = (
         f"https://www.strava.com/oauth/authorize?"
@@ -58,11 +62,9 @@ def connect_strava():
         return redirect(auth_url)
     else:
         logger.info("Session token found")
-        client = database.initiate_mango_connection()
-        athlete_id, expires_at, refresh_token, previous_workout_plan, athlete_name = database.check_session_token_in_data(client, session_token)
+        
         session['athlete_id'] = athlete_id
         session['athlete_name'] = athlete_name
-        
         
         # Refresh access token silently
         # access_token = requests.post(
@@ -140,6 +142,7 @@ def process_user_input():
     current_plan =request.json.get('next_week_plan')
     goal_summary = request.json.get('goal_summary')
     athlete_id =request.json.get('athlete_id')
+    dates = request.json.get('dates')
 
     athlete_message, chat_history = get_last_athlete_msg_and_chat(chat_history)
     # Step 1: Check relevance
@@ -150,8 +153,9 @@ def process_user_input():
         gpt_response, is_plan_updated = work_on_user_query(athlete_message, current_plan, goal_summary)
         
         if is_plan_updated.lower()=='true':
-            workout_json, dates,notes = parse_workout_plan(gpt_response)
-            database.save_workout_plan(athlete_id, workout_json, dates)
+            workout_json, _,notes = parse_workout_plan(gpt_response)
+            if workout_json:
+                database.save_workout_plan(athlete_id, workout_json, dates)
             
         gpt_response = markdown2.markdown(gpt_response)
         gpt_response = gpt_response.replace("\n","")
@@ -261,15 +265,16 @@ Ensure injury prevention: Strive to keep the athlete injury-free while improving
 Incorporate strength and mobility workouts: Add these workouts as needed, based on the athlete’s requirements. Specify the type of exercises for strength and mobility sessions.
 Include rest days: Ensure proper recovery is accounted for, including rest days.
 Cover all days of the week: Make sure every day in the plan is detailed.
-Output Format:
-'Response: Direct response to the query/suggestions/inputs/changes.
-is_plan_updated: True or False (if the plan was updated).'
 
-The response should be in markdown format with the following structure:
+Output Format if the workout plan is NOT updated:
+'Response: Direct response to the query/suggestions/inputs.
+is_plan_updated: False (if the plan was updated).'
+
+Output Format if the workout plan is updated:
+'Response: 
 Dates: Specify the date range (e.g., DD/MM/YYYY - DD/MM/YYYY) provided from current plan.
-Workout Plan: Detailed plan for each day of the week, covering the following:
-[Day] - Type of workout, distance, pace, and any relevant notes.
-is_plan_updated: Indicate whether the plan was updated (True or False).
+Workout Plan: Detailed plan for each day of the week
+is_plan_updated: True'
 
 Additional Notes:
 Use #### to bold important text.
@@ -283,6 +288,12 @@ Athlete's goal is:
 Athlete's input is:
 {user_input}
 
+Ensure that -
+- the output is in the desired format
+- is_plan_updated flag is at the end of the message.
+- The output format is returned in the correct format.
+
+Take a moment and understand the instructions again.
 """
     gpt_response = ai.get_response_from_groq(prompt)
     response, is_plan_updated = extract_response_and_plan_status(gpt_response)
@@ -627,7 +638,7 @@ def get_next_week_plan():
     past_week_activity_dtls_ = strava.get_activities_for_period(1, athlete_id, sport_type='Run')
     past_week_activity_dtls= "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_week_activity_dtls_)])
     
-    next_week_avail, next_week_plan = generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls)
+    next_week_avail, next_week_plan = generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls, athlete_id)
 
     if next_week_avail:
         return  jsonify({

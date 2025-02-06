@@ -109,7 +109,7 @@
             <!-- Bot Message: Welcome and Summary -->
             <div class="chat-message bot">
                 <h3>Hello there, {{ athlete_name}}!</h3>
-                <input type="hidden" id="athlete_id" name="athlete_id" value={athlete_id}> 
+                <input type="hidden" id="athlete_id" name="athlete_id" value={{athlete_id|tojson}}> 
                 <p>Here's your summary:</p>
                 <ul>
                     <li><strong>Goal:</strong> {{ goal_summary | safe }}</li>
@@ -207,7 +207,8 @@
             const message = userInput.value.trim();
             const next_week_plan =document.getElementById("next_week_plan").value
             const goal_summary = {{ goal_summary|tojson }};
-
+            const dates = document.getElementById("dates").value
+            const athlete_id = document.getElementById("athlete_id").value
             if (message) {
                 appendMessage("Athlete", message);
                 addMessageToHistory("Athlete", message);
@@ -218,7 +219,7 @@
                 const response = await fetch('/process_user_input', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 'messages': chatHistory, 'next_week_plan': next_week_plan, 'goal_summary': goal_summary })
+                    body: JSON.stringify({ 'messages': chatHistory, 'next_week_plan': next_week_plan, 'goal_summary': goal_summary, 'dates':dates, "athlete_id":athlete_id })
                 });
 
                 if (!response.ok) {
