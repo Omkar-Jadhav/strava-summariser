@@ -161,12 +161,15 @@ def get_latest_activities(inputs):
         print(f"Error: No activities found in the date range")
     
 def format_prompt_for_llm(athlete_goal, athlete_baseline, past_3m_summarised, past_month_runs_details):
-    athlete_baseline['speed_mean']=utils.convert_speed_to_pace(athlete_baseline['speed_mean'])
-    athlete_baseline['speed_std']=utils.convert_speed_to_pace(athlete_baseline['speed_std'])
+    for section in ['road_baseline_stats', 'trail_baseline_stats']:
+        athlete_baseline[section]['speed_mean'] = utils.convert_speed_to_pace(athlete_baseline[section]['speed_mean'])
+        athlete_baseline[section]['speed_std'] = utils.convert_speed_to_pace(athlete_baseline[section]['speed_std'])
+
+
     prompt =f"""
     You are a professional running coach who provides the workout plans according to athlete goals, current conditions and recent runs. Today is {datetime.now().strftime("%B %d, %Y")}  and the day is {datetime.today().strftime('%A')} Provide plan upto sunday.
     The athlete's goal is - {athlete_goal}. 
-    The athlete's baseline stats are as follows: {", ".join(f"{key}={value}" for key, value in athlete_baseline.items() if key != "speed_std")}.
+    The athlete's baseline stats are as follows: Road Baseline Stats: {', '.join(f'{key}={value}' for key, value in athlete_baseline['road_baseline_stats'].items()if key != "speed_std")}.
     Athlete's past 3 months activity can be summarised as: {past_3m_summarised}
     The athlete's past months workout history is: {past_month_runs_details} 
     First Mention an birds eye view of how the plan will look like to reach the goal. 

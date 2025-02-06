@@ -39,32 +39,40 @@ class WorkoutClassifier:
         seconds = int((pace_float - minutes) * 60)  # Get the remaining seconds
         return f"{minutes}:{seconds:02d} min/km"
     
+    def compute_stats(self, activities):
+        distances = [a.get('distance', 0)/1000 for a in activities]
+        speeds = [a.get('average_speed', 0) for a in activities]
+        hrs = [a.get('average_heartrate', 0) for a in activities]
+        # Convert speeds to paces (min/km)
+        # paces_min_per_km = (1000 / np.array(speeds)) / 60
+        # Compute mean and standard deviation of paces
+        # mean_pace = self.format_pace(np.mean(paces_min_per_km))
+        # std_pace = self.format_pace(np.std(paces_min_per_km))
+        # max_pace = self.format_pace(np.min(paces_min_per_km))
+        # mean_pace = np.mean(paces_min_per_km)
+        # std_pace = np.std(paces_min_per_km)
+        # max_pace = np.min(paces_min_per_km)
+        max_distance = np.max(distances)
+        return {
+            'distance_mean': float(np.nanmean(distances)),
+            'distance_std': float(np.nanstd(distances)),
+            'speed_mean': float(np.nanmean(speeds)),
+            'speed_std': float(np.nanstd(speeds)),
+            'hr_mean': float(np.nanmean(hrs)),
+            'hr_std': float(np.nanstd(hrs)),
+            'max_distance': max_distance,
+            'max_pace': float(np.max(speeds))
+        }
     def _calculate_statistical_baselines(self):
         """Calculate statistical baselines with full validation"""
         try:
-            distances = [a.get('distance', 0)/1000 for a in self.activities]
-            speeds = [a.get('average_speed', 0) for a in self.activities]
-            hrs = [a.get('average_heartrate', 0) for a in self.activities]
-            # Convert speeds to paces (min/km)
-            # paces_min_per_km = (1000 / np.array(speeds)) / 60
-            # Compute mean and standard deviation of paces
-            # mean_pace = self.format_pace(np.mean(paces_min_per_km))
-            # std_pace = self.format_pace(np.std(paces_min_per_km))
-            # max_pace = self.format_pace(np.min(paces_min_per_km))
-            # mean_pace = np.mean(paces_min_per_km)
-            # std_pace = np.std(paces_min_per_km)
-            # max_pace = np.min(paces_min_per_km)
-            max_distance = np.max(distances)
-            return {
-                'distance_mean': float(np.nanmean(distances)),
-                'distance_std': float(np.nanstd(distances)),
-                'speed_mean': float(np.nanmean(speeds)),
-                'speed_std': float(np.nanstd(speeds)),
-                'hr_mean': float(np.nanmean(hrs)),
-                'hr_std': float(np.nanstd(hrs)),
-                'max_distance': max_distance,
-                'max_pace': float(np.max(speeds))
-            }
+            road_activities = [a for a in self.activities if a.get('sport_type') == 'Run']
+            trail_activities = [a for a in self.activities if a.get('sport_type') == 'TrailRun']
+            
+            road_baseline = self.compute_stats(road_activities)
+            trail_baseline = self.compute_stats(trail_activities)
+            
+            return {"road_baseline_stats":road_baseline, "trail_baseline_stats":trail_baseline}
         except Exception as e:
             logger.error(f"Statistical baseline calculation failed: {str(e)}")
             return {}
@@ -186,29 +194,29 @@ class WorkoutClassifier:
             sport = activity.get('sport_type', 'Run')
             baseline = self.athlete_baselines.get(sport, {})
 
-            if features['distance_km'] > (self.stats['distance_mean'] + self.stats['distance_std']):
+            if features['distance_km'] > (self.stats['road_baseline_stats']['distance_mean'] + self.stats['road_baseline_stats']['distance_std']):
                 return self._format_long_run(activity, no_of_days)
                 
-            if self.stats['distance_mean'] - self.stats['distance_std'] <= features['distance_km'] <= self.stats['distance_mean'] + self.stats['distance_std']:
+            if self.stats['road_baseline_stats']['distance_mean'] - self.stats['road_baseline_stats']['distance_std'] <= features['distance_km'] <= self.stats['road_baseline_stats']['distance_mean'] + self.stats['road_baseline_stats']['distance_std']:
                 
                 if features['avg_hr'] == 0:
-                    if features['speed'] >= self.stats['speed_mean'] + 0.25 * self.stats['speed_std']:
+                    if features['speed'] >= self.stats['road_baseline_stats']['speed_mean'] + 0.25 * self.stats['road_baseline_stats']['speed_std']:
                         return f"Day {no_of_days}: Tempo Workout of {activity['distance']/1000:.2f} km at {pace} | ↗️{activity['total_elevation_gain']}m"
                 else:
-                    if features['avg_hr'] >= self.stats['hr_mean'] + 0.7 * self.stats['hr_std'] and features['speed'] >= self.stats['speed_mean'] + 0.25 * self.stats['speed_std']:
+                    if features['avg_hr'] >= self.stats['road_baseline_stats']['hr_mean'] + 0.7 * self.stats['road_baseline_stats']['hr_std'] and features['speed'] >= self.stats['road_baseline_stats']['speed_mean'] + 0.25 * self.stats['road_baseline_stats']['speed_std']:
                         return  f"Day {no_of_days}: Tempo Workout of {activity['distance']/1000:.2f} km at {pace} | ↗️{activity['total_elevation_gain']}m"
                 
             if features['elevation_ratio'] > baseline.get('hill_threshold', 15):
                
                 return f"Day {no_of_days}: Hill Workout of {activity['distance']/1000:.2f} km at {pace} | ↗️{activity['total_elevation_gain']}m"
                 
-            if features['speed'] < (self.stats['speed_mean'] - 0.2*self.stats['speed_std']):
+            if features['speed'] < (self.stats['road_baseline_stats']['speed_mean'] - 0.2*self.stats['road_baseline_stats']['speed_std']):
                 
                 return f"Day {no_of_days}: Recovery Run"
                 
-            if (features['speed'] < (self.stats['speed_mean'] + 0.5*self.stats['speed_std'])) and \
-               (activity.get('average_heartrate', 0) < (self.stats['hr_mean'] + 0.4*self.stats['hr_std'])) and \
-                (activity.get('max_heartrate',0) <= self.stats['hr_mean']+1.1*self.stats['hr_std']):
+            if (features['speed'] < (self.stats['road_baseline_stats']['speed_mean'] + 0.5*self.stats['road_baseline_stats']['speed_std'])) and \
+               (activity.get('average_heartrate', 0) < (self.stats['road_baseline_stats']['hr_mean'] + 0.4*self.stats['road_baseline_stats']['hr_std'])) and \
+                (activity.get('max_heartrate',0) <= self.stats['road_baseline_stats']['hr_mean']+1.1*self.stats['road_baseline_stats']['hr_std']):
                 return f"Day {no_of_days}: Easy Run of {activity['distance']/1000:.2f} km at {pace} | ↗️{activity['total_elevation_gain']}m "
             
             # Priority-based classification

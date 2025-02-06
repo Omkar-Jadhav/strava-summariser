@@ -159,26 +159,26 @@ class WorkoutClassifier:
             sport = activity.get('sport_type', 'Run')
             baseline = self.athlete_baselines.get(sport, {})
 
-            if features['distance_km'] > (self.stats['distance_mean'] + self.stats['distance_std']):
+            if features['distance_km'] > (self.stats['road_baseline_stats']['distance_mean'] + self.stats['road_baseline_stats']['distance_std']):
                 return self._format_long_run(activity)
                 
-            if self.stats['distance_mean'] - self.stats['distance_std'] <= features['distance_km'] <= self.stats['distance_mean'] + self.stats['distance_std']:
+            if self.stats['road_baseline_stats']['distance_mean'] - self.stats['road_baseline_stats']['distance_std'] <= features['distance_km'] <= self.stats['road_baseline_stats']['distance_mean'] + self.stats['road_baseline_stats']['distance_std']:
                 if features['avg_hr'] == 0:
-                    if features['speed'] >= self.stats['speed_mean'] + 0.25 * self.stats['speed_std']:
+                    if features['speed'] >= self.stats['road_baseline_stats']['speed_mean'] + 0.25 * self.stats['road_baseline_stats']['speed_std']:
                         return "Tempo Workout"
                 else:
-                    if features['avg_hr'] >= self.stats['hr_mean'] + 0.7 * self.stats['hr_std'] and features['speed'] >= self.stats['speed_mean'] + 0.25 * self.stats['speed_std']:
+                    if features['avg_hr'] >= self.stats['road_baseline_stats']['hr_mean'] + 0.7 * self.stats['road_baseline_stats']['hr_std'] and features['speed'] >= self.stats['road_baseline_stats']['speed_mean'] + 0.25 * self.stats['road_baseline_stats']['speed_std']:
                         return "Tempo Workout"
                 
             if features['elevation_ratio'] > baseline.get('hill_threshold', 15):
                 return "Hill Workout"
                 
-            if features['speed'] < (self.stats['speed_mean'] - 0.2*self.stats['speed_std']):
+            if features['speed'] < (self.stats['road_baseline_stats']['speed_mean'] - 0.2*self.stats['road_baseline_stats']['speed_std']):
                 return "Recovery Run"
                 
-            if (features['speed'] < (self.stats['speed_mean'] + 0.5*self.stats['speed_std'])) and \
-               (activity.get('average_heartrate', 0) < (self.stats['hr_mean'] + 0.4*self.stats['hr_std'])) and \
-                (activity.get('max_heartrate',0) <= self.stats['hr_mean']+1.1*self.stats['hr_std']):
+            if (features['speed'] < (self.stats['road_baseline_stats']['speed_mean'] + 0.5*self.stats['road_baseline_stats']['speed_std'])) and \
+               (activity.get('average_heartrate', 0) < (self.stats['road_baseline_stats']['hr_mean'] + 0.4*self.stats['road_baseline_stats']['hr_std'])) and \
+                (activity.get('max_heartrate',0) <= self.stats['road_baseline_stats']['hr_mean']+1.1*self.stats['road_baseline_stats']['hr_std']):
                 return "Easy Run"
             
             # Priority-based classification
