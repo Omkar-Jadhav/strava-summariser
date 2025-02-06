@@ -155,7 +155,7 @@ def process_user_input():
         if is_plan_updated.lower()=='true':
             workout_json, _,notes = parse_workout_plan(gpt_response)
             if workout_json:
-                database.save_workout_plan(athlete_id, workout_json, dates)
+                database.save_workout_plan(athlete_id, workout_json, dates,notes=notes)
             
         gpt_response = markdown2.markdown(gpt_response)
         gpt_response = gpt_response.replace("\n","")
@@ -175,10 +175,10 @@ def process_user_input():
 
 def parse_workout_plan(text):
     # Extracting dates
-    date_start_idx = text.find("Dates: ")
+    date_start_idx = text.find("Dates:")
     if date_start_idx != -1:
         date_end_idx = text.find("\n", date_start_idx)
-        date_range = text[date_start_idx + len("Dates: "):date_end_idx].strip()
+        date_range = text[date_start_idx + len("Dates:"):date_end_idx].strip()
         dates = date_range.split(" - ") if date_range else None
         if dates:
             dates = "-".join(dates)

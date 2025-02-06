@@ -2,3 +2,4 @@
 test_strava_activity.py
 .vscode
 __pycache__
+test.py

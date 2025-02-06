@@ -132,14 +132,16 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
         workouts = collection.find_one({"athlete_id": int(athlete_id)})
         if workouts:
             past_workouts =  workouts.get('workout_plan')
-            goal_summary = workouts.get('summary')
+            goal_summary = workouts.get('goal_summary')
             if  key_in_any_dict(past_workouts, dates):
                 index, workout =get_dict_with_key(past_workouts, dates)
-                workout[dates]=plan
+                workout[dates]['plan']=plan
+                if notes!="":
+                    workout[dates]['notes'] = notes
                 past_workouts[index]= workout
                 collection.update_one(
                     {"athlete_id": int(athlete_id)},
-                    {"$set": {"workout_plan": past_workouts, "goal_sumamry":goal_summary,}},
+                    {"$set": {"workout_plan": past_workouts, "goal_summary":goal_summary,}},
                     upsert=False  
                 )  
             elif len(past_workouts)>5:
@@ -147,7 +149,7 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
                 past_workouts.append({dates: {"plan":plan, "notes":notes} })
                 collection.update_one(
                     {"athlete_id": int(athlete_id)},
-                    {"$set": {"workout_plan": past_workouts, "goal_sumamry":goal_summary}},
+                    {"$set": {"workout_plan": past_workouts, "goal_summary":goal_summary}},
                     upsert=False  
                 )
             else:
@@ -242,10 +244,10 @@ def get_athelte_training_details(athlete_id):
     collection = db["workout_details"]
     results = collection.find({"athlete_id":int(athlete_id)})   
     for result in results:
-        logger.info(result)
+        # logger.info(result)
         latest_workout_plan = result.get("workout_plan")[0]
         goal_summary = result.get("goal_summary")
-        logger.info(f"Latest workout plan is {latest_workout_plan}")
+        # logger.info(f"Latest workout plan is {latest_workout_plan}")
         logger.info(f"Goal summary is {goal_summary}")
     close_client(client)
     dates =list(latest_workout_plan.keys())[0]
