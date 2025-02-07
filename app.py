@@ -447,6 +447,8 @@ def step1_check_athlete():
         # Store initial data in session
         session[SESSION_KEYS['form_data']] = form_data
         session[SESSION_KEYS['access_token']] = access_token
+        session[SESSION_KEYS['athlete_id']] = athlete_id
+        session[SESSION_KEYS['athlete_name']] = athlete_name
         if exists:
            return jsonify(success=True, next_step='/generatePlan/getNewPlanExisitingUser'), 200
         else:
@@ -501,6 +503,10 @@ def step3_analyze_goals():
     try:
         form_data = session.get(SESSION_KEYS['form_data'])
         activities = session.get(SESSION_KEYS['activities'])
+        
+        session.pop('activities', None)
+        session.pop('form_data', None)
+        
         if not form_data or not activities:
             return jsonify(success=False, error="Session expired"), 400
         
@@ -514,9 +520,6 @@ def step3_analyze_goals():
         past_3m_summarised = ai.analyse_past_3m_runs(activities['past_3m_details'], activities['baseline_stats'])
         goal_summary = ai.get_response_from_groq(goal_prompt)
         
-        session.pop('activities', None)
-        session.pop('form_data', None)
-        
         session[SESSION_KEYS['goals']] = goal_summary
         session[SESSION_KEYS['past_3m_summ']]= past_3m_summarised
         
@@ -529,8 +532,6 @@ def step3_analyze_goals():
 @app.route("/generatePlan/getPlan", methods=['POST'])
 def step4_generate_plan():
     try:
-        form_data = session.get(SESSION_KEYS['form_data'])
-        activities = session.get(SESSION_KEYS['activities'])
         past_3m_summ = session.get(SESSION_KEYS['past_3m_summ'])
         goals = session.get(SESSION_KEYS['goals'])
         athlete_id = session.get(SESSION_KEYS['athlete_id'])
@@ -538,7 +539,7 @@ def step4_generate_plan():
         baseline_stats = session.get(SESSION_KEYS['baseline_stats'])
         past_month_details = session.get(SESSION_KEYS['past_month_details'])
         
-        if not all([form_data, activities, goals]):
+        if not all([past_3m_summ, goals, goals]):
             return jsonify(success=False, error="Session expired"), 400
 
         # Generate final plan
@@ -559,7 +560,7 @@ def step4_generate_plan():
         
         # Save to database
         database.save_workout_plan(
-            form_data['athlete_id'], 
+            athlete_id, 
             workout_json, 
             dates, 
             goals, notes=notes
@@ -578,7 +579,7 @@ def step4_generate_plan():
             
         return jsonify({
             "success": True,
-            "redirect_url": url_for('training_dashboard', athlete_id=form_data['athlete_id'])
+            "redirect_url": url_for('training_dashboard', athlete_id=athlete_id)
         }), 200
         
     except Exception as e:
