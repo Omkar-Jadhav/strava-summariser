@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # Adjust logging level as needed
 STRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')
 app = Flask(__name__)
-app.config['PERMANENT_SESSION_LIFETIME'] = 180  # 30 minutes
+# app.config['PERMANENT_SESSION_LIFETIME'] = 20  # 30 minutes
 app.config["SESSION_PERMANENT"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=3)
 app.secret_key = os.urandom(24)  # Set a secure secret key
