@@ -429,6 +429,8 @@ SESSION_KEYS = {
     'past_3m_summ':'past_3m_summ',
     'baseline_stats':'baseline_stats',
     'past_month_details':'past_month_details',
+    'athlete_id':'athlete_id',
+    'athlete_name':'athlete_name',
 }
 
 @app.route("/generatePlan/checkAthleteStatus", methods=['POST'])
