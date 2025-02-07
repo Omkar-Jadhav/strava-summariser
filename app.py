@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import itertools
 import os
 import re
@@ -18,14 +18,20 @@ import markdown2
 # Configure logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # Adjust logging level as needed
-app.config['PERMANENT_SESSION_LIFETIME'] = 180  # 30 minutes
-session.permanent = True
+
 app = Flask(__name__)
+app.config['PERMANENT_SESSION_LIFETIME'] = 180  # 30 minutes
+app.config["SESSION_PERMANENT"] = True
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=3)
 app.secret_key = os.urandom(24)  # Set a secure secret key
 app.config.update(
     SESSION_COOKIE_SAMESITE='Lax',  # Allows cookies in same-site context
     SESSION_COOKIE_SECURE=False     # Set to True in production (HTTPS)
 )
+@app.before_request
+def make_session_permanent():
+    session.permanent = True  # ✅ Move inside a request context
+
 # Constants
 VERIFY_TOKEN = "STRAVA"
 DATA_FILE = "refresh_tokens.json"
