@@ -413,99 +413,272 @@ def exchange_code_for_token(code):
     response = requests.post(STRAVA_TOKEN_URL, data=data)
     return response.json()
 
+SESSION_KEYS = {
+    'form_data': 'form_data',
+    'activities': 'activities',
+    'analysis': 'analysis',
+    'goals': 'goals',
+    'access_token': 'access_token',
+    'past_3m_summ':'past_3m_summ',
+}
 
-@app.route("/generatePlan", methods=['POST'])
-def generate_plan_for_new_user():
+@app.route("/generatePlan/checkAthleteStatus", methods=['POST'])
+def step1_check_athlete():
     try:
         form_data = request.json
-        athlete_id = form_data.get('athlete_id', '')
-        athlete_name = form_data.get('athlete_name','')
+        athlete_id = form_data['athlete_id']
+        athlete_name = form_data['athlete_name']
+        
+        # Check athlete existence
         client = database.initiate_mango_connection()
-        athlete_present_in_training =database.check_athlete_in_training_data(client, athlete_id)
+        exists = database.check_athlete_in_training_data(client, athlete_id)
         database.close_client(client)
         
-        if not athlete_present_in_training:
-            all_activities_3_mnths = strava.get_activities_for_period(12, athlete_id, sport_type='Run')
-            all_activities_3_mnths_combined =  list(itertools.chain(*all_activities_3_mnths))
-
-            top_3_long_runs = strava.get_top_three_longest_runs(all_activities_3_mnths_combined)
-            races=strava.get_race_details(all_activities_3_mnths_combined)
-            
-            access_token = strava.get_access_token(athlete_id)
-            headers = {'Authorization': f'Bearer {access_token}'} 
-            past_month_activity_dtls, athlete_baseline_stats = workout_classifier_testing.get_run_type(all_activities_3_mnths[0], all_activities_3_mnths[0][0],headers)
-            
-            m2_m3_dtls, _ = workout_classifier_testing.get_run_type(all_activities_3_mnths[1]+all_activities_3_mnths[1], all_activities_3_mnths[0][0], headers)
-            
-            activities_3_mnths_dtls = past_month_activity_dtls+m2_m3_dtls
-            past_3m_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(activities_3_mnths_dtls)])
-            past_month_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_month_activity_dtls)])
-            
-            past_3m_summarised = ai.analyse_past_3m_runs(past_3m_runs_details, athlete_baseline_stats)
-            athlete_goals = generate_goal_prompt(form_data, top_3_long_runs, races)
-            
-            goal_summary_prompt = get_goal_summary_prompt(athlete_goals)
-            goal_summary = ai.get_response_from_groq(goal_summary_prompt)
-            
-            # # athlete_goals = test_plan_data.athlete_goals
-            # # athlete_baseline_stats= test_plan_data.athlete_baseline_stats
-            # # past_3m_summarised = test_plan_data.past_3m_summarised
-            # # past_month_runs_details = test_plan_data.past_month_run_details
-            # goal_summary = test_plan_data.goal_summary
-            
-            prompt_for_plan = strava_v2_testing.format_prompt_for_llm(athlete_goals,athlete_baseline_stats,  past_3m_summarised, past_month_runs_details)
-            
-            # next_week_workout_plan, reason= ai.get_response_from_deepseek(prompt_for_plan)
-            next_week_plan_ = ai.get_response_from_groq(prompt_for_plan)
-            # next_week_plan_ = test_plan_data.new_plan_3
-            workout_json, dates, notes = parse_workout_plan(next_week_plan_)
-
-            next_week_plan =  markdown2.markdown(next_week_plan_)
-            next_week_plan =next_week_plan.replace('\n','')
-            
-            # Store the generated plan and details in the session
-            session['next_week_workout_plan'] = next_week_plan
-            session['goal_summary'] = goal_summary
-            session['athlete_id'] = athlete_id
-            session['athlete_name'] =  athlete_name
-            session['dates'] = dates
-            session.modified = True  # Ensure session is saved
-            database.save_workout_plan(athlete_id, workout_json, dates, goal_summary)
-            return jsonify({
-                "success": True,
-                "redirect_url": url_for('training_dashboard', athlete_id=athlete_id)  # Redirect to the training dashboard 
-            }), 200
+        access_token = strava.get_access_token(athlete_id)
+        # Store initial data in session
+        session[SESSION_KEYS['form_data']] = form_data
+        session[SESSION_KEYS['access_token']] = access_token
+        if exists:
+           return jsonify(success=True, next_step='/generatePlan/getNewPlanExisitingUser'), 200
         else:
-            dates,last_week_plan, notes,goal_summary = database.get_athelte_training_details(athlete_id)
-            past_week_activity_dtls_ = strava.get_activities_for_period(1, athlete_id, sport_type='Run')
-            past_week_activity_dtls= "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_week_activity_dtls_)])
-            
-            next_week_avail, next_week_plan= generate_next_week_plan(dates,goal_summary,last_week_plan,past_week_activity_dtls, athlete_id)
-            
-            session['next_week_workout_plan'] = next_week_plan
-            session['goal_summary'] = goal_summary
-            session['athlete_id'] = athlete_id
-            session['athlete_name'] =  athlete_name
-            session['dates'] = dates
-            session.modified = True  # Ensure session is saved
-            
-            if next_week_avail:
-                database.save_workout_plan(athlete_id, workout_json, dates, notes)
-            return jsonify({
-                "success": True,
-                "redirect_url": url_for('training_dashboard', athlete_id=athlete_id)  # Redirect to the training dashboard 
-            }), 200
-    except Exception as ex:
-        logger.error("Eror while generating plan", exc_info=True)
-        raise
+            return jsonify(success=True, next_step='/generatePlan/getAthleteActivities'), 200
     
+    except Exception as e:
+        return jsonify(success=False, error=str(e)), 500
 
-def get_goal_summary_prompt(goals):
-    goal_summary_prompt = f"""
-    Summarise this athlete goals shortly.
-    {goals}
-    """
-    return goal_summary_prompt
+@app.route("/generatePlan/getAthleteActivities", methods=['POST'])
+def step2_fetch_activities():
+    try:
+        form_data = session.get(SESSION_KEYS['form_data'])
+        access_token = session.get(SESSION_KEYS['access_token'])
+        if not form_data:
+            return jsonify(success=False, error="Session expired"), 400
+            
+        athlete_id = form_data['athlete_id']
+        
+        # Fetch and process Strava data
+        # Activity fetching and processing
+        headers = {'Authorization': f'Bearer {access_token}'}
+        activities = strava.get_activities_for_period(12, athlete_id, 'Run',access_token)
+        combined_activities = list(itertools.chain(*activities))
+        
+        # Activity analysis
+        recent_runs = activities[0]
+        past_month_runs, baseline_stats = workout_classifier_testing.get_run_type(recent_runs, recent_runs[0], headers)
+        
+        m2_m3_dtls, _ = workout_classifier_testing.get_run_type(activities[1]+activities[2], activities[0][0], headers)
+        # m2_m3_dtls =[]
+        combined_dtls =  past_month_runs+m2_m3_dtls
+        
+        past_3m_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(combined_dtls)])
+        past_month_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_month_runs)])
+        
+        session[SESSION_KEYS['activities']] = {
+            'baseline_stats': baseline_stats,
+            'past_month_details': past_month_details,
+            'long_runs': strava.get_top_three_longest_runs(combined_activities),
+            'races': strava.get_race_details(combined_activities),
+            'past_3m_details':past_3m_runs_details
+        }
+        
+        return jsonify(success=True, next_step='/generatePlan/getGoalSummary'), 200
+    
+    except Exception as e:
+        return jsonify(success=False, error=str(e)), 500
+    
+@app.route("/generatePlan/getGoalSummary", methods=['POST'])
+def step3_analyze_goals():
+    try:
+        form_data = session.get(SESSION_KEYS['form_data'])
+        activities = session.get(SESSION_KEYS['activities'])
+        if not form_data or not activities:
+            return jsonify(success=False, error="Session expired"), 400
+        
+        # Generate goal analysis
+        goal_prompt = generate_goal_prompt(
+            form_data, 
+            activities['long_runs'], 
+            activities['races']
+        )
+        
+        past_3m_summarised = ai.analyse_past_3m_runs(activities['past_3m_details'], activities['baseline_stats'])
+        goal_summary = ai.get_response_from_groq(goal_prompt)
+        
+        session[SESSION_KEYS['goals']] = goal_summary
+        session[SESSION_KEYS['past_3m_summ']]= past_3m_summarised
+        
+        return jsonify(success=True, next_step='/generatePlan/getPlan'), 200
+        
+    except Exception as e:
+        return jsonify(success=False, error=str(e)), 500
+    
+    
+@app.route("/generatePlan/getPlan", methods=['POST'])
+def step4_generate_plan():
+    try:
+        form_data = session.get(SESSION_KEYS['form_data'])
+        activities = session.get(SESSION_KEYS['activities'])
+        past_3m_summ = session.get(SESSION_KEYS['past_3m_summ'])
+        goals = session.get(SESSION_KEYS['goals'])
+        athlete_id = form_data['athlete_id']
+        athlete_name = form_data['athlete_name']
+        if not all([form_data, activities, goals]):
+            return jsonify(success=False, error="Session expired"), 400
+
+        # Generate final plan
+        prompt = strava_v2_testing.format_prompt_for_llm(
+            goals, 
+            activities['baseline_stats'],
+            past_3m_summ,
+            activities['past_month_details'],
+        )
+        plan = ai.get_response_from_groq(prompt)
+        workout_json, dates, notes = parse_workout_plan(plan)
+        
+        # Save to database
+        database.save_workout_plan(
+            form_data['athlete_id'], 
+            workout_json, 
+            dates, 
+            goals, notes=notes
+        )
+        
+        # Cleanup session data
+        for key in SESSION_KEYS.values():
+            session.pop(key, None)
+            
+        session['next_week_workout_plan'] = plan
+        session['goal_summary'] = goals
+        session['athlete_id'] = athlete_id
+        session['athlete_name'] =  athlete_name
+        session['dates'] = dates
+        session.modified = True  # Ensure session is saved
+            
+        return jsonify({
+            "success": True,
+            "redirect_url": url_for('training_dashboard', athlete_id=form_data['athlete_id'])
+        }), 200
+        
+    except Exception as e:
+        return jsonify(success=False, error=str(e)), 500
+
+
+@app.route("/generatePlan/getNewPlanExisitingUser", methods=['POST'])
+def get_new_plan_exisiting_user():
+    form_data = session.get(SESSION_KEYS['form_data'])
+    access_token = session.get(SESSION_KEYS['access_token'])
+    athlete_id = form_data['athlete_id']
+    athlete_name = form_data['athlete_name']
+    
+    dates_,last_week_plan, notes,goal_summary = database.get_athelte_training_details(athlete_id)
+    past_week_activity_dtls_ = strava.get_activities_for_period(1, athlete_id, sport_type='Run', access_token=access_token)
+    past_week_activity_dtls= "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_week_activity_dtls_)])
+    dates = dates_.split("-")
+    next_week_avail, next_week_plan= generate_next_week_plan(dates,goal_summary,last_week_plan,past_week_activity_dtls, athlete_id)
+    
+    session['next_week_workout_plan'] = next_week_plan
+    session['goal_summary'] = goal_summary
+    session['athlete_id'] = athlete_id
+    session['athlete_name'] =  athlete_name
+    session['dates'] = dates
+    session.modified = True  # Ensure session is saved
+    
+    if next_week_avail:
+        workout_json, dates, notes = parse_workout_plan(next_week_plan)
+        database.save_workout_plan(athlete_id, workout_json, dates, notes)
+        
+    return jsonify({
+        "success": True,
+        "redirect_url": url_for('training_dashboard', athlete_id=athlete_id)  # Redirect to the training dashboard 
+    }), 200
+
+# @app.route("/generatePlan", methods=['POST'])
+# def generate_plan_for_new_user():
+#     try:
+#         form_data = request.json
+#         athlete_id = form_data.get('athlete_id', '')
+#         athlete_name = form_data.get('athlete_name','')
+#         client = database.initiate_mango_connection()
+#         athlete_present_in_training =database.check_athlete_in_training_data(client, athlete_id)
+#         database.close_client(client)
+        
+#         if not athlete_present_in_training:
+            
+#             access_token = strava.get_access_token(athlete_id)
+#             headers = {'Authorization': f'Bearer {access_token}'} 
+            
+#             all_activities_3_mnths = strava.get_activities_for_period(12, athlete_id, sport_type='Run')
+#             all_activities_3_mnths_combined =  list(itertools.chain(*all_activities_3_mnths))
+
+#             top_3_long_runs = strava.get_top_three_longest_runs(all_activities_3_mnths_combined)
+#             races=strava.get_race_details(all_activities_3_mnths_combined)
+            
+#             past_month_activity_dtls, athlete_baseline_stats = workout_classifier_testing.get_run_type(all_activities_3_mnths[0], all_activities_3_mnths[0][0],headers)
+            
+#             m2_m3_dtls, _ = workout_classifier_testing.get_run_type(all_activities_3_mnths[1]+all_activities_3_mnths[1], all_activities_3_mnths[0][0], headers)
+            
+#             activities_3_mnths_dtls = past_month_activity_dtls+m2_m3_dtls
+#             past_3m_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(activities_3_mnths_dtls)])
+#             past_month_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_month_activity_dtls)])
+            
+#             past_3m_summarised = ai.analyse_past_3m_runs(past_3m_runs_details, athlete_baseline_stats)
+            
+#             athlete_goals = generate_goal_prompt(form_data, top_3_long_runs, races)
+#             goal_summary_prompt = get_goal_summary_prompt(athlete_goals)
+#             goal_summary = ai.get_response_from_groq(goal_summary_prompt)
+            
+#             # # athlete_goals = test_plan_data.athlete_goals
+#             # # athlete_baseline_stats= test_plan_data.athlete_baseline_stats
+#             # # past_3m_summarised = test_plan_data.past_3m_summarised
+#             # # past_month_runs_details = test_plan_data.past_month_run_details
+#             # goal_summary = test_plan_data.goal_summary
+            
+#             prompt_for_plan = strava_v2_testing.format_prompt_for_llm(athlete_goals,athlete_baseline_stats,  past_3m_summarised, past_month_runs_details)
+            
+#             # next_week_workout_plan, reason= ai.get_response_from_deepseek(prompt_for_plan)
+#             next_week_plan_ = ai.get_response_from_groq(prompt_for_plan)
+#             # next_week_plan_ = test_plan_data.new_plan_3
+#             workout_json, dates, notes = parse_workout_plan(next_week_plan_)
+
+#             next_week_plan =  markdown2.markdown(next_week_plan_)
+#             next_week_plan =next_week_plan.replace('\n','')
+            
+#             # Store the generated plan and details in the session
+#             session['next_week_workout_plan'] = next_week_plan
+#             session['goal_summary'] = goal_summary
+#             session['athlete_id'] = athlete_id
+#             session['athlete_name'] =  athlete_name
+#             session['dates'] = dates
+#             session.modified = True  # Ensure session is saved
+#             database.save_workout_plan(athlete_id, workout_json, dates, goal_summary)
+#             return jsonify({
+#                 "success": True,
+#                 "redirect_url": url_for('training_dashboard', athlete_id=athlete_id)  # Redirect to the training dashboard 
+#             }), 200
+#         else:
+#             dates,last_week_plan, notes,goal_summary = database.get_athelte_training_details(athlete_id)
+#             past_week_activity_dtls_ = strava.get_activities_for_period(1, athlete_id, sport_type='Run')
+#             past_week_activity_dtls= "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_week_activity_dtls_)])
+            
+#             next_week_avail, next_week_plan= generate_next_week_plan(dates,goal_summary,last_week_plan,past_week_activity_dtls, athlete_id)
+            
+#             session['next_week_workout_plan'] = next_week_plan
+#             session['goal_summary'] = goal_summary
+#             session['athlete_id'] = athlete_id
+#             session['athlete_name'] =  athlete_name
+#             session['dates'] = dates
+#             session.modified = True  # Ensure session is saved
+            
+#             if next_week_avail:
+#                 database.save_workout_plan(athlete_id, workout_json, dates, notes)
+#             return jsonify({
+#                 "success": True,
+#                 "redirect_url": url_for('training_dashboard', athlete_id=athlete_id)  # Redirect to the training dashboard 
+#             }), 200
+#     except Exception as ex:
+#         logger.error("Eror while generating plan", exc_info=True)
+#         raise
+
 
 def generate_goal_prompt(form_data, top_3_long_runs, races):
     goal_type = form_data.get('goalType', '') 
@@ -520,10 +693,13 @@ def generate_goal_prompt(form_data, top_3_long_runs, races):
     preferences = form_data.get('preferences', '')
     special_conditions = form_data.get('specialConditions', '')
     other_info = form_data.get('otherInfo', '')
-    
+    today = datetime.today()
+    date_str = today.strftime("%Y-%m-%d")  # Format: YYYY-MM-DD
+    day_str = today.strftime("%A")  # Full day name
     
     goal_prompt = f"""
-    Athlete goal is to train for {goal} by {target_date}.
+    Summarise this athlete goals shortly.
+    Athlete goal is to train for {goal} by {target_date}, today is {date_str}, {day_str}.
     The Athlete is currently at a fitness level of {fitness_level} and  can commit {time_commitment} per day for training on weekdays.
     In past 3 months, longest 3 runs of the Athlete are {top_3_long_runs}.
     Athlete has recently performed {recent_performance}, and race performances from strava are {races}. 

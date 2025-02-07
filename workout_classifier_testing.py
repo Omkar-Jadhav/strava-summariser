@@ -6,6 +6,7 @@ from collections import defaultdict
 from utils import calculate_pace_minKm
 import utils
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -323,20 +324,28 @@ class WorkoutClassifier:
         lap_details =[f"Lap {i+1}: {lap_distances[i]:.2f} km at {lap_speeds[i]} min/Km" for i in range(len(lap_speeds))]    
         return lap_details
     
-def get_run_type(activities,latest_activity,  headers, ):
+def get_run_type(activities,latest_activity,  headers, max_workers=10):
     """Public API with complete validation"""
     try:
-        if not activities or not headers:
-            logger.error("Invalid input: empty activities or headers")
-            return []
-            
-        if not isinstance(activities, list) or not isinstance(headers, dict):
-            logger.error("Invalid input types")
-            return []
-        
         
         classifier = WorkoutClassifier(activities, headers)
-        return [classifier.classify_workout(a, latest_activity) for a in activities], classifier.stats
+        results = []
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {
+                executor.submit(classifier.classify_workout, activity, latest_activity): activity
+                for activity in activities
+            }
+
+            for future in as_completed(futures):
+                try:
+                    result = future.result()
+                    results.append(result)
+                except Exception as e:
+                    logger.error(f"Error processing activity: {e}")
+                    results.append("Unclassified")
+
+        return results, classifier.stats
+       
     except Exception as e:
         logger.critical(f"Critical error in get_run_type: {str(e)}")
         return []

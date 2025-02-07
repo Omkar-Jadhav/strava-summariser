@@ -180,7 +180,33 @@ function selectOption(field, value) {
     window[field] = value;
 }
 
-// Function to generate the training plan
+const loadingMessages = [
+    "Extracting athlete details...",
+    "Extracting Strava activities...",
+    "Analyzing goals...",
+    "Generating workout plan..."
+];
+
+let currentStep = 0;
+
+function showLoadingOverlay() {
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.style.display = 'flex'; // Make it visible
+    document.getElementById('loadingMessage').innerText = loadingMessages[currentStep]; 
+}
+
+function updateLoadingMessage() {
+    if (currentStep < loadingMessages.length) {
+        document.getElementById('loadingMessage').innerText = loadingMessages[currentStep];
+        console.log(`Step ${currentStep + 1}: ${loadingMessages[currentStep]}`); // Debugging log
+        currentStep++;
+    }
+}
+
+function hideLoadingOverlay() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+}
+
 function generatePlan() {
     const formData = {
         goalType: selectedGoalType,
@@ -202,30 +228,45 @@ function generatePlan() {
 
     console.log('Form Data:', formData);
 
-    
-    fetch('/generatePlan', {
+    showLoadingOverlay(); // Show loading only when generating plan
+
+    // Allow UI to update before starting fetch requests
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            executeStep('/generatePlan/checkAthleteStatus', formData);
+        }, 100); // Small delay to ensure UI renders
+    });
+}
+
+function executeStep(url, data = null) {
+    updateLoadingMessage(); // Update loading text before fetch
+
+    fetch(url, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
+        headers: { 'Content-Type': 'application/json' },
+        body: data ? JSON.stringify(data) : null
     })
     .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Redirect to the training dashboard
-            window.location.href = data.redirect_url;
+    .then(result => {
+        if (result.success) {
+            if (result.next_step) {
+                executeStep(result.next_step);
+            } else if (result.redirect_url) {
+                window.location.href = result.redirect_url;
+            } else {
+                hideLoadingOverlay();
+            }
         } else {
-            alert('Failed to generate plan. Please try again.');
+            alert(result.error || 'Failed to generate plan. Please try again.');
+            hideLoadingOverlay();
         }
     })
     .catch(error => {
         console.error('Error:', error);
         alert('An error occurred. Please try again.');
+        hideLoadingOverlay();
     });
 }
-
-// Initialize the form
 document.getElementById('targetDate').min = new Date().toISOString().split('T')[0];
 showQuestion(0);
 
@@ -321,3 +362,4 @@ document.querySelectorAll('.time-inputs input').forEach(input => {
         if (this.value > parseInt(this.max)) this.value = this.max;
     });
 });
+

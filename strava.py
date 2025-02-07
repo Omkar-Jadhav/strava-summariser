@@ -97,11 +97,12 @@ def get_race_details(activities):
     
     return output
 
-def get_activities_for_period(weeks, athlete_id, sport_type=None):
+def get_activities_for_period(weeks, athlete_id, sport_type=None, access_token = ''):
     """Get activities for a specific time period and sport type."""
     # Step 1: Retrieve Access Token
-    access_token = get_access_token(athlete_id)
-    logger.info('Access token retrieved')
+    if access_token=='':
+        access_token = get_access_token(athlete_id)
+        logger.info('Access token retrieved')
     
     # Step 2: Define API Endpoint and Parameters
     BEFORE = int(time.time()) 
