@@ -505,6 +505,9 @@ def step3_analyze_goals():
     try:
         form_data = session.get(SESSION_KEYS['form_data'])
         activities = session.get(SESSION_KEYS['activities'])
+        baseline_stats = session.get(SESSION_KEYS['baseline_stats'])
+        past_3m_details = activities['past_3m_details']
+        
         
         session.pop('activities', None)
         session.pop('form_data', None)
@@ -519,7 +522,7 @@ def step3_analyze_goals():
             activities['races']
         )
         
-        past_3m_summarised = ai.analyse_past_3m_runs(activities['past_3m_details'], activities['baseline_stats'])
+        past_3m_summarised = ai.analyse_past_3m_runs(past_3m_details, baseline_stats)
         goal_summary = ai.get_response_from_groq(goal_prompt)
         
         session[SESSION_KEYS['goals']] = goal_summary
