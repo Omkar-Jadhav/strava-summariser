@@ -40,14 +40,7 @@ Previous 4 weeks running history: {past_runs}"""
     return output
 
 
-def analyse_past_3m_runs(activities, athlete_baseline):
-    inp_message = f"""Act as a helpful and professiona running coach and data analyst.
-    You are presented with the workout history of an athlete for the past 3 months. 
-    The athlete's past 3 months activities include various runs like long runs, tempo runs, easy runs, recovery runs, intervals, and trail run, with additional details for some activities such as lap times, average pace, and total elevation gain.
-    Analyse the athlete's past 3 months of running activity and provide a summarised version of athlete's past 3 months running history. The summary should be detailed such that based on this data further workout plans can be generated. DO NOT PROVIDE ANY SUGGSTIONS yet.
-    Past 3 months running history is as follows: {activities}
-    """
-    
+def analyse_past_3m_runs(inp_message):
     completion = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[

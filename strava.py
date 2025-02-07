@@ -1,4 +1,6 @@
 import os
+
+from flask import jsonify, request
 import ai
 import database
 import requests
@@ -10,7 +12,10 @@ import json
 import workout_classifier
 from ai import get_insights_by_llm
 from workout_classifier import get_run_type 
+import strava
 
+STRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')
+STRAVA_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s %(levelname)s %(message)s')
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -19,6 +24,34 @@ logger.setLevel(logging.DEBUG)  # Adjust logging level as needed
 # Replace these with your Strava API credentials
 CLIENT_ID = os.environ.get('CLIENT_ID')
 CLIENT_SECRET =  os.environ.get('CLIENT_SECRET')
+VERIFY_TOKEN = "STRAVA"
+
+# Helper Functions
+def verify_webhook():
+    mode = request.args.get('hub.mode')
+    token = request.args.get('hub.verify_token')
+    challenge = request.args.get('hub.challenge')
+
+    if mode == 'subscribe' and token == VERIFY_TOKEN:
+        return jsonify({"hub.challenge": challenge}), 200
+    else:
+        return "Invalid verification token", 403
+
+def handle_webhook():
+    latest_activity_id = request.json.get('object_id')
+    athlete_id = request.json.get('owner_id')
+    logger.info(f"request inputs are {request.args}")
+    print(f"Webhook event received with activity:{latest_activity_id} for athlete ID: {athlete_id}")
+    inputs={
+        "activity_id":latest_activity_id,
+        "athlete_id":athlete_id
+    }
+    
+    logger.info(f"Inputs were{inputs}")
+    strava.get_latest_activities(inputs)
+    return jsonify({"message": "EVENT_RECEIVED"}), 200
+
+
 
 # Step 1: Get Access Token (you may do this once to obtain the token)
 def get_access_token(athlete_id):
@@ -288,3 +321,16 @@ def fetch_complete_activity_detail(activty_id, headers):
     if response.status_code == 200:
         return response.json()
     return None
+
+
+
+def exchange_code_for_token(code):
+    data = {
+        'client_id': STRAVA_CLIENT_ID,
+        'client_secret': STRAVA_CLIENT_SECRET,
+        'code': code,
+        'grant_type': 'authorization_code'
+    }
+    STRAVA_TOKEN_URL = f"https://www.strava.com/oauth/token"
+    response = requests.post(STRAVA_TOKEN_URL, data=data)
+    return response.json()

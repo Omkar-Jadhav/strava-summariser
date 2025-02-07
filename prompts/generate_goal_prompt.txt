@@ -1,0 +1,8 @@
+Summarise this athlete goals shortly.
+    Athlete goal is to train for ${goal} by ${target_date}, today is ${date_str}, ${day_str}.
+    The Athlete is currently at a fitness level of ${fitness_level} and  can commit ${time_commitment} per day for training on weekdays.
+    In past 3 months, longest 3 runs of the Athlete are ${top_3_long_runs}.
+    Athlete has recently performed ${recent_performance}, and race performances from strava are ${races}. 
+    He/she can train for ${training_days} days in a week and can do ${strength_sessions} strength sessions per week.
+    The Athlete has ${injuries} and ${special_conditions} that you need to consider while creating the plan.
+    The Athlete prefers ${preferences} and has ${other_info} that you need to consider while creating the plan.
