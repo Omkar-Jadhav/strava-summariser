@@ -68,9 +68,11 @@ def connect_strava():
     logger.info("Inside connect strava api call")
     logger.info(f"{url_for('strava_callback', _external=True)}")
     session_token = request.cookies.get('session_token')
+    athlete_id = None
     
-    client = database.initiate_mango_connection()
-    athlete_id, expires_at, refresh_token, previous_workout_plan, athlete_name = database.check_session_token_in_data(client, session_token)
+    if session_token:
+        client = database.initiate_mango_connection()
+        athlete_id, expires_at, refresh_token, previous_workout_plan, athlete_name = database.check_session_token_in_data(client, session_token)
     
     if not athlete_id:
         logger.info("Session token not found")
