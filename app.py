@@ -427,6 +427,8 @@ SESSION_KEYS = {
     'goals': 'goals',
     'access_token': 'access_token',
     'past_3m_summ':'past_3m_summ',
+    'baseline_stats':'baseline_stats',
+    'past_month_details':'past_month_details',
 }
 
 @app.route("/generatePlan/checkAthleteStatus", methods=['POST'])
@@ -481,12 +483,13 @@ def step2_fetch_activities():
         past_month_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_month_runs)])
         
         session[SESSION_KEYS['activities']] = {
-            'baseline_stats': baseline_stats,
-            'past_month_details': past_month_details,
             'long_runs': strava.get_top_three_longest_runs(combined_activities),
             'races': strava.get_race_details(combined_activities),
             'past_3m_details':past_3m_runs_details
         }
+        
+        session[SESSION_KEYS['baseline_stats']]=baseline_stats
+        session[SESSION_KEYS['past_month_details']]=past_month_details
         
         return jsonify(success=True, next_step='/generatePlan/getGoalSummary'), 200
     
@@ -511,6 +514,9 @@ def step3_analyze_goals():
         past_3m_summarised = ai.analyse_past_3m_runs(activities['past_3m_details'], activities['baseline_stats'])
         goal_summary = ai.get_response_from_groq(goal_prompt)
         
+        session.pop('activities', None)
+        session.pop('form_data', None)
+        
         session[SESSION_KEYS['goals']] = goal_summary
         session[SESSION_KEYS['past_3m_summ']]= past_3m_summarised
         
@@ -527,18 +533,27 @@ def step4_generate_plan():
         activities = session.get(SESSION_KEYS['activities'])
         past_3m_summ = session.get(SESSION_KEYS['past_3m_summ'])
         goals = session.get(SESSION_KEYS['goals'])
-        athlete_id = form_data['athlete_id']
-        athlete_name = form_data['athlete_name']
+        athlete_id = session.get(SESSION_KEYS['athlete_id'])
+        athlete_name = session.get(SESSION_KEYS['athlete_name'])
+        baseline_stats = session.get(SESSION_KEYS['baseline_stats'])
+        past_month_details = session.get(SESSION_KEYS['past_month_details'])
+        
         if not all([form_data, activities, goals]):
             return jsonify(success=False, error="Session expired"), 400
 
         # Generate final plan
         prompt = strava_v2_testing.format_prompt_for_llm(
             goals, 
-            activities['baseline_stats'],
+            baseline_stats,
             past_3m_summ,
-            activities['past_month_details'],
+            past_month_details,
         )
+        
+        session.pop('goals',None)
+        session.pop('baseline_stats',None)
+        session.pop('past_3m_summ',None)
+        session.pop('past_month_details',None)
+        
         plan = ai.get_response_from_groq(prompt)
         workout_json, dates, notes = parse_workout_plan(plan)
         
