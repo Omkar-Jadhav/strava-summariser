@@ -3,7 +3,7 @@ import itertools
 import os
 import re
 import secrets
-from flask import Flask, make_response, redirect, request, session, url_for, jsonify, render_template
+from flask import Flask, make_response, redirect, request, session, url_for, jsonify, render_template,app
 import requests
 import ai
 import strava
@@ -18,7 +18,8 @@ import markdown2
 # Configure logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # Adjust logging level as needed
-
+app.config['PERMANENT_SESSION_LIFETIME'] = 180  # 30 minutes
+session.permanent = True
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Set a secure secret key
 app.config.update(
