@@ -10,6 +10,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+
 class WorkoutClassifier:
     def __init__(self, activities, headers):
         self.activities = activities if activities else []

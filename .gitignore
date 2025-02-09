@@ -3,3 +3,4 @@ test_strava_activity.py
 .vscode
 __pycache__
 test.py
+workout_classifier_testing.py

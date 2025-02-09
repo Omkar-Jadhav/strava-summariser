@@ -16,7 +16,7 @@ import strava_v2_testing
 import training_utils
 import utils
 import workout_classifier_testing
-from strava_v2_testing import format_prompt_for_llm
+from training_utils import format_prompt_for_llm
 import markdown2
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -151,7 +151,7 @@ def process_user_input():
     
     if is_athlete_msg_relevant == 'relevant':
         # Step 2: Call GPT for plan update
-        gpt_response, is_plan_updated = utils.work_on_user_query(athlete_message, current_plan, goal_summary)
+        gpt_response, is_plan_updated = training_utils.work_on_user_query(athlete_message, current_plan, goal_summary)
         
         if is_plan_updated.lower()=='true':
             workout_json, _,notes = utils.parse_workout_plan(gpt_response)
@@ -316,7 +316,7 @@ def step3_analyze_goals():
             return jsonify(success=False, error="Session expired"), 400
         
         # Generate goal analysis
-        goal_prompt = utils.generate_goal_prompt(
+        goal_prompt = training_utils.generate_goal_prompt(
             form_data, 
             activities['long_runs'], 
             activities['races']
@@ -352,7 +352,7 @@ def step4_generate_plan():
             return jsonify(success=False, error="Session expired"), 400
 
         # Generate final plan
-        prompt = strava_v2_testing.format_prompt_for_llm(
+        prompt = training_utils.format_prompt_for_llm(
             goals, 
             baseline_stats,
             past_3m_summ,

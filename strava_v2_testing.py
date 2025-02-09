@@ -3,6 +3,7 @@ import database
 import requests
 import time, datetime
 import logging
+import training_utils
 import utils
 import data_processing
 import json
@@ -145,7 +146,7 @@ def get_latest_activities(inputs):
                         past_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(run_types)])
                         # insights = ai.get_insights_by_llm(result_table, past_runs_details)
                         # out_message = "\nLast 4 weeks by strava-summariser :\n"+insights+'\n'
-                        inp_message = format_prompt_for_llm(result_table, past_runs_details, athlete_baseline_stats, athlete_goal)
+                        inp_message = training_utils.format_prompt_for_llm(result_table, past_runs_details, athlete_baseline_stats, athlete_goal)
                         workout_plan, reasoning = ai.get_response_from_deepseek(inp_message)
                     out_message+=result_table
                     
@@ -160,42 +161,7 @@ def get_latest_activities(inputs):
     else:
         print(f"Error: No activities found in the date range")
     
-def format_prompt_for_llm(athlete_goal, athlete_baseline, past_3m_summarised, past_month_runs_details):
-    for section in ['road_baseline_stats', 'trail_baseline_stats']:
-        athlete_baseline[section]['speed_mean'] = utils.convert_speed_to_pace(athlete_baseline[section]['speed_mean'])
-        athlete_baseline[section]['speed_std'] = utils.convert_speed_to_pace(athlete_baseline[section]['speed_std'])
 
-
-    prompt =f"""
-    You are a professional running coach who provides the workout plans according to athlete goals, current conditions and recent runs. Today is {datetime.now().strftime("%B %d, %Y")}  and the day is {datetime.today().strftime('%A')} Provide plan upto sunday.
-    The athlete's goal is - {athlete_goal}. 
-    The athlete's baseline stats are as follows: Road Baseline Stats: {', '.join(f'{key}={value}' for key, value in athlete_baseline['road_baseline_stats'].items()if key != "speed_std")}.
-    Athlete's past 3 months activity can be summarised as: {past_3m_summarised}
-    The athlete's past months workout history is: {past_month_runs_details} 
-    First Mention an birds eye view of how the plan will look like to reach the goal. 
-    Generate a complete workout plan for the athlete for the next week. Include the type of runs, distance, pace, and any other relevant details. provide a detailed workout plan.
-    Keep a holistic nature while developing the plan considering strenghts, weaknesses and specific requirements of the athlete. 
-    It is essential to keep him injury free while simultaneously increasing the fitness level of athlete.
-    Add strength, mobility workouts whenever necessary and as per requirement of athlete. Mention type of workouts to be done in strength training and mobility workouts. Include rest days for proper recovery.
-    Consider any inputs from the athlete and adjust the plan accordingly.
-    When generating workout plans, Generate the workout plan in an markdown format:
-    Dates: DD/MM/YYYY - DD/MM/YYYY (first line)
-    Bird's eye view: Overview
-    Workout Plan:
-    [Day] - workouts
-    
-    Notes:
-
-    Please ensure:
-- Provide markdown formatting for components, items and subitems
-- Keep dates in first line starting with title Date
-- Days always start with capitalized names
-- Put all notes after workout plan section
-- Nested items use proper bullet hierarchy in markdown
-- Verify date format is DD/MM/YYYY - DD/MM/YYYY
-    """
-    
-    return prompt
         
 def fetch_complete_activity_detail(activty_id, headers):
     """Fetch complete activity details."""
