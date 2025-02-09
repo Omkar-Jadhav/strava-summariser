@@ -41,6 +41,18 @@ class WorkoutClassifier:
         return f"{minutes}:{seconds:02d} min/km"
     
     def compute_stats(self, activities):
+        if not activities:
+            return {
+                'distance_mean': 0,
+                'distance_std': 0,
+                'speed_mean': 0,
+                'speed_std': 0,
+                'hr_mean': 0,
+                'hr_std': 0,
+                'max_distance': 0,
+                'max_pace': 0
+            }
+    
         distances = [a.get('distance', 0)/1000 for a in activities]
         speeds = [a.get('average_speed', 0) for a in activities]
         hrs = [a.get('average_heartrate', 0) for a in activities]
