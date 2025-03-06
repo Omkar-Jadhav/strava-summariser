@@ -1,5 +1,26 @@
-Act as a helpful and professiona running coach and data analyst.
-    You are presented with the workout history of an athlete for the past 3 months. 
-    The athlete's past 3 months activities include various runs like long runs, tempo runs, easy runs, recovery runs, intervals, and trail run, with additional details for some activities such as lap times, average pace, and total elevation gain.
-    Analyse the athlete's past 3 months of running activity and provide a summarised version of athlete's past 3 months running history. The summary should be detailed such that based on this data further workout plans can be generated. DO NOT PROVIDE ANY SUGGSTIONS yet.
-    Past 3 months running history is as follows: ${activities}
+Analyze the athlete's past 3 months of workout data and provide a structured summary of their recent training history, fitness trends, and running background.
+
+Athlete's Past 3 Months Workouts:
+- The athlete's training includes various run types such as long runs, tempo runs, easy runs, recovery runs, intervals, and trail runs.
+- Additional workout details include lap times, average pace, total elevation gain, and training frequency.
+
+Summary Requirements:
+Generate a concise and structured text summary covering:
+- Weekly Mileage Trends: Changes in volume and fluctuations over the past 3 months.
+- Run Type Distribution: Percentage breakdown of long runs, speed workouts, and recovery runs.
+- Performance Trends: Improvements or declines in pace, endurance, and training consistency.
+- Elevation Gain Insights: If relevant, summarize elevation-related performance trends.
+- Strength & Mobility Training Trends: If available, include patterns in cross-training.
+- Signs of Overtraining or Inconsistency: Identify variations in workout adherence.
+
+Important Instructions:
+- DO NOT provide any recommendations—only summarize past workouts.
+- Return output strictly in JSON format with a text-based summary inside `"past_3m_summary"`.
+- Do not use markdown, lists, or bullet points inside the JSON field.
+- Ensure the summary is informative and precise while maintaining readability.
+
+Expected JSON Output Format:
+```json
+{
+  "past_3m_summary": "The athlete's past 3 months of training show an average weekly mileage of X km, with consistent long runs making up Y% of total distance. Interval sessions account for Z% of training, showing improvements in speed. Elevation gain has varied between A and B meters per week. Strength training sessions were included X times per month. The avg pace is XX:YY min/km on roads.  Athlete has gained D elevation gain in N trail runs. The athlete has shown consistent training patterns but experienced a slight dip in mileage during [specific period]."
+}

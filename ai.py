@@ -1,3 +1,4 @@
+import json
 from groq import Groq
 import os
 from openai import OpenAI
@@ -67,11 +68,44 @@ def analyse_past_3m_runs(inp_message):
     return output
     
     
+def get_json_response_from_groq(inp_message):
+    completion = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        # model = "llama3-70b-8192",
+        # model ="deepseek-r1-distill-llama-70b",
+        # model="llama3-8b-8192",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a helpful and professional running coach."
+            },
+            {
+                "role": "user",
+                "content": inp_message
+            },
+        ],
+        temperature=1,
+        max_completion_tokens=3130,
+        top_p=1,
+        stream=False,
+        stop=None,
+        response_format={"type":"json_object"}
+        
+    )
+
+    output = {}
+    if completion.choices[0].message.content:
+        return json.loads(completion.choices[0].message.content)
+    
+    return output
+
+
+    
 def get_response_from_groq(inp_message):
     completion = client.chat.completions.create(
-        # model="llama-3.3-70b-versatile",
+        model="llama-3.3-70b-versatile",
         # model = "llama3-70b-8192",
-        model ="deepseek-r1-distill-llama-70b",
+        # model ="deepseek-r1-distill-llama-70b",
         # model="llama3-8b-8192",
         messages=[
             {
@@ -88,6 +122,7 @@ def get_response_from_groq(inp_message):
         top_p=1,
         stream=True,
         stop=None,
+        
     )
 
     output = ""

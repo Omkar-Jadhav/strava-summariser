@@ -1,6 +1,7 @@
 from datetime import datetime
 import itertools
 import os
+import re
 import flask
 import requests
 from string import Template
@@ -87,6 +88,26 @@ def calculate_pace_minKm(moving_time, distance):
         pace_minutes = int(pace_seconds_per_km // 60)
         pace_seconds = int(pace_seconds_per_km % 60)
         return f"{pace_minutes:02d}:{pace_seconds:02d} min/Km"
+    
+def sort_by_day(workout_list):
+    # Extract the day number using regex and sort accordingly
+    return sorted(workout_list, key=lambda x: int(re.search(r'Day (\d+)', x).group(1)))
+
+def parse_json_workout_plan(json_obj):
+    dates = json_obj['date_range']
+    workout_plan = json_obj['workout_plan']
+    notes = json_obj['notes']
+    if "overview" in json_obj.keys():
+        overview = json_obj['overview']
+        
+        return dates, workout_plan, notes, overview
+    
+    if "birdseye_view" in json_obj.keys():
+        birdseye_view = json_obj['birdseye_view']
+        
+        return dates,birdseye_view, workout_plan, notes
+    
+    return dates, workout_plan, notes
 
 def parse_workout_plan(text):
     # Extracting dates
@@ -165,7 +186,7 @@ def is_user_input_relevant(user_input, next_week_plan, goal_summary, messages):
 
 def format_next_week_prompt_for_llm(last_week_plan, goal_summary, past_week_activity_dtls):
     prompt_template = load_prompt("next_week_prompt")
-    prompt = prompt_template(
+    prompt = prompt_template.substitute(
         current_day = datetime.now().strftime("%B %d, %Y"),
         current_date = datetime.now().strftime("%A"),
         goal_summary = goal_summary,

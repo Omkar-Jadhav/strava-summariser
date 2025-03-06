@@ -1,8 +1,29 @@
-Summarise this athlete goals shortly.
-    Athlete goal is to train for ${goal} by ${target_date}, today is ${date_str}, ${day_str}.
-    The Athlete is currently at a fitness level of ${fitness_level} and  can commit ${time_commitment} per day for training on weekdays.
-    In past 3 months, longest 3 runs of the Athlete are ${top_3_long_runs}.
-    Athlete has recently performed ${recent_performance}, and race performances from strava are ${races}. 
-    He/she can train for ${training_days} days in a week and can do ${strength_sessions} strength sessions per week.
-    The Athlete has ${injuries} and ${special_conditions} that you need to consider while creating the plan.
-    The Athlete prefers ${preferences} and has ${other_info} that you need to consider while creating the plan.
+Summarize the athlete's goals, requirements, and preferences concisely.  
+
+Athlete's goal: Train for ${goal} by ${target_date}.  
+Today's date: ${date_str}, ${day_str}.  
+Current fitness level: ${fitness_level}.  
+Time commitment: ${time_commitment} per day for training on weekdays.  
+
+Recent Performance & Running History:  
+- Longest 3 runs in the past 3 months: ${top_3_long_runs}.  
+- Recent performance: ${recent_performance}.  
+- Race history from Strava: ${races}.  
+
+Training Availability & Strength Sessions:  
+- Training days per week: ${training_days}.  
+- Strength training sessions per week: ${strength_sessions}.  
+
+Injuries & Special Considerations:  
+- Existing injuries: ${injuries}.  
+- Special conditions: ${special_conditions}.  
+
+Athlete Preferences & Other Relevant Details:  
+- Preferences: ${preferences}.  
+- Additional information: ${other_info}.  
+
+Return the **summary** as a single JSON object in the following format:
+```json
+{
+  "goal_summary": "Train for a sub 3 hr marathon event event by 2025-05-25, with currently at an intermediate fitness level, 1.5hr/day training capacity on weekdays, a background of completing 100k and 80k ultra trails with 3500m+ elevation gain with notable performances, recent 10K performance at 40:00mins,  and availability for 5 training days and 3 strength sessions per week, with IT band pain since 2 months. The athlete can train for long runs and trails on weekend only"
+}

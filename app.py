@@ -119,6 +119,10 @@ def training_dashboard(athlete_id=None):
      # Retrieve athlete_id from session
     athlete_id = athlete_id or session.get('athlete_id')
     athlete_name = session.get('athlete_name')
+    if "overview" in session: 
+        overview = session.get('overview')
+    else:
+        overview = ""
    
     next_week_plan = session.get('next_week_workout_plan')
     goal_summary = session.get('goal_summary')
@@ -131,7 +135,9 @@ def training_dashboard(athlete_id=None):
     # dates = test_plan_data.dates
     # athlete_id = test_plan_data.athlete_id
     # next_week_plan = join_dict_keys_values(next_week_plan)
-    next_week_plan =  markdown2.markdown(next_week_plan)
+    
+    next_week_plan =  training_utils.workout_days_plan_to_markdown(next_week_plan, dates, notes, overview)
+    next_week_plan = markdown2.markdown(next_week_plan)
     if goal_summary:
         goal_summary =  markdown2.markdown(goal_summary)
     return render_template('training_dashboard.html', athlete_name = "Omkar Jadhav",next_week_plan=next_week_plan, goal_summary=goal_summary, dates=dates, athlete_id=athlete_id)
@@ -153,18 +159,20 @@ def process_user_input():
         # Step 2: Call GPT for plan update
         gpt_response, is_plan_updated = training_utils.work_on_user_query(athlete_message, current_plan, goal_summary)
         
-        if is_plan_updated.lower()=='true':
-            workout_json, _,notes = utils.parse_workout_plan(gpt_response)
+        if is_plan_updated:
+            _, workout_json,notes = utils.parse_json_workout_plan(gpt_response)
             if workout_json:
                 database.save_workout_plan(athlete_id, workout_json, dates,notes=notes)
-            
-        gpt_response = markdown2.markdown(gpt_response)
-        gpt_response = gpt_response.replace("\n","")
+            response = training_utils.workout_plan_to_markdown(gpt_response)
+           
+        response = markdown2.markdown(response)
+        
+        response = response.replace("\n","")
         # Step 3: Update the plan (optional: save to database)  
         # For now, we'll just return the GPT response
         return jsonify({
             "relevant": True,
-            "gpt_response": gpt_response,
+            "gpt_response": response,
             "is_plan_updated":is_plan_updated
         })
         
@@ -283,6 +291,9 @@ def step2_fetch_activities():
         # m2_m3_dtls =[]
         combined_dtls =  past_month_runs+m2_m3_dtls
         
+        combined_dtls = utils.sort_by_day(combined_dtls)
+        past_month_runs = utils.sort_by_day(past_month_runs)
+        
         past_3m_runs_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(combined_dtls)])
         past_month_details = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_month_runs)])
         
@@ -324,13 +335,13 @@ def step3_analyze_goals():
         
         prompt_template = utils.load_prompt('analyse_3m_runs')
         past_3m_prompt = prompt_template.substitute(
-            activities=activities,
+            activities=activities['past_3m_details'],
         )
-        past_3m_summarised = ai.analyse_past_3m_runs(past_3m_prompt)
-        goal_summary = ai.get_response_from_groq(goal_prompt)
+        past_3m_summ_json = ai.get_json_response_from_groq(past_3m_prompt)
+        goal_summary_json = ai.get_json_response_from_groq(goal_prompt)
         
-        session[SESSION_KEYS['goals']] = goal_summary
-        session[SESSION_KEYS['past_3m_summ']]= past_3m_summarised
+        session[SESSION_KEYS['goals']] = goal_summary_json['goal_summary']
+        session[SESSION_KEYS['past_3m_summ']]= past_3m_summ_json['past_3m_summary']
         
         return jsonify(success=True, next_step='/generatePlan/getPlan'), 200
         
@@ -364,13 +375,13 @@ def step4_generate_plan():
         session.pop('past_3m_summ',None)
         session.pop('past_month_details',None)
         
-        plan = ai.get_response_from_groq(prompt)
-        workout_json, dates, notes = utils.parse_workout_plan(plan)
+        plan = ai.get_json_response_from_groq(prompt)
+        dates,birdseye_view, workout_plan, notes = utils.parse_json_workout_plan(plan)
         
         # Save to database
         database.save_workout_plan(
             athlete_id, 
-            workout_json, 
+            workout_plan, 
             dates, 
             goals, notes=notes
         )
@@ -379,7 +390,8 @@ def step4_generate_plan():
         for key in SESSION_KEYS.values():
             session.pop(key, None)
             
-        session['next_week_workout_plan'] = plan
+        session['next_week_workout_plan'] = workout_plan
+        session['overview'] = birdseye_view
         session['goal_summary'] = goals
         session['athlete_id'] = athlete_id
         session['athlete_name'] =  athlete_name
@@ -403,11 +415,13 @@ def get_new_plan_exisiting_user():
     athlete_name = form_data['athlete_name']
     
     dates_,last_week_plan, notes,goal_summary = database.get_athelte_training_details(athlete_id)
-    past_week_activity_dtls_ = strava.get_activities_for_period(1, athlete_id, sport_type='Run', access_token=access_token)
-    past_week_activity_dtls= "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_week_activity_dtls_)])
     dates = dates_.split("-")
-    next_week_avail, next_week_plan= training_utils.generate_next_week_plan(dates,goal_summary,last_week_plan,past_week_activity_dtls, athlete_id)
+    next_week_plan= training_utils.generate_next_week_plan(dates,goal_summary,last_week_plan, athlete_id)
     
+    goal_summary = markdown2.markdown(goal_summary)
+    next_week_plan = markdown2.markdown(next_week_plan)
+    next_week_plan = next_week_plan.replace("\n","")    
+        
     session['next_week_workout_plan'] = next_week_plan
     session['goal_summary'] = goal_summary
     session['athlete_id'] = athlete_id
@@ -415,9 +429,9 @@ def get_new_plan_exisiting_user():
     session['dates'] = dates
     session.modified = True  # Ensure session is saved
     
-    if next_week_avail:
-        workout_json, dates, notes = utils.parse_workout_plan(next_week_plan)
-        database.save_workout_plan(athlete_id, workout_json, dates, notes)
+    # if next_week_avail:
+    #     workout_json, dates, notes = utils.parse_workout_plan(next_week_plan)
+    #     database.save_workout_plan(athlete_id, workout_json, dates, notes)
         
     return jsonify({
         "success": True,
@@ -489,18 +503,18 @@ def get_next_week_plan():
     goal_summary = request.json.get('goal_summary') or ''
     last_dates = request.json.get('dates')
     dates = last_dates.split("-")
-    next_week_avail = False
     
-    past_week_activity_dtls_ = strava.get_activities_for_period(1, athlete_id, sport_type='Run')
-    past_week_activity_dtls= "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_week_activity_dtls_)])
-    
-    next_week_avail, next_week_plan = training_utils.generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls, athlete_id)
-
+    next_week_avail = training_utils.check_next_week_avail(dates)
+    if next_week_avail:
+        next_week_plan = training_utils.generate_next_week_plan(dates, last_week_plan, goal_summary, athlete_id)
+        next_week_plan = markdown2.markdown(next_week_plan)
+        next_week_plan = next_week_plan.replace("\n","")  
+        
     if next_week_avail:
         return  jsonify({
             "next_week_avail": next_week_avail,
             "next_week_plan":next_week_plan,
-            "dates":dates
+            "dates":dates,
         })
 
     else:

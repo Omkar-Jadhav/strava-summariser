@@ -7,41 +7,93 @@ import utils
 import workout_classifier_testing
 import markdown2
 
-def generate_next_week_plan(dates, last_week_plan, goal_summary, past_week_activity_dtls, athlete_id):
+def generate_next_week_plan(dates, last_week_plan, goal_summary, athlete_id):
+    last_week_acitivity = strava.get_activities_for_period(1, athlete_id, sport_type='Run')
+    last_week_acitivity =list(itertools.chain(*last_week_acitivity))[::-1]
+    access_token = strava.get_access_token(athlete_id)
+    headers = {'Authorization': f'Bearer {access_token}'} 
+
+    past_week_activity_dtls, athlete_baseline_stats_last_week = workout_classifier_testing.get_run_type(last_week_acitivity, last_week_acitivity[0],headers)   
+    past_week_activity_dtls = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_week_activity_dtls)])
+
+    # past_week_activity_dtls = test_plan_data.past_week_activity_dtls
+    
+    prompt_for_next_week = utils.format_next_week_prompt_for_llm(last_week_plan, goal_summary, past_week_activity_dtls)
+    
+    next_week_plan_ = ai.get_json_response_from_groq(prompt_for_next_week)
+    
+    # next_week_plan = ai.get_response_from_deepseek(prompt_for_next_week)
+    dates, workout_json, notes, overview = utils.parse_json_workout_plan(next_week_plan_)
+    next_week_plan = workout_json
+    
+    next_week_plan_markdown = workout_days_plan_to_markdown(workout_json, dates, notes, overview)
+    database.save_workout_plan(athlete_id, workout_json, dates, notes)
+    
+    return next_week_plan_markdown
+
+
+def check_next_week_avail(dates):
     today = datetime.today()
     prev_start_date = datetime.strptime(dates[0].strip(), '%d/%m/%Y')
     prev_end_date = datetime.strptime(dates[1].strip(), '%d/%m/%Y')
     next_week_avail = False
-    next_week_plan = last_week_plan
     if prev_start_date< today and today >= prev_end_date:
         next_week_avail = True
-        last_week_acitivity = strava.get_activities_for_period(1, athlete_id, sport_type='Run')
-        last_week_acitivity =list(itertools.chain(*last_week_acitivity))
-        access_token = strava.get_access_token(athlete_id)
-        headers = {'Authorization': f'Bearer {access_token}'} 
+    return next_week_avail
 
-        past_week_activity_dtls, athlete_baseline_stats_last_week = workout_classifier_testing.get_run_type(last_week_acitivity, last_week_acitivity[0],headers)   
-        past_week_activity_dtls = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_week_activity_dtls)])
+def workout_days_plan_to_markdown(workout_json, dates, notes, overview):
+    markdown_output = []
+    
+    # Add Date Range
+    markdown_output.append(f"##  Dates-  ({dates})\n")
 
-        # past_week_activity_dtls = test_plan_data.past_week_activity_dtls
-        
-        prompt_for_next_week = utils.format_next_week_prompt_for_llm(last_week_plan, goal_summary, past_week_activity_dtls)
-        
-        next_week_plan_ = ai.get_response_from_groq(prompt_for_next_week)
-        
-        # next_week_plan = ai.get_response_from_deepseek(prompt_for_next_week)
-        workout_json, dates, notes = utils.parse_workout_plan(next_week_plan_)
-        
-        
-        next_week_plan =  markdown2.markdown(next_week_plan_)
-        next_week_plan =next_week_plan.replace('\n','')
-        goal_summary =  markdown2.markdown(goal_summary)
-       
-        database.save_workout_plan(athlete_id, workout_json, dates, notes)
-        
-        return next_week_avail, next_week_plan
-    else:
-        return next_week_avail, last_week_plan
+    if overview!="":
+        markdown_output.append(f"##  Overview\n")
+        markdown_output.append(f"{overview}\n")
+    
+    
+    # Add Workout Plan
+    markdown_output.append("## Workout Plan\n")
+    
+    for day_plan in workout_json:
+        markdown_output.append(f"### {day_plan['day']}\n")
+        for workout in day_plan["workouts"]:
+            markdown_output.append(f"  - **{workout['type']}**: {workout['details']}")
+
+    # Add Notes
+    if notes:
+        markdown_output.append("\n## Notes\n")
+        for note in notes:
+            markdown_output.append(f"- {note}")
+
+    return "\n".join(markdown_output)
+
+    
+def workout_plan_to_markdown(workout_json):
+    markdown_output = []
+
+    # Add Date Range
+    markdown_output.append(f"## Workout Plan ({workout_json['date_range']})\n")
+
+    # Add Overview
+    if "overview" in workout_json and workout_json["overview"]:
+        markdown_output.append(f"### Overview\n{workout_json['overview']}\n")
+
+    # Add Workout Plan
+    markdown_output.append("### Workout Plan")
+    
+    for day_plan in workout_json["workout_plan"]:
+        markdown_output.append(f"#### {day_plan['day']}")
+        for workout in day_plan["workouts"]:
+            markdown_output.append(f"- **{workout['type']}**: {workout['details']}")
+
+    # Add Notes
+    if "notes" in workout_json and workout_json["notes"]:
+        markdown_output.append("\n### Notes")
+        for note in workout_json["notes"]:
+            markdown_output.append(f"- {note}")
+
+    return "\n".join(markdown_output)
 
 def extract_response_and_plan_status(gpt_output):
     # Find the position of the "Response:" keyword
@@ -111,8 +163,10 @@ def work_on_user_query(user_input, current_plan, goal_summary):
                     user_input=user_input
                 )
 
-    gpt_response = ai.get_response_from_groq(prompt)
-    response, is_plan_updated = extract_response_and_plan_status(gpt_response)
+    gpt_response = ai.get_json_response_from_groq(prompt)
+    response = gpt_response['response']
+    is_plan_updated = gpt_response['is_plan_updated']
+    # response, is_plan_updated = extract_response_and_plan_status(gpt_response)
     
     return response, is_plan_updated
 

@@ -195,7 +195,7 @@ class WorkoutClassifier:
     def classify_workout(self, activity,latest_activity):
         """Main classification method with full validation"""
         try:
-            no_of_days = (datetime.strptime(latest_activity['start_date'], "%Y-%m-%dT%H:%M:%SZ") - datetime.strptime(activity['start_date'], "%Y-%m-%dT%H:%M:%SZ")).days
+            no_of_days = (datetime.today() - datetime.strptime(activity['start_date'], "%Y-%m-%dT%H:%M:%SZ")).days
             pace = calculate_pace_minKm(activity['moving_time'], activity['distance'])
             # Special cases first
             if activity.get('workout_type') == 1:

@@ -4,8 +4,6 @@ import certifi
 from pymongo.mongo_client import MongoClient
 import logging
 import os
-from ai import client
-from test_plan_data import athlete_id
 # Configure logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)  # Adjust logging level as needed
@@ -135,7 +133,7 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
             goal_summary = workouts.get('goal_summary')
             if  key_in_any_dict(past_workouts, dates):
                 index, workout =get_dict_with_key(past_workouts, dates)
-                workout[dates]['plan']=plan
+                workout[dates]['workout_plan']=plan
                 if notes!="":
                     workout[dates]['notes'] = notes
                 past_workouts[index]= workout
@@ -146,18 +144,23 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
                 )  
             elif len(past_workouts)>5:
                 past_workouts.pop(0)
-                past_workouts.append({dates: {"plan":plan, "notes":notes} })
+                past_workouts.append({dates: {"workout_plan":plan, "notes":notes} })
                 collection.update_one(
                     {"athlete_id": int(athlete_id)},
                     {"$set": {"workout_plan": past_workouts, "goal_summary":goal_summary}},
                     upsert=False  
                 )
             else:
-                past_workouts.append({dates:plan})
+                past_workouts.append({dates:{'workout_plan':plan, 'notes':notes}})
+                collection.update_one(
+                    {"athlete_id": int(athlete_id)},
+                    {"$set": {"workout_plan": past_workouts, "goal_summary":goal_summary}},
+                    upsert=False  
+                )
         else:
             collection.insert_one({
                     "athlete_id": int(athlete_id),
-                    "workout_plan": [{dates:{"plan":plan, "notes":notes}}],
+                    "workout_plan": [{dates:{"workout_plan":plan, "notes":notes}}],
                     "goal_summary":goal_summary
                 })
         logger.info("Saved workout data for athlete %s successfully for %s", athlete_id, str(dates))
@@ -245,13 +248,13 @@ def get_athelte_training_details(athlete_id):
     results = collection.find({"athlete_id":int(athlete_id)})   
     for result in results:
         # logger.info(result)
-        latest_workout_plan = result.get("workout_plan")[0]
+        latest_workout_plan = result.get("workout_plan")[-1]
         goal_summary = result.get("goal_summary")
         # logger.info(f"Latest workout plan is {latest_workout_plan}")
         logger.info(f"Goal summary is {goal_summary}")
     close_client(client)
     dates =list(latest_workout_plan.keys())[0]
-    plan = list(latest_workout_plan.values())[0]['plan']
+    plan = list(latest_workout_plan.values())[0]['workout_plan']
     notes = list(latest_workout_plan.values())[0]['notes']
     
     return dates,plan, notes,goal_summary
