@@ -17,8 +17,8 @@ def generate_next_week_plan(last_dates, last_week_plan, goal_summary, athlete_id
     past_week_activity_dtls = "\n".join([f"{i+1}. {run_type}" for i, run_type in enumerate(past_week_activity_dtls)])
 
     # past_week_activity_dtls = test_plan_data.past_week_activity_dtls
-    
-    prompt_for_next_week = utils.format_next_week_prompt_for_llm(last_week_plan, last_dates, goal_summary, past_week_activity_dtls)
+    day_range, dates_range = utils.get_week_range()
+    prompt_for_next_week = utils.format_next_week_prompt_for_llm(last_week_plan, last_dates, goal_summary, past_week_activity_dtls, day_range, dates_range)
     
     next_week_plan_ = ai.get_json_response_from_groq(prompt_for_next_week)
     

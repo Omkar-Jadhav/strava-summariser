@@ -12,7 +12,8 @@ There are no excuses in training—missed workouts must be explained, and poor d
 
 ### Past Week Summary & Accountability:
 - Planned Workouts for dates ${last_dates}: ${last_week_plan}  
-- Completed Workouts: ${past_week_activity_dtls}  
+- Completed Workouts: ${past_week_activity_dtls} 
+
 
 #### Strict Coach’s Accountability Rules:
 1. Overview must explicitly state accountability:  
@@ -33,12 +34,12 @@ There are no excuses in training—missed workouts must be explained, and poor d
 
 ### Week’s Structured Training Plan  
 - The training plan should be generated as follows:  
-  - If today is Monday-Saturday, generate a plan for the remaining days of the current week (up to Sunday).  
-  - If today is Sunday, generate a plan for the entire next week (Monday-Sunday).  
+  - Generate the training plan for ${day_range} for ${dates_range} dates. 
 - Ensure progressive overload while maintaining a structured balance of:  
   - Speed, endurance, and strength sessions  
   - Recovery days to prevent overtraining  
   - Race-specific preparation (if applicable)  
+  - Ensure athlete's goal/timelines are taken care of. 
 - Missed Workouts Consequences:  
   - If you skipped key sessions last week, your plan will reinforce those workouts—no easy way out.  
   - If you performed well, expect structured progression in your plan.  

@@ -414,7 +414,6 @@ def get_new_plan_exisiting_user():
     athlete_name = form_data['athlete_name']
     
     last_dates,last_week_plan, notes,goal_summary = database.get_athelte_training_details(athlete_id)
-    # last_dates = dates_.split("-")
     dates, next_week_plan= training_utils.generate_next_week_plan(last_dates,goal_summary,last_week_plan, athlete_id)
     
     goal_summary = markdown2.markdown(goal_summary)
@@ -427,11 +426,7 @@ def get_new_plan_exisiting_user():
     session['athlete_name'] =  athlete_name
     session['dates'] = dates
     session.modified = True  # Ensure session is saved
-    
-    # if next_week_avail:
-    #     workout_json, dates, notes = utils.parse_workout_plan(next_week_plan)
-    #     database.save_workout_plan(athlete_id, workout_json, dates, notes)
-        
+
     return jsonify({
         "success": True,
         "redirect_url": url_for('training_dashboard', athlete_id=athlete_id)  # Redirect to the training dashboard 

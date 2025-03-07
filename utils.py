@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import itertools
 import os
 import re
@@ -184,7 +184,7 @@ def is_user_input_relevant(user_input, next_week_plan, goal_summary, messages):
     is_relevant = ai.get_response_from_groq(prompt)
     return is_relevant
 
-def format_next_week_prompt_for_llm(last_week_plan, last_dates,  goal_summary, past_week_activity_dtls):
+def format_next_week_prompt_for_llm(last_week_plan, last_dates,  goal_summary, past_week_activity_dtls, day_range, dates_range):
     prompt_template = load_prompt("next_week_prompt")
     prompt = prompt_template.substitute(
         current_day = datetime.now().strftime("%B %d, %Y"),
@@ -192,10 +192,26 @@ def format_next_week_prompt_for_llm(last_week_plan, last_dates,  goal_summary, p
         goal_summary = goal_summary,
         last_week_plan = last_week_plan,
         past_week_activity_dtls = past_week_activity_dtls,
-        last_dates= last_dates
+        last_dates= last_dates, day_range=day_range, dates_range=dates_range
     )
     
     return prompt
+
+def get_week_range():
+    today = datetime.today()
+    weekday = today.weekday()  # Monday is 0, Sunday is 6
+    
+    if weekday == 6:  # Today is Sunday
+        monday = today - timedelta(days=6)
+        sunday = today
+    else:
+        monday = today
+        sunday = today + timedelta(days=(6 - weekday))
+    
+    day_range = f"{monday.strftime('%A')} - {sunday.strftime('%A')}"
+    date_range = f"{monday.strftime('%d-%m-%Y')} - {sunday.strftime('%d-%m-%Y')}"
+    
+    return day_range, date_range
 
 
 
