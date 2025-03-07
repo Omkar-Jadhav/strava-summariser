@@ -123,7 +123,7 @@ def get_dict_with_key(lst, key):
         
     return None, None  # Return None if the key is not found in any dictionary
 
-def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
+def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes='', overview=''):
     client = initiate_mango_connection()
     collection = client["strava"]['workout_details']
     try:
@@ -136,6 +136,8 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
                 workout[dates]['workout_plan']=plan
                 if notes!="":
                     workout[dates]['notes'] = notes
+                if overview!="":
+                    workout[dates]['overview'] = overview
                 past_workouts[index]= workout
                 collection.update_one(
                     {"athlete_id": int(athlete_id)},
@@ -144,14 +146,14 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
                 )  
             elif len(past_workouts)>5:
                 past_workouts.pop(0)
-                past_workouts.append({dates: {"workout_plan":plan, "notes":notes} })
+                past_workouts.append({dates: {"workout_plan":plan, "notes":notes, "overview":overview} })
                 collection.update_one(
                     {"athlete_id": int(athlete_id)},
                     {"$set": {"workout_plan": past_workouts, "goal_summary":goal_summary}},
                     upsert=False  
                 )
             else:
-                past_workouts.append({dates:{'workout_plan':plan, 'notes':notes}})
+                past_workouts.append({dates:{'workout_plan':plan, 'notes':notes, "overview":overview}})
                 collection.update_one(
                     {"athlete_id": int(athlete_id)},
                     {"$set": {"workout_plan": past_workouts, "goal_summary":goal_summary}},
@@ -160,7 +162,7 @@ def save_workout_plan(athlete_id, plan, dates, goal_summary='',  notes=''):
         else:
             collection.insert_one({
                     "athlete_id": int(athlete_id),
-                    "workout_plan": [{dates:{"workout_plan":plan, "notes":notes}}],
+                    "workout_plan": [{dates:{"workout_plan":plan, "notes":notes, "overview":overview}}],
                     "goal_summary":goal_summary
                 })
         logger.info("Saved workout data for athlete %s successfully for %s", athlete_id, str(dates))
@@ -178,8 +180,6 @@ def save_athlete_data(client, data, collection_name ="refresh tokens"):
     athlete_name = data["athlete_name"]
     session_token = data.get("session_token", '')
     expires_at = data.get("expires_at", datetime.now())
-    previous_workout_plan = data.get("previous_workout_plan", '')
-    athlete_preferences = data.get("athlete_preferences", '')
 
     db = client["strava"]
     collection = db[collection_name]
@@ -196,10 +196,7 @@ def save_athlete_data(client, data, collection_name ="refresh tokens"):
                 update_fields["session_token"] = session_token
             if existing_data.get("expires_at") != expires_at:
                 update_fields["expires_at"] = expires_at
-            if existing_data.get("previous_workout_plan") != previous_workout_plan:
-                update_fields["previous_workout_plan"] = previous_workout_plan
-            if existing_data.get("athlete_preferences") != athlete_preferences:
-                update_fields["athlete_preferences"] = athlete_preferences
+            
 
             if update_fields:
                 collection.update_one({"athlete_id": int(athlete_id)}, {"$set": update_fields})
@@ -214,8 +211,6 @@ def save_athlete_data(client, data, collection_name ="refresh tokens"):
                 "athlete_name": athlete_name,
                 "session_token": session_token,
                 "expires_at": expires_at,
-                "previous_workout_plan": previous_workout_plan,
-                "athlete_preferences": athlete_preferences
             })
             logger.info("Saved athlete data for ID %s successfully", athlete_id)
             return "Saved"
@@ -246,6 +241,10 @@ def get_athelte_training_details(athlete_id):
     db = client["strava"]
     collection = db["workout_details"]
     results = collection.find({"athlete_id":int(athlete_id)})   
+    dates = None
+    plan = None
+    goal_summary = None
+    notes = None
     for result in results:
         # logger.info(result)
         latest_workout_plan = result.get("workout_plan")[-1]

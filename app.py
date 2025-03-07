@@ -89,7 +89,7 @@ def connect_strava():
         logger.info("Session token found")
         
         session['athlete_id'] = athlete_id
-        session['athlete_name'] = athlete_name
+        session['athlete_name'] = athlete_name  
 
         database.update_tokens(client, session_token, athlete_id)  
 
@@ -130,11 +130,6 @@ def training_dashboard(athlete_id=None):
     if next_week_plan is None or next_week_plan=="":
         logger.info("next week plan is not available")
         dates,next_week_plan, notes,goal_summary = database.get_athelte_training_details(athlete_id)
-    # next_week_plan = test_plan_data.next_week_plan
-    # goal_summary = test_plan_data.goal_summary
-    # dates = test_plan_data.dates
-    # athlete_id = test_plan_data.athlete_id
-    # next_week_plan = join_dict_keys_values(next_week_plan)
     
     next_week_plan =  training_utils.workout_days_plan_to_markdown(next_week_plan, dates, notes, overview)
     next_week_plan = markdown2.markdown(next_week_plan)
@@ -161,7 +156,7 @@ def process_user_input():
         
         if is_plan_updated:
             _, workout_json,notes = utils.parse_json_workout_plan(gpt_response)
-            if workout_json:
+            if workout_json: 
                 database.save_workout_plan(athlete_id, workout_json, dates,notes=notes)
             response = training_utils.workout_plan_to_markdown(gpt_response)
            
@@ -215,11 +210,15 @@ def strava_callback():
                 "refresh_token": refresh_token,
                 "athlete_name": athlete_name,
                 "session_token": session_token,
-                "expires_at": datetime.fromtimestamp(token_response['expires_at']),
-                "previous_workout_plan": ''
+                "expires_at": datetime.fromtimestamp(token_response['expires_at'])
             }
             
-            response = make_response(redirect('/training_qna'))
+            last_training_plan = database.get_athelte_training_details(athlete_id)
+            if last_training_plan:
+                response = make_response(redirect(url_for('training_dashboard', athlete_id=athlete_id)))            
+            else:
+                response = make_response(redirect('/training_qna'))
+            
             response.set_cookie(
                 'session_token',
                 session_token,
@@ -383,7 +382,7 @@ def step4_generate_plan():
             athlete_id, 
             workout_plan, 
             dates, 
-            goals, notes=notes
+            goals, notes=notes, overview=birdseye_view
         )
         
         # Cleanup session data
@@ -414,9 +413,9 @@ def get_new_plan_exisiting_user():
     athlete_id = form_data['athlete_id']
     athlete_name = form_data['athlete_name']
     
-    dates_,last_week_plan, notes,goal_summary = database.get_athelte_training_details(athlete_id)
-    dates = dates_.split("-")
-    next_week_plan= training_utils.generate_next_week_plan(dates,goal_summary,last_week_plan, athlete_id)
+    last_dates,last_week_plan, notes,goal_summary = database.get_athelte_training_details(athlete_id)
+    # last_dates = dates_.split("-")
+    dates, next_week_plan= training_utils.generate_next_week_plan(last_dates,goal_summary,last_week_plan, athlete_id)
     
     goal_summary = markdown2.markdown(goal_summary)
     next_week_plan = markdown2.markdown(next_week_plan)
@@ -502,11 +501,11 @@ def get_next_week_plan():
     last_week_plan =request.json.get('last_week_plan')
     goal_summary = request.json.get('goal_summary') or ''
     last_dates = request.json.get('dates')
-    dates = last_dates.split("-")
+    # last_dates = 
     
-    next_week_avail = training_utils.check_next_week_avail(dates)
+    next_week_avail = training_utils.check_next_week_avail(last_dates.split("-"))
     if next_week_avail:
-        next_week_plan = training_utils.generate_next_week_plan(dates, last_week_plan, goal_summary, athlete_id)
+        dates, next_week_plan = training_utils.generate_next_week_plan(last_dates, last_week_plan, goal_summary, athlete_id)
         next_week_plan = markdown2.markdown(next_week_plan)
         next_week_plan = next_week_plan.replace("\n","")  
         

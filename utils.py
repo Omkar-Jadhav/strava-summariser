@@ -184,14 +184,15 @@ def is_user_input_relevant(user_input, next_week_plan, goal_summary, messages):
     is_relevant = ai.get_response_from_groq(prompt)
     return is_relevant
 
-def format_next_week_prompt_for_llm(last_week_plan, goal_summary, past_week_activity_dtls):
+def format_next_week_prompt_for_llm(last_week_plan, last_dates,  goal_summary, past_week_activity_dtls):
     prompt_template = load_prompt("next_week_prompt")
     prompt = prompt_template.substitute(
         current_day = datetime.now().strftime("%B %d, %Y"),
         current_date = datetime.now().strftime("%A"),
         goal_summary = goal_summary,
         last_week_plan = last_week_plan,
-        past_week_activity_dtls = past_week_activity_dtls
+        past_week_activity_dtls = past_week_activity_dtls,
+        last_dates= last_dates
     )
     
     return prompt

@@ -7,7 +7,7 @@ import utils
 import workout_classifier_testing
 import markdown2
 
-def generate_next_week_plan(dates, last_week_plan, goal_summary, athlete_id):
+def generate_next_week_plan(last_dates, last_week_plan, goal_summary, athlete_id):
     last_week_acitivity = strava.get_activities_for_period(1, athlete_id, sport_type='Run')
     last_week_acitivity =list(itertools.chain(*last_week_acitivity))[::-1]
     access_token = strava.get_access_token(athlete_id)
@@ -18,7 +18,7 @@ def generate_next_week_plan(dates, last_week_plan, goal_summary, athlete_id):
 
     # past_week_activity_dtls = test_plan_data.past_week_activity_dtls
     
-    prompt_for_next_week = utils.format_next_week_prompt_for_llm(last_week_plan, goal_summary, past_week_activity_dtls)
+    prompt_for_next_week = utils.format_next_week_prompt_for_llm(last_week_plan, last_dates, goal_summary, past_week_activity_dtls)
     
     next_week_plan_ = ai.get_json_response_from_groq(prompt_for_next_week)
     
@@ -27,9 +27,9 @@ def generate_next_week_plan(dates, last_week_plan, goal_summary, athlete_id):
     next_week_plan = workout_json
     
     next_week_plan_markdown = workout_days_plan_to_markdown(workout_json, dates, notes, overview)
-    database.save_workout_plan(athlete_id, workout_json, dates, notes)
+    database.save_workout_plan(athlete_id, workout_json, dates, notes=notes, overview=overview)
     
-    return next_week_plan_markdown
+    return dates, next_week_plan_markdown
 
 
 def check_next_week_avail(dates):
