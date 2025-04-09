@@ -152,22 +152,22 @@ def process_user_input():
     
     if is_athlete_msg_relevant == 'relevant':
         # Step 2: Call GPT for plan update
-        gpt_response, is_plan_updated = training_utils.work_on_user_query(athlete_message, current_plan, goal_summary)
+        gpt_response, is_plan_updated = training_utils.work_on_user_query(athlete_message, current_plan, goal_summary,chat_history)
         
         if is_plan_updated:
             _, workout_json,notes = utils.parse_json_workout_plan(gpt_response)
             if workout_json: 
                 database.save_workout_plan(athlete_id, workout_json, dates,notes=notes)
-            response = training_utils.workout_plan_to_markdown(gpt_response)
+            gpt_response = training_utils.workout_plan_to_markdown(gpt_response)
            
-        response = markdown2.markdown(response)
+        gpt_response = markdown2.markdown(gpt_response)
         
-        response = response.replace("\n","")
+        gpt_response = gpt_response.replace("\n","")
         # Step 3: Update the plan (optional: save to database)  
         # For now, we'll just return the GPT response
         return jsonify({
             "relevant": True,
-            "gpt_response": response,
+            "gpt_response": gpt_response,
             "is_plan_updated":is_plan_updated
         })
         

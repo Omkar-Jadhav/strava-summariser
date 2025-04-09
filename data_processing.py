@@ -23,7 +23,7 @@ def give_weighttraining_summary(WeightTraining_activities):
     # ]
     # overall_strength_training_summary_table = tabulate(overall_strength_training_summary_data, tablefmt="plain")
     overall_strength_training_summary_table = f"{total_sessions} 🏋️‍♂️ Sessions |  {avg_strength_training_session}  Avg ⌚ |  {total_strength_training_time} Total"
-    result_table = f"\n Four-Week Rolling strength training Summary \n{overall_strength_training_summary_table}" +footer
+    result_table = f"Four-Week Rolling strength training Summary \n{overall_strength_training_summary_table}" +footer
     
     print(result_table)
     return result_table
@@ -47,7 +47,7 @@ def give_yoga_summary(yoga_activities):
     # overall_yoga_summary_table = tabulate(overall_yoga_summary_data, tablefmt="plain")
     
     overall_yoga_summary_table =f"{total_sessions} 🧘‍♂️ Sessions |  {avg_yoga_session} Avg ⌚ |  {total_yoga_time} Total"
-    result_table = f"\n Four-Week Rolling Yoga Summary \n{overall_yoga_summary_table}" +footer
+    result_table = f"Four-Week Rolling Yoga Summary \n{overall_yoga_summary_table}" +footer
     
     print(result_table)
     return result_table
@@ -70,7 +70,7 @@ def give_swim_summary(swim_activities):
     # ]
     # overall_swim_summary_table = tabulate(overall_swim_summary_data, tablefmt="plain")
     overall_swim_summary_table = f"{total_swim_sessions}  🏊‍♂️ Sessions |  {avg_swim_session} Avg ⌚ |  {total_swim_time} Total"
-    result_table = f"\nFour-Week Rolling Swim Summary \n{overall_swim_summary_table}" + footer
+    result_table = f"Four-Week Rolling Swim Summary \n{overall_swim_summary_table}" + footer
     
     print(result_table)
     return result_table
@@ -110,7 +110,7 @@ def give_ride_summary(ride_activities):
     ]
 
     overall_ride_summary_table = tabulate(overall_ride_summary_data, tablefmt="plain")
-    result_table = f"\nFour-Week Rolling Ride Summary\n{overall_ride_summary_table}" + footer
+    result_table = f"Four-Week Rolling Ride Summary\n{overall_ride_summary_table}" + footer
     
     
     print(result_table)
@@ -239,13 +239,13 @@ def give_run_summary(run_activities):
         # ]
     
     if not trail_runs_available or not road_runs_available:        
-        result_table = "\n\nFour-Week Rolling Run Summary\n"
+        result_table = "Four-Week Rolling Run Summary\n"
         # result_table += tabulate(overall_summary_data, tablefmt="plain")r
         formatted_table = tabulate(overall_summary_data, tablefmt="plain")
         result_table += formatted_table
     
     if trail_runs_available and road_runs_available:
-        result_table = "\nFour-Week Rolling Run Summary\n"
+        result_table = "Four-Week Rolling Run Summary\n"
         # result_table += tabulate(overall_summary_data[0:3], tablefmt="plain")    
         result_table += " ".join(overall_summary_data[0])     
         result_table += "\n\nRoad Runs:\n"
@@ -296,7 +296,7 @@ def give_walk_summary(walk_activities):
         [f"{len(walk_activities)} Walks 🚶 |", f"{tot_distance_walked_month:.2f} Km 🛣️  |", f"{convert_seconds_in_hhmmss(tot_moving_time)} ⌚|"],
         [f"{avg_mov_speed} Avg Pace |",  f"{avg_distance_per_walk:.2f}Km/walk👟"]
     ]
-    result_table += "\nFour-Week Rolling Walk Summary \n"
+    result_table += "Four-Week Rolling Walk Summary \n"
     result_table += tabulate(walk_summary_data, tablefmt="plain")
 
     result_table += footer

@@ -29,7 +29,7 @@ def update_description(activity_data, summary):
     if description == "" or description is None:
         updated_description = f"{summary}"
     else:    
-        updated_description = f"{description} {summary}"
+        updated_description = f"{description} \n{summary}"
     update_json = {"description": updated_description}
     return update_json
 

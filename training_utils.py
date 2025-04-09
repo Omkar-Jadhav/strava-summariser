@@ -153,14 +153,15 @@ def generate_goal_prompt(form_data, top_3_long_runs, races):
     
     return goal_prompt
 
-def work_on_user_query(user_input, current_plan, goal_summary):
+def work_on_user_query(user_input, current_plan, goal_summary, chat_history):
     prompt_template  = utils.load_prompt("user_query_prompt")
     prompt = prompt_template.substitute(
                     current_date=datetime.now().strftime("%B %d, %Y"),
                     current_day=datetime.today().strftime('%A'),
                     current_plan=current_plan,
                     goal_summary=goal_summary,
-                    user_input=user_input
+                    user_input=user_input,
+                    chat_history=chat_history
                 )
 
     gpt_response = ai.get_json_response_from_groq(prompt)
