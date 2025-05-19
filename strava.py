@@ -13,6 +13,7 @@ import workout_classifier
 from ai import get_insights_by_llm
 from workout_classifier import get_run_type 
 import strava
+import calendar
 
 STRAVA_CLIENT_ID = os.environ.get('CLIENT_ID')
 STRAVA_CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
@@ -138,8 +139,12 @@ def get_activities_for_period(weeks, athlete_id, sport_type=None, access_token =
         logger.info('Access token retrieved')
     
     # Step 2: Define API Endpoint and Parameters
-    BEFORE = int(time.time()) 
-    AFTER = int(time.time()) - (weeks * 7 * 24 * 60 * 60)
+    today = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    start_day = today - datetime.timedelta(weeks=weeks)
+    
+    BEFORE = calendar.timegm(today.timetuple())  # Midnight of today
+    AFTER = calendar.timegm(start_day.timetuple())  # Midnight N weeks ago
+
     activities_url = "https://www.strava.com/api/v3/athlete/activities"
     headers = {'Authorization': f'Bearer {access_token}'}   
     
