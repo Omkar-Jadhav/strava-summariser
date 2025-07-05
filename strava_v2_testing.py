@@ -10,7 +10,7 @@ import json
 import workout_classifier
 import workout_classifier_testing
 from ai import get_insights_by_llm
-from datetime import datetime
+# from datetime import datetime
 from workout_classifier import get_run_type 
 import os
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s %(levelname)s %(message)s')
@@ -67,7 +67,7 @@ def get_latest_activities(inputs):
     midnight_today = datetime.datetime.combine(today.date(), datetime.time.min)
 
     # Get midnight of 28 days ago
-    midnight_28_days_ago = midnight_today - datetime.timedelta(days=28)
+    midnight_28_days_ago = midnight_today - datetime.timedelta(days=27)
 
     # Convert to UNIX timestamps
     BEFORE = now
