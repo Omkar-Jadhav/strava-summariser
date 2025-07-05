@@ -60,8 +60,19 @@ def get_latest_activities(inputs):
     logging.info('Access token retrieved')
     
     # Step 2: Define API Endpoint and Parameters
-    BEFORE = int(time.time()) 
-    AFTER = int(time.time()) - (28 * 24 * 60 * 60)  # Exactly 4 weeks
+    now = int(time.time())
+    today = datetime.datetime.now()
+
+    # Get midnight of today
+    midnight_today = datetime.datetime.combine(today.date(), datetime.time.min)
+
+    # Get midnight of 28 days ago
+    midnight_28_days_ago = midnight_today - datetime.timedelta(days=28)
+
+    # Convert to UNIX timestamps
+    BEFORE = now
+    AFTER = int(midnight_28_days_ago.timestamp())
+
     activities_url = "https://www.strava.com/api/v3/athlete/activities"
     headers = {'Authorization': f'Bearer {access_token}'}   
     

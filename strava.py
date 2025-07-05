@@ -140,9 +140,10 @@ def get_activities_for_period(weeks, athlete_id, sport_type=None, access_token =
     
     # Step 2: Define API Endpoint and Parameters
     today = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    now = int(time.time()) 
     start_day = today - datetime.timedelta(weeks=weeks)
     
-    BEFORE = calendar.timegm(today.timetuple())  # Midnight of today
+    BEFORE = now  # Midnight of today
     AFTER = calendar.timegm(start_day.timetuple())  # Midnight N weeks ago
 
     activities_url = "https://www.strava.com/api/v3/athlete/activities"
@@ -221,8 +222,19 @@ def get_latest_activities(inputs):
     logging.info('Access token retrieved')
     
     # Step 2: Define API Endpoint and Parameters
-    BEFORE = int(time.time()) 
-    AFTER = int(time.time()) - (28 * 24 * 60 * 60)  # Exactly 4 weeks
+    now = int(time.time())
+    today = datetime.datetime.now()
+
+    # Get midnight of today
+    midnight_today = datetime.datetime.combine(today.date(), datetime.time.min)
+
+    # Get midnight of 28 days ago
+    midnight_28_days_ago = midnight_today - datetime.timedelta(days=28)
+
+    # Convert to UNIX timestamps
+    BEFORE = now
+    AFTER = int(midnight_28_days_ago.timestamp())
+
     activities_url = "https://www.strava.com/api/v3/athlete/activities"
     headers = {'Authorization': f'Bearer {access_token}'}   
     
