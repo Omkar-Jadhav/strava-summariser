@@ -149,7 +149,7 @@ def get_latest_activities(inputs):
                     result_table = getattr(data_processing, f"give_{latest_activity_data['type'].lower()}_summary")(activities_of_type)
                     logger.info(f"description:{latest_activity_data['description']} \n  url: {url}" )
                     
-                    today = datetime.now().strftime("%B %d, %Y")
+                    today = datetime.datetime.now().strftime("%B %d, %Y")
                     
                     # athlete_goal = f"Run a marathon under 3 hours 10 minutes on March 16th, 2025 today is {today}"
                     athlete_goal = f"Run a 100km trail ultra marathon with 3380m elevation gain on March 16th, 2025 today is {today}"
