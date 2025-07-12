@@ -120,6 +120,8 @@ def get_latest_activities(inputs):
                     
                     all_activities[0]["type"]="Yoga"
                     all_activities[0]["sport_type"]="Yoga"
+                    
+                    latest_activity_data["type"]="Yoga"
                     print(update_message)
                     
                 else:
