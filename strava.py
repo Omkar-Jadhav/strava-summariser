@@ -279,6 +279,9 @@ def get_latest_activities(inputs):
                     updated_name = "Daily Sadhna"
                     updated_activity_json = {'type': 'Yoga', 'sport_type': 'Yoga', 'name': updated_name}
                     
+                    all_activities[0]["type"]="Yoga"
+                    all_activities[0]["sport_type"]="Yoga"
+                    
                     update_message = utils.update_activity(activity_url=latest_activity_url, update_json=updated_activity_json, headers=headers)
                     print(update_message)
                     
@@ -315,7 +318,7 @@ def get_latest_activities(inputs):
                         insights = ai.get_insights_by_llm(result_table, past_runs_details)
                         out_message += "\nLast 4 weeks by strava-summariser :\n"+insights+'\n'
                    
-                    footer = "\nSubscribe on strava-summariser \nStats generated using StravaAPI by Omkar Jadhav"
+                    footer = "\nSubscribe on strava-summariser.vercel.app/ \nStats generated using StravaAPI by Omkar Jadhav"
                     
                     out_message += footer
 
